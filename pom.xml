@@ -1,0 +1,245 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.implementist</groupId>
+    <artifactId>NISLJournalManager</artifactId>
+    <version>3.0-SNAPSHOT</version>
+    <packaging>war</packaging>
+
+    <name>NISLJournalManager</name>
+
+    <properties>
+        <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <springframework.version>4.3.9.RELEASE</springframework.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-web-api</artifactId>
+            <version>8.0</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${springframework.version}</version>
+        </dependency>
+        
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${springframework.version}</version>
+        </dependency>
+        
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-aop -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>${springframework.version}</version>
+        </dependency>
+        
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-aspects -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+            <version>${springframework.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-beans -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${springframework.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${springframework.version}</version>
+        </dependency>
+        
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-context-support -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${springframework.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${springframework.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-expression -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
+            <version>${springframework.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${springframework.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-orm -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>${springframework.version}</version>
+        </dependency>
+        
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-tx -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <version>${springframework.version}</version>
+        </dependency>
+        
+        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.3.4.Final</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjtools -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjtools</artifactId>
+            <version>1.9.1</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/cglib/cglib -->
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>3.2.7</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-dbcp2 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-dbcp2</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-pool2 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+            <version>2.6.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/net.sf.json-lib/json-lib -->
+        <dependency>
+            <groupId>net.sf.json-lib</groupId>
+            <artifactId>json-lib</artifactId>
+            <version>2.2.3</version>
+            <classifier>jdk15</classifier>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/javax.transaction/jta -->
+        <dependency>
+            <groupId>javax.transaction</groupId>
+            <artifactId>jta</artifactId>
+            <version>1.1</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.46</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <!-- https://mvnrepository.com/artifact/com.sun.mail/javax.mail -->
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+        
+        <!-- https://mvnrepository.com/artifact/org.eclipse.birt.runtime.3_7_1/com.lowagie.text -->
+        <dependency>
+            <groupId>org.eclipse.birt.runtime.3_7_1</groupId>
+            <artifactId>com.lowagie.text</artifactId>
+            <version>2.1.7</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <!-- Name of WAR File -->
+        <finalName>NISLJournalManager</finalName>
+        
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <compilerArguments>
+                        <endorseddirs>${endorsed.dir}</endorseddirs>
+                    </compilerArguments>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.1.1</version>
+                <configuration>
+                    <!-- 下面两行配置信息表示打包的时候包含web.xml -->
+                    <failOnMissingWebXml>true</failOnMissingWebXml>
+                    <packagingExcludes>WEB-INF/web.xml</packagingExcludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.1</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${endorsed.dir}</outputDirectory>
+                            <silent>true</silent>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>javax</groupId>
+                                    <artifactId>javaee-endorsed-api</artifactId>
+                                    <version>6.0</version>
+                                    <type>jar</type>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
