@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+    <!-- 发件账户身份信息 -->
+    <bean id="mailSenderIdentity" class="com.implementist.nisljournalmanager.domain.Identity">
+        <property name="from" value="nislmailsender@163.com"/>
+        <property name="nickName" value="NISLMailSender"/>
+        <property name="authorizationCode" value="NISLMailSender0"/>
+    </bean>
+    
+    <!-- 第1封催促提交任务 -->
+    <bean id="urgeTask1" class="com.implementist.nisljournalmanager.domain.UrgeTask">
+        <property name="groups">
+            <null/>
+        </property>
+        <property name="startTime" value="22:00:00"/>
+        <property name="mailSubject" value="NISL日志提交督促邮件"/>
+        <property name="mailContent" value="&lt;div&gt;这是一封来自NISL实验室的日志提交督促邮件，请尽快提交你的日志。&lt;br&gt;汇总邮件将于22:30:00发出。届时，未提交日志的同学将会被系统在汇总邮件对应的表格中填入：“该同学未按时提交日志！”的字样。&lt;br&gt;这是第一封督促邮件。&lt;br&gt;&lt;br&gt;此邮件由系统自动发出。&lt;/div&gt;&lt;div align=&quot;right&quot;&gt;NISL Journal Manager&lt;/div&gt;&lt;div align=&quot;right&quot;&gt;"/>
+        <property name="mailSenderIdentity" ref="mailSenderIdentity"/>
+    </bean>
+    
+    <!-- 第2封催促提交任务 -->
+    <bean id="urgeTask2" class="com.implementist.nisljournalmanager.domain.UrgeTask">
+        <property name="groups">
+            <null/>
+        </property>
+        <property name="startTime" value="22:15:00"/>
+        <property name="mailSubject" value="NISL日志提交督促邮件"/>
+        <property name="mailContent" value="&lt;div&gt;这是一封来自NISL实验室的日志提交督促邮件，请尽快提交你的日志。&lt;br&gt;汇总邮件将于22:30:00发出。届时，未提交日志的同学将会被系统在汇总邮件对应的表格中填入：“该同学未按时提交日志！”的字样。&lt;br&gt;这是第二封督促邮件。&lt;br&gt;&lt;br&gt;此邮件由系统自动发出。&lt;/div&gt;&lt;div align=&quot;right&quot;&gt;NISL Journal Manager&lt;/div&gt;&lt;div align=&quot;right&quot;&gt;"/>
+        <property name="mailSenderIdentity" ref="mailSenderIdentity"/>
+    </bean>
+    
+    <!-- 第1,2两组的日报汇总任务 -->
+    <bean id="summaryTask1" class="com.implementist.nisljournalmanager.domain.SummaryTask">
+        <property name="groupOnHoliday" value="false"/>
+        <property name="holidayers">
+            <null/>
+        </property>
+        <property name="groups">
+            <array>
+                <value>1</value>
+                <value>2</value>
+            </array>
+        </property>
+        <property name="restDays">
+            <array>
+                <value>7</value>
+            </array>
+        </property>
+        <property name="startTime" value="22:30:00"/>
+        <property name="mailSubject" value="NISL JS虚拟机小组&amp;Android虚拟机小组日报汇总"/>
+        <property name="ccAddresses">
+            <array>
+                <value>zytang@nwu.edu.cn</value>
+            </array>
+        </property>
+        <property name="mailContent" value="&lt;div&gt;各位老师同学：&lt;/div&gt;&lt;div&gt;&amp;emsp;&amp;emsp;你们好！&lt;/div&gt;&lt;div&gt;&amp;emsp;&amp;emsp;附件中是今天本小组的日志汇总，请各位查收。&lt;/div&gt;&lt;br&gt;&lt;div style=&quot;width:auto;float:right&quot;&gt;&lt;div align=&quot;left&quot;&gt;祝好！&lt;/div&gt;&lt;div&gt;NISL Journal Manager&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;"/>
+        <property name="mailSenderIdentity" ref="mailSenderIdentity"/>
+    </bean>
+    
+    <!-- 第3组的日报汇总任务 -->
+    <bean id="summaryTask2" class="com.implementist.nisljournalmanager.domain.SummaryTask">
+        <property name="groupOnHoliday" value="false"/>
+        <property name="holidayers">
+            <null/>
+        </property>
+        <property name="groups">
+            <array>
+                <value>3</value>
+            </array>
+        </property>
+        <property name="restDays">
+            <array>
+                <value>7</value>
+            </array>
+        </property>
+        <property name="startTime" value="22:32:00"/>
+        <property name="mailSubject" value="NISL机器学习与系统安全小组日报汇总"/>
+        <property name="ccAddresses">
+            <array>
+                <value>zytang@nwu.edu.cn</value>
+                <value>z.wang@lancaster.ac.uk</value>
+            </array>
+        </property>
+        <property name="mailContent" value="&lt;div&gt;各位老师同学：&lt;/div&gt;&lt;div&gt;&amp;emsp;&amp;emsp;你们好！&lt;/div&gt;&lt;div&gt;&amp;emsp;&amp;emsp;附件中是今天本小组的日志汇总，请各位查收。&lt;/div&gt;&lt;br&gt;&lt;div style=&quot;width:auto;float:right&quot;&gt;&lt;div align=&quot;left&quot;&gt;祝好！&lt;/div&gt;&lt;div&gt;NISL Journal Manager&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;"/>
+        <property name="mailSenderIdentity" ref="mailSenderIdentity"/>
+    </bean>
+    
+    <!-- 第4组的日报汇总任务 -->
+    <bean id="summaryTask3" class="com.implementist.nisljournalmanager.domain.SummaryTask">
+        <property name="groupOnHoliday" value="false"/>
+        <property name="holidayers">
+            <null/>
+        </property>
+        <property name="groups">
+            <array>
+                <value>4</value>
+            </array>
+        </property>
+        <property name="restDays">
+            <array>
+                <value>7</value>
+            </array>
+        </property>
+        <property name="startTime" value="22:34:00"/>
+        <property name="mailSubject" value="移动小组日报汇总"/>
+        <property name="ccAddresses">
+            <array>
+                <value>hwang@nwu.edu.cn</value>
+                <value>jason.wangz@gmail.com</value>
+                <value>402903026@qq.com</value>
+                <value>410802753@qq.com</value>
+            </array>
+        </property>
+        <property name="mailContent" value="&lt;div&gt;各位老师同学：&lt;/div&gt;&lt;div&gt;&amp;emsp;&amp;emsp;你们好！&lt;/div&gt;&lt;div&gt;&amp;emsp;&amp;emsp;附件中是今天本小组的日志汇总，请各位查收。&lt;/div&gt;&lt;br&gt;&lt;div style=&quot;width:auto;float:right&quot;&gt;&lt;div align=&quot;left&quot;&gt;祝好！&lt;/div&gt;&lt;div&gt;NISL Journal Manager&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;"/>
+        <property name="mailSenderIdentity" ref="mailSenderIdentity"/>
+    </bean>
+    
+    <!-- 初始化邮箱和数据库任务 -->
+    <bean id="initializeTask" class="com.implementist.nisljournalmanager.domain.InitializeTask">
+        <property name="restDays">
+            <array>
+                <value>7</value>
+            </array>
+        </property>
+        <property name="startTime" value="22:45:00"/>
+        <property name="initialContent" value=""/>
+        <property name="sourceFolder" value="INBOX"/>
+        <property name="targetFolder" value="以往日报"/>        
+        <property name="mailSenderIdentity" ref="mailSenderIdentity"/>
+    </bean>
+</beans>
