@@ -51,7 +51,7 @@ public class MailService {
     @Autowired
     private NetEase163Service netEase163Service;
 
-    private Boolean hasGotHTML;  //用于设置在一个邮件中是否已读出一份内容文本
+    private Boolean haveGotHtmlEdition;  //用于设置在一个邮件中是否已读出一份内容文本
     private String currentContent;  //用于接收当前邮件中的内容文本
 
     /**
@@ -61,24 +61,21 @@ public class MailService {
      * @param mail 邮件
      */
     public void send(Identity identity, Mail mail) {
-        try {
-            //设置邮件通信属性
-            Properties properties = netEase163Service.getSMTPProperties();
-            //获取邮件通信会话
-            Session session = netEase163Service.getSession(properties);
-            //构建邮件信息
+        //设置邮件通信属性
+        Properties properties = netEase163Service.getSMTPProperties();
+        //获取邮件通信会话
+        Session session = netEase163Service.getSession(properties);
+
+        try (Transport transport = session.getTransport()) {
             MimeMessage mimeMessage = buildMessage(session, identity, mail);
-            //传输
-            Transport transport = session.getTransport();
+
             //用邮箱地址和授权码连接邮件服务器
             transport.connect(identity.getFrom(), identity.getAuthorizationCode());
             // 发送邮件
             transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
-            // 关闭连接
-            transport.close();
         } catch (NoSuchProviderException ex) {
             Logger.getLogger(MailService.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (MessagingException ex) {
+        } catch (MessagingException | UnsupportedEncodingException ex) {
             Logger.getLogger(MailService.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -89,37 +86,21 @@ public class MailService {
      * @param identity 邮箱账户身份
      */
     public void read(Identity identity) {
-        Store store = null;
-        Folder folder = null;
-        try {
-            //设置邮件通信属性
-            Properties properties = netEase163Service.getPOP3Properties();
-            //获取邮件通信会话
-            Session session = netEase163Service.getSession(properties);
-            //获取邮件接收服务器连接
-            store = netEase163Service.getPOP3Store(session, identity.getFrom(), identity.getAuthorizationCode());
-            //获取目标邮箱收件夹
-            folder = store.getFolder("INBOX");
+        //设置邮件通信属性
+        Properties properties = netEase163Service.getPOP3Properties();
+        //获取邮件通信会话
+        Session session = netEase163Service.getSession(properties);
+
+        try (Store store = netEase163Service.getPOP3Store(session, identity.getFrom(), identity.getAuthorizationCode());
+                Folder folder = store.getFolder("INBOX");) {
             //设置邮件只读
             folder.open(Folder.READ_ONLY);
             //将邮件中的日报中写回到数据库中
             saveJournalContents(folder.getMessages());
         } catch (NoSuchProviderException ex) {
             Logger.getLogger(MailService.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (MessagingException ex) {
+        } catch (MessagingException | IOException ex) {
             Logger.getLogger(MailService.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                //关闭文件夹和存储器
-                if (folder != null) {
-                    folder.close(true);
-                }
-                if (store != null) {
-                    store.close();
-                }
-            } catch (MessagingException ex) {
-                Logger.getLogger(MailService.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
     }
 
@@ -131,22 +112,16 @@ public class MailService {
      * @param target 目标文件夹
      */
     public void move(Identity identity, String source, String target) {
-        try {
-            //设置邮件通信属性
-            Properties properties = netEase163Service.getIMAPProperties();
 
-            //获取邮件通信会话
-            Session session = netEase163Service.getSession(properties);
+        //设置邮件通信属性
+        Properties properties = netEase163Service.getIMAPProperties();
+        //获取邮件通信会话
+        Session session = netEase163Service.getSession(properties);
 
-            //获取邮件接收服务器连接
-            Store store = netEase163Service.getImapStore(session, identity.getFrom(), identity.getAuthorizationCode());
-
-            //原件文件夹  
-            Folder sfolder = store.getFolder(source);
+        try (Store store = netEase163Service.getImapStore(session, identity.getFrom(), identity.getAuthorizationCode());
+                Folder sfolder = store.getFolder(source);
+                Folder tfolder = store.getFolder(target);) {
             sfolder.open(Folder.READ_WRITE);
-
-            //目标文件夹
-            Folder tfolder = store.getFolder(target);
             tfolder.open(Folder.READ_WRITE);
 
             Message[] msgs = sfolder.getMessages();
@@ -154,15 +129,11 @@ public class MailService {
             if (msgs.length != 0) {
                 //将源文件夹下的邮件标记为已读
                 sfolder.setFlags(msgs, new Flags(Flags.Flag.SEEN), true);
-
                 //复制到新文件夹 
                 sfolder.copyMessages(msgs, tfolder);
-
                 //删除源文件夹下的邮件
                 sfolder.setFlags(msgs, new Flags(Flags.Flag.DELETED), true);
             }
-            sfolder.close(true);
-            store.close();
         } catch (MessagingException ex) {
             Logger.getLogger(MailService.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -171,26 +142,22 @@ public class MailService {
     /**
      * 构建邮件信息
      */
-    private MimeMessage buildMessage(Session session, Identity identity, Mail mail) {
-        try {
-            MimeMessage mimeMessage = new MimeMessage(session);
-            MimeMultipart multipart = new MimeMultipart();
+    private MimeMessage buildMessage(Session session, Identity identity, Mail mail)
+            throws MessagingException, UnsupportedEncodingException {
+        MimeMessage mimeMessage = new MimeMessage(session);
+        MimeMultipart multipart = new MimeMultipart();
 
-            //装配邮件
-            setSubject(mimeMessage, mail.getSubject());
-            setFrom(mimeMessage, identity);
-            setTo(mimeMessage, mail);
-            setCC(mimeMessage, mail);
-            setContent(multipart, mail.getContent());
-            setAttachment(multipart, mail.getFiles());
+        //装配邮件
+        setSubject(mimeMessage, mail.getSubject());
+        setFrom(mimeMessage, identity);
+        setTo(mimeMessage, mail);
+        setCC(mimeMessage, mail);
+        setContent(multipart, mail.getContent());
+        setAttachment(multipart, mail.getFiles());
 
-            mimeMessage.setContent(multipart);
-            mimeMessage.saveChanges();
-            return mimeMessage;
-        } catch (MessagingException | UnsupportedEncodingException ex) {
-            Logger.getLogger(MailService.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
-        }
+        mimeMessage.setContent(multipart);
+        mimeMessage.saveChanges();
+        return mimeMessage;
     }
 
     /**
@@ -277,13 +244,12 @@ public class MailService {
      * @throws MessagingException 通信异常
      * @throws IOException 输入输出异常
      */
-    private void getTextMultipart(Part part) throws MessagingException,
-            IOException {
-        if (part.isMimeType("text/plain") && !hasGotHTML) {
+    private void getTextMultipart(Part part) throws MessagingException, IOException {
+        if (part.isMimeType("text/plain") && !haveGotHtmlEdition) {
             currentContent = (String) part.getContent();
         } else if (part.isMimeType("text/html")) {
             currentContent = (String) part.getContent();
-            hasGotHTML = true;
+            haveGotHtmlEdition = true;
         } else if (part.isMimeType("multipart/*")) {
             Multipart multipart = (Multipart) part.getContent();
             for (int i = 0; i < multipart.getCount(); i++) {
@@ -328,24 +294,19 @@ public class MailService {
      *
      * @param messages 邮件内容
      */
-    private void saveJournalContents(Message[] messages) {
+    private void saveJournalContents(Message[] messages) throws MessagingException, IOException {
         if (messages != null) {
             for (Message message : messages) {
-                try {
-                    hasGotHTML = false;
-                    currentContent = "";
+                haveGotHtmlEdition = false;
+                currentContent = "";
 
-                    //解析发件人地址
-                    String address = ((InternetAddress[]) message.getFrom())[0].getAddress();
+                //解析发件人地址
+                String address = ((InternetAddress[]) message.getFrom())[0].getAddress();
+                //解析内容文本的各个部分
+                getTextMultipart(message);
 
-                    //解析内容文本的各个部分
-                    getTextMultipart(message);
-
-                    currentContent = new String(currentContent.getBytes("UTF-8"), "UTF-8");
-                    memberDAO.updateContentByAddress(currentContent, address);
-                } catch (MessagingException | IOException ex) {
-                    Logger.getLogger(MailService.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                currentContent = new String(currentContent.getBytes("UTF-8"), "UTF-8");
+                memberDAO.updateContentByAddress(currentContent, address);
             }
         }
     }

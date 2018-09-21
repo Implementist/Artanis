@@ -28,6 +28,7 @@ public class InitializeTaskFactory extends TaskFactory {
 
     private InitializeTask initializeTask;
 
+    @SuppressWarnings("LeakingThisInConstructor")
     public InitializeTaskFactory(ServletContext context) {
         WebApplicationContext wac = WebApplicationContextUtils.getWebApplicationContext(context);
         AutowireCapableBeanFactory factory = wac.getAutowireCapableBeanFactory();

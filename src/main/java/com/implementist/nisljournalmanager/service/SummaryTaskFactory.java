@@ -35,6 +35,7 @@ public class SummaryTaskFactory extends TaskFactory {
 
     private SummaryTask summaryTask;
 
+    @SuppressWarnings("LeakingThisInConstructor")
     public SummaryTaskFactory(ServletContext context) {
         WebApplicationContext wac = WebApplicationContextUtils.getWebApplicationContext(context);
         AutowireCapableBeanFactory factory = wac.getAutowireCapableBeanFactory();
