@@ -172,7 +172,7 @@ public class ScheduledService extends HttpServlet {
      * @return 督促任务列表
      */
     private List<UrgeTask> getUrgeTasks(ApplicationContext ctx, List<SummaryTask> summaryTasks) {
-        if (summaryTasks != null) {
+        if (summaryTasks != null && summaryTasks.size() > 0) {
             List<UrgeTask> tasks = new ArrayList<>();
             String[] taskNames = ctx.getBeanNamesForType(UrgeTask.class);
 
