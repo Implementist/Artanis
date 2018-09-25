@@ -31,6 +31,7 @@ public class UrgeTaskFactory extends TaskFactory {
 
     private UrgeTask urgeTask;
 
+    @SuppressWarnings("LeakingThisInConstructor")
     public UrgeTaskFactory(ServletContext context) {
         WebApplicationContext wac = WebApplicationContextUtils.getWebApplicationContext(context);
         AutowireCapableBeanFactory factory = wac.getAutowireCapableBeanFactory();

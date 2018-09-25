@@ -114,8 +114,7 @@ public class NetEase163Service {
      * @param authorizationCode 授权码
      * @return 网易163邮箱IMAP协议连接
      */
-    public Store getImapStore(Session session, String destination,
-            String authorizationCode) {
+    public Store getImapStore(Session session, String destination, String authorizationCode) {
         try {
             Store store = session.getStore("imap");
             store.connect("imap.163.com", destination, authorizationCode);

@@ -312,18 +312,12 @@ public class SummarizeFileService {
      *
      * @param document 文档对象
      */
-    private void addContentsByGroup(Document document, int[] groupIds) {
+    private void addContentsByGroup(Document document, int[] groupIds) throws BadElementException, DocumentException {
         for (int groupId : groupIds) {
-            try {
-                Group groupInfo = groupDAO.queryGroupById(groupId);
-                ArrayList<Member> groupMembers = memberDAO.queryByGroup(groupId);
-                Table groupContent = getGroupContent(groupInfo.getName(), groupMembers);
-                document.add(groupContent);
-            } catch (BadElementException ex) {
-                Logger.getLogger(SummarizeFileService.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (DocumentException ex) {
-                Logger.getLogger(SummarizeFileService.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            Group groupInfo = groupDAO.queryGroupById(groupId);
+            ArrayList<Member> groupMembers = memberDAO.queryByGroup(groupId);
+            Table groupContent = getGroupContent(groupInfo.getName(), groupMembers);
+            document.add(groupContent);
         }
     }
 }
