@@ -7,7 +7,6 @@ package com.implementist.nisljournalmanager.service;
 
 import com.implementist.nisljournalmanager.dao.MemberDAO;
 import com.implementist.nisljournalmanager.domain.InitializeTask;
-import java.util.Date;
 import javax.servlet.ServletContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
@@ -22,6 +21,9 @@ public class InitializeTaskFactory extends TaskFactory {
 
     @Autowired
     private MemberDAO memberDAO;
+
+    @Autowired
+    private TimeService timeService;
 
     @Autowired
     private MailService mailService;
@@ -42,10 +44,7 @@ public class InitializeTaskFactory extends TaskFactory {
     @Override
     protected void buildTask() {
         runnable = () -> {
-            //获取当前是周几，为避免变量名冲突，故使用匿名方式
-            int dayOfWeek = getDayOfWeek(new Date());
-
-            if (!isRestDay(dayOfWeek, initializeTask.getRestDays())) {
+            if (!timeService.isRestDayToday(initializeTask.getRestDays())) {
                 memberDAO.updateContentOfEveryStudent(initializeTask.getInitialContent());
                 mailService.move(initializeTask.getMailSenderIdentity(), initializeTask.getSourceFolder(), initializeTask.getTargetFolder());
             }
