@@ -24,10 +24,13 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 public class UrgeTaskFactory extends TaskFactory {
 
     @Autowired
-    private MailService mailService;
+    private MemberDAO memberDAO;
 
     @Autowired
-    private MemberDAO memberDAO;
+    private TimeService timeService;
+
+    @Autowired
+    private MailService mailService;
 
     private UrgeTask urgeTask;
 
@@ -51,7 +54,7 @@ public class UrgeTaskFactory extends TaskFactory {
             if (addresses.length > 0) {  //向每一位Submitted位为0的学生发送督促邮件
                 Mail mail = new Mail(
                         urgeTask.getMailSubject(),
-                        urgeTask.getMailContent() + setTimeToHtmlStyle(getDateTimeString()),
+                        urgeTask.getMailContent() + setTimeAsHtmlStyle(timeService.getDateTimeString()),
                         addresses
                 );
                 mailService.send(urgeTask.getMailSenderIdentity(), mail);
@@ -87,7 +90,7 @@ public class UrgeTaskFactory extends TaskFactory {
      * @param time 时间戳
      * @return HTML格式的时间戳
      */
-    private String setTimeToHtmlStyle(String time) {
+    private String setTimeAsHtmlStyle(String time) {
         return time + "</div>";
     }
 }

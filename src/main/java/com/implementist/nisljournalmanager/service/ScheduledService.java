@@ -9,13 +9,8 @@ import com.implementist.nisljournalmanager.dao.MemberDAO;
 import com.implementist.nisljournalmanager.domain.InitializeTask;
 import com.implementist.nisljournalmanager.domain.SummaryTask;
 import com.implementist.nisljournalmanager.domain.UrgeTask;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -39,6 +34,9 @@ public class ScheduledService extends HttpServlet {
 
     @Autowired
     private MemberDAO memberDAO;
+
+    @Autowired
+    private TimeService timeService;
 
     private static final long MILLIS_OF_ONE_DAY = 24 * 60 * 60 * 1000;
 
@@ -128,7 +126,7 @@ public class ScheduledService extends HttpServlet {
      * @param task 任务
      */
     private void ExecuteByCycle(String time, long cycle, Runnable task) {
-        long initDelay = getTimeMillis(time) - System.currentTimeMillis();
+        long initDelay = timeService.getTimeMillis(time) - System.currentTimeMillis();
         initDelay = initDelay > 0 ? initDelay : cycle + initDelay;
 
         //执行器开始执行任务
@@ -142,28 +140,10 @@ public class ScheduledService extends HttpServlet {
      * @param task 任务
      */
     private void ExecuteOnce(String time, Runnable task) {
-        long delay = getTimeMillis(time) - System.currentTimeMillis();
+        long delay = timeService.getTimeMillis(time) - System.currentTimeMillis();
 
         //执行器开始执行任务
         oneTimeExecutor.schedule(task, delay, TimeUnit.MILLISECONDS);
-    }
-
-    /**
-     * 获取指定时间对应的毫秒数
-     *
-     * @param time "HH:mm:ss"格式的指定时间
-     * @return 指定时间对应的毫秒数
-     */
-    private long getTimeMillis(String time) {
-        try {
-            DateFormat dateFormat = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
-            DateFormat dayFormat = new SimpleDateFormat("yy-MM-dd");
-            Date curDate = dateFormat.parse(dayFormat.format(new Date()) + " " + time);
-            return curDate.getTime();
-        } catch (ParseException e) {
-            Logger.getLogger(ScheduledService.class.getName()).log(Level.SEVERE, null, e);
-            return 0;
-        }
     }
 
     /**
@@ -204,7 +184,7 @@ public class ScheduledService extends HttpServlet {
         String[] taskNames = ctx.getBeanNamesForType(SummaryTask.class);
         for (String taskName : taskNames) {
             SummaryTask task = (SummaryTask) ctx.getBean(taskName);
-            if (!task.isGroupOnHoliday() && !isRestDay(getDayOfWeek(new Date()), task.getRestDays())) {
+            if (!task.isGroupOnHoliday() && !timeService.isRestDayToday(task.getRestDays())) {
                 tasks.add(task);
             }
         }
@@ -218,41 +198,6 @@ public class ScheduledService extends HttpServlet {
      */
     private InitializeTask getInitializeTask(ApplicationContext ctx) {
         return (InitializeTask) ctx.getBean("initializeTask");
-    }
-
-    /**
-     * 获取传入的日期是本周的第几天：因为西方的每周是从周日开始的，因此需要做额外的映射处理
-     *
-     * @param date 传入的日期
-     * @return 传入的日期是本周的第几天
-     */
-    private int getDayOfWeek(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-
-        //映射
-        if (dayOfWeek != 1) {
-            return dayOfWeek - 1;
-        } else {
-            return 7;
-        }
-    }
-
-    /**
-     * 判断今天是不是休息日
-     *
-     * @param today 今天在一周中的第几天
-     * @param restDays 休息日在一周中的哪几天
-     * @return 判断结果
-     */
-    private boolean isRestDay(int today, int[] restDays) {
-        for (int restDay : restDays) {
-            if (today == restDay) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

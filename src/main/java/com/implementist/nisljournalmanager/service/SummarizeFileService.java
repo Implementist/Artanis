@@ -23,9 +23,7 @@ import com.lowagie.text.pdf.PdfWriter;
 import java.awt.Color;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,6 +45,9 @@ public class SummarizeFileService {
     @Autowired
     private MemberDAO memberDAO;
 
+    @Autowired
+    private TimeService timeService;
+
     /**
      * 创建日志汇总PDF文件
      *
@@ -57,15 +58,13 @@ public class SummarizeFileService {
         // 创建Document对象(页面的大小为A4,左、右、上、下的页边距为10)
         Document document = new Document(PageSize.A4, 10, 10, 10, 10);
         try {
-            Date date = new Date(System.currentTimeMillis());
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-            String datetime = dateFormat.format(date);
+            String dateString = timeService.getDateString();
 
             // 建立书写器
-            PdfWriter.getInstance(document, new FileOutputStream("/NISLJournal/DailySummary-Group" + nameStringOfGroups + "-" + datetime + ".PDF"));
+            PdfWriter.getInstance(document, new FileOutputStream("/NISLJournal/DailySummary-Group" + nameStringOfGroups + "-" + dateString + ".PDF"));
 
             // 设置相关的参数
-            setParameters(document, "DailySummary" + datetime, datetime + "日报汇总", "NISLJrounalManager", "NISLJrounalManager");
+            setParameters(document, "DailySummary" + dateString, dateString + "日报汇总", "NISLJrounalManager", "NISLJrounalManager");
 
             document.open();  // 打开文档
             document.add(getHeader());  // 添加表头

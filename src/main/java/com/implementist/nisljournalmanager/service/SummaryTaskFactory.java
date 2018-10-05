@@ -11,7 +11,6 @@ import com.implementist.nisljournalmanager.domain.Member;
 import com.implementist.nisljournalmanager.domain.SummaryTask;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import javax.servlet.ServletContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
@@ -25,13 +24,16 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 public class SummaryTaskFactory extends TaskFactory {
 
     @Autowired
-    private MailService mailService;
+    private MemberDAO memberDAO;
 
     @Autowired
     private SummarizeFileService summarizeFileService;
 
     @Autowired
-    private MemberDAO memberDAO;
+    private TimeService timeService;
+
+    @Autowired
+    private MailService mailService;
 
     private SummaryTask summaryTask;
 
@@ -50,9 +52,8 @@ public class SummaryTaskFactory extends TaskFactory {
     protected void buildTask() {
         runnable = () -> {
             String nameStringOfGroups = getNameStringOfGroups(summaryTask.getGroups());
-            int dayOfWeek = getDayOfWeek(new Date());  //获取当前是周几，为避免变量名冲突，故使用匿名方式
-            if (!isRestDay(dayOfWeek, summaryTask.getRestDays())) {
-                String dateString = getDateString();  //获取当前日期时间字符串
+            if (!timeService.isRestDayToday(summaryTask.getRestDays())) {
+                String dateString = timeService.getDateString();  //获取当前日期时间字符串
                 mailService.read(summaryTask.getMailSenderIdentity());  //从邮箱读入日志，提交了日志的同学的Submitted位会被置位1
                 summarizeFileService.create(summaryTask.getGroups(), nameStringOfGroups);  //创建日报汇总PDF文件
                 String[] toList = getToList(summaryTask.getGroups());  //获取to的地址数组
@@ -60,7 +61,7 @@ public class SummaryTaskFactory extends TaskFactory {
 
                 Mail mail = new Mail(
                         summaryTask.getMailSubject() + dateString,
-                        summaryTask.getMailContent() + setTimeToHtmlStyle(dateString),
+                        summaryTask.getMailContent() + setTimeAsHtmlStyle(dateString),
                         toList,
                         ccList,
                         new String[]{System.getProperty("user.dir").split("\\\\")[0] + File.separator + "NISLJournal" + File.separator + "DailySummary-Group" + nameStringOfGroups + "-" + dateString + ".PDF"}
@@ -94,13 +95,9 @@ public class SummaryTaskFactory extends TaskFactory {
      */
     private String getNameStringOfGroups(int[] groupIds) {
         StringBuilder nameStringOfGroups = new StringBuilder();
-        if (groupIds.length == 1) {
-            nameStringOfGroups.append(groupIds[0]);
-        } else {
-            nameStringOfGroups.append(groupIds[0]);
-            for (int i = 1; i < groupIds.length; i++) {
-                nameStringOfGroups.append("&").append(groupIds[i]);
-            }
+        nameStringOfGroups.append(groupIds[0]);
+        for (int i = 1; i < groupIds.length; i++) {
+            nameStringOfGroups.append("&").append(groupIds[i]);
         }
         return nameStringOfGroups.toString();
     }
@@ -111,7 +108,7 @@ public class SummaryTaskFactory extends TaskFactory {
      * @param time 时间戳
      * @return HTML格式的时间戳
      */
-    private String setTimeToHtmlStyle(String time) {
+    private String setTimeAsHtmlStyle(String time) {
         return time + "</div></div>";
     }
 }
