@@ -53,7 +53,7 @@ public class ScheduledService extends HttpServlet {
      */
     private final Runnable LOAD_TASK = () -> {
         //刷新配置文件
-        ApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:journalConfig.xml");
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("file:C:/JournalManagerConfig/journalConfig.xml");
 
         //获取ServletContext
         ServletContext context = getServletContext();
