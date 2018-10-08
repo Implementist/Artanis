@@ -253,6 +253,46 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- Cargo -->
+            <plugin>
+                <groupId>org.codehaus.cargo</groupId>
+                <artifactId>cargo-maven2-plugin</artifactId>
+                <version>1.6.9</version>
+                <configuration>
+                    <container>
+                        <containerId>tomcat7x</containerId>
+                        <type>remote</type>
+                    </container>
+                    <configuration>
+                        <type>runtime</type>
+                        <!-- 以下服务器配置信息在本地settings.xml中 -->
+                        <properties>
+                            <cargo.remote.uri>${server.uri}</cargo.remote.uri>
+                            <cargo.remote.username>${server.username}</cargo.remote.username>
+                            <cargo.remote.password>${server.password}</cargo.remote.password>
+                        </properties>
+                    </configuration>
+                    <deployables>
+                        <deployable>          
+                            <groupId>${project.groupId}</groupId>  
+                            <artifactId>${project.artifactId}</artifactId>  
+                            <type>war</type>  
+                            <properties>  
+                                <context>/${project.artifactId}</context>
+                            </properties>  
+                        </deployable>
+                    </deployables>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>verify-deployer</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>deployer-redeploy</goal>
+                        </goals>
+                    </execution>
+                </executions>  
+            </plugin>
         </plugins>
     </build>
 
