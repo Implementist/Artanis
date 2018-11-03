@@ -15,10 +15,9 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -31,6 +30,8 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  * @author Implementist
  */
 public class ScheduledService extends HttpServlet {
+
+    private final Logger logger = Logger.getLogger(ScheduledService.class);
 
     @Autowired
     private MemberDAO memberDAO;
@@ -92,7 +93,7 @@ public class ScheduledService extends HttpServlet {
 
         //设置捕获器捕获未处理的异常，输出异常信息
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
-            Logger.getLogger(ScheduledService.class.getName()).log(Level.SEVERE, "Internal Error Occured", e);
+            logger.error("Internal Error Occured!", e);
         });
     };
 
