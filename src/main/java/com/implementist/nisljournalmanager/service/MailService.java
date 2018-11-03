@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 import javax.mail.BodyPart;
@@ -33,6 +31,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeUtility;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -44,6 +43,8 @@ import org.springframework.stereotype.Service;
 @Service
 @Scope("prototype")
 public class MailService {
+
+    private final Logger logger = Logger.getLogger(MailService.class);
 
     @Autowired
     private MemberDAO memberDAO;
@@ -74,9 +75,9 @@ public class MailService {
             // 发送邮件
             transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
         } catch (NoSuchProviderException ex) {
-            Logger.getLogger(MailService.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("No Such Provider!", ex);
         } catch (MessagingException | UnsupportedEncodingException ex) {
-            Logger.getLogger(MailService.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Massaging Exception! | Unsupported Encoding!", ex);
         }
     }
 
@@ -98,9 +99,9 @@ public class MailService {
             //将邮件中的日报中写回到数据库中
             saveJournalContents(folder.getMessages());
         } catch (NoSuchProviderException ex) {
-            Logger.getLogger(MailService.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("No Such Provider!", ex);
         } catch (MessagingException | IOException ex) {
-            Logger.getLogger(MailService.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Massaging Exception! | IO Exception!", ex);
         }
     }
 
@@ -135,7 +136,7 @@ public class MailService {
                 sfolder.setFlags(msgs, new Flags(Flags.Flag.DELETED), true);
             }
         } catch (MessagingException ex) {
-            Logger.getLogger(MailService.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Massaging Exception!", ex);
         }
     }
 

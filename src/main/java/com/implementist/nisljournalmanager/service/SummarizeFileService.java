@@ -25,8 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -38,6 +37,8 @@ import org.springframework.stereotype.Service;
 @Service
 @Scope("prototype")
 public class SummarizeFileService {
+
+    private final Logger logger = Logger.getLogger(SummarizeFileService.class);
 
     @Autowired
     private GroupDAO groupDAO;
@@ -70,7 +71,7 @@ public class SummarizeFileService {
             document.add(getHeader());  // 添加表头
             addContentsByGroup(document, groups);  // 按小组添加日志内容
         } catch (IOException | DocumentException ex) {
-            Logger.getLogger(SummarizeFileService.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("IO Exception! | Document Exception!", ex);
         } finally {
             document.close();  // 关闭文档
         }
@@ -139,8 +140,8 @@ public class SummarizeFileService {
         BaseFont baseFont = null;
         try {
             baseFont = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED);
-        } catch (DocumentException | IOException e) {
-            java.util.logging.Logger.getLogger(SummarizeFileService.class.getName()).log(Level.SEVERE, null, e);
+        } catch (IOException | DocumentException ex) {
+            logger.error("IO Exception! | Document Exception!", ex);
         }
         Font font = new Font(baseFont, fontSize, Font.NORMAL, Color.BLACK);
         return font;

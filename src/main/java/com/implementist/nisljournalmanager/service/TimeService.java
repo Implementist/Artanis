@@ -10,8 +10,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 /**
@@ -20,6 +19,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class TimeService {
+
+    private final Logger logger = Logger.getLogger(TimeService.class);
 
     /**
      * 获取指定时间对应的毫秒数
@@ -34,7 +35,7 @@ public class TimeService {
             Date curDate = dateFormat.parse(dayFormat.format(new Date()) + " " + time);
             return curDate.getTime();
         } catch (ParseException e) {
-            Logger.getLogger(ScheduledService.class.getName()).log(Level.SEVERE, null, e);
+            logger.error("Parse Exception!", e);
             return 0;
         }
     }

@@ -13,6 +13,8 @@
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springframework.version>4.3.9.RELEASE</springframework.version>
+        <springframework.retry.version>1.2.2.RELEASE</springframework.retry.version>
+        <hibernate.version>5.3.4.Final</hibernate.version>
     </properties>
 
     <dependencies>
@@ -107,11 +109,19 @@
             <version>${springframework.version}</version>
         </dependency>
         
+        <!-- https://mvnrepository.com/artifact/org.springframework.retry/spring-retry -->
+        <dependency>
+            <groupId>org.springframework.retry</groupId>
+            <artifactId>spring-retry</artifactId>
+            <version>${springframework.retry.version}</version>
+        </dependency>
+
+        
         <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>5.3.4.Final</version>
+            <version>${hibernate.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjtools -->

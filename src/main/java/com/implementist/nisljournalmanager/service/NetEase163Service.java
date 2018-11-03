@@ -5,14 +5,17 @@
  */
 package com.implementist.nisljournalmanager.service;
 
+import com.sun.mail.util.MailConnectException;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.mail.MessagingException;
 import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Store;
-import org.springframework.context.annotation.Scope;
+import org.apache.log4j.Logger;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -20,8 +23,10 @@ import org.springframework.stereotype.Service;
  * @author Implementist
  */
 @Service
-@Scope("prototype")
+@EnableRetry(proxyTargetClass = true)
 public class NetEase163Service {
+
+    private final Logger logger = Logger.getLogger(NetEase163Service.class);
 
     /**
      * 获取网易163邮箱SMTP协议属性
@@ -98,10 +103,10 @@ public class NetEase163Service {
             store.connect(destination, authorizationCode);
             return store;
         } catch (NoSuchProviderException ex) {
-            Logger.getLogger(NetEase163Service.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("No Such Provider!", ex);
             return null;
         } catch (MessagingException ex) {
-            Logger.getLogger(NetEase163Service.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Massaging Exception!", ex);
             return null;
         }
     }
@@ -120,10 +125,10 @@ public class NetEase163Service {
             store.connect("imap.163.com", destination, authorizationCode);
             return store;
         } catch (NoSuchProviderException ex) {
-            Logger.getLogger(NetEase163Service.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("No Such Provider!", ex);
             return null;
         } catch (MessagingException ex) {
-            Logger.getLogger(NetEase163Service.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Massaging Exception!", ex);
             return null;
         }
     }
@@ -134,7 +139,13 @@ public class NetEase163Service {
      * @param properties 通信属性
      * @return 邮件通信会话
      */
+    @Retryable(value = MailConnectException.class, maxAttempts = 60, backoff = @Backoff)
     public Session getSession(Properties properties) {
         return Session.getInstance(properties);
+    }
+
+    @Recover
+    public void recover(MailConnectException mce) {
+        logger.error("Mail Connection Exception!", mce);
     }
 }
