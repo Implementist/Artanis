@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class TimeService {
 
-    private final Logger logger = Logger.getLogger(NetEase163Service.class);
+    private final Logger logger = Logger.getLogger(TimeService.class);
 
     /**
      * 获取指定时间对应的毫秒数

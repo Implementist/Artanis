@@ -39,6 +39,7 @@ import org.springframework.stereotype.Service;
 public class SummarizeFileService {
 
     private final Logger logger = Logger.getLogger(SummarizeFileService.class);
+
     @Autowired
     private GroupDAO groupDAO;
 
