@@ -6,6 +6,7 @@
 package com.implementist.nisljournalmanager.service;
 
 import com.sun.mail.util.MailConnectException;
+import java.util.HashMap;
 import java.util.Properties;
 import javax.mail.MessagingException;
 import javax.mail.NoSuchProviderException;
@@ -28,101 +29,56 @@ public class NetEase163Service {
 
     private final Logger logger = Logger.getLogger(NetEase163Service.class);
 
-    /**
-     * 获取网易163邮箱SMTP协议属性
-     *
-     * @return 网易163邮箱SMTP属性
-     */
-    public Properties getSMTPProperties() {
-        Properties properties = new Properties();
-        // 开启debug调试  
-        properties.setProperty("mail.debug", "true");
-        // 发送服务器需要身份验证  
-        properties.setProperty("mail.smtp.auth", "true");
-        // 设置邮件服务器主机名  
-        properties.setProperty("mail.host", "smtp.163.com");
-        // 使用JSSE的SSL socketfactory 来取代默认的socketfactory
-        properties.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        // 只处理SSL的连接,对于非SSL的连接不做处理
-        properties.setProperty("mail.smtp.socketFactory.fallback", "false");
-        // 设置SMTP端口
-        properties.setProperty("mail.smtp.port", "465");
-        // 设置SMTP套接字中的端口
-        properties.setProperty("mail.smtp.socketFactory.port", "465");
-
-        return properties;
-    }
-
-    /**
-     * 获取网易163邮箱POP3协议属性
-     *
-     * @return 网易163邮箱POP3协议属性
-     */
-    public Properties getPOP3Properties() {
-        Properties properties = new Properties();
-        // 发送邮件协议名称
-        properties.setProperty("mail.store.protocol", "pop3");
-        // 设置邮件服务器主机名 
-        properties.setProperty("mail.pop3.host", "pop.163.com");
-        // 端口
-        properties.setProperty("mail.pop3.port", "110");
-
-        return properties;
-    }
-
-    /**
-     * 获取网易163邮箱IMAP协议属性
-     *
-     * @return 网易163邮箱IMAP协议属性
-     */
-    public Properties getIMAPProperties() {
-        Properties properties = new Properties();
-        // 开启debug调试  
-        properties.setProperty("mail.debug", "true");
-        // 发送服务器需要身份验证  
-        properties.setProperty("mail.imap.auth", "true");
-        // 设置邮件服务器主机名 
-        properties.setProperty("mail.imap.host", "imap.163.com");
-        // 移动邮件协议名称
-        properties.setProperty("mail.store.protocol", "imap");
-
-        return properties;
-    }
-
-    /**
-     * 获取网易163邮箱POP3协议连接
-     *
-     * @param session 邮件通信会话
-     * @param destination 目标邮箱地址
-     * @param authorizationCode 授权码
-     * @return 网易163邮箱POP3协议连接
-     */
-    public Store getPOP3Store(Session session, String destination, String authorizationCode) {
-        try {
-            Store store = session.getStore("pop3");
-            store.connect(destination, authorizationCode);
-            return store;
-        } catch (NoSuchProviderException ex) {
-            logger.error("No Such Provider!", ex);
-            return null;
-        } catch (MessagingException ex) {
-            logger.error("Massaging Exception!", ex);
-            return null;
+    private final HashMap<String, String> ports = new HashMap<String, String>() {
+        {
+            put("imap", "993");
+            put("smtp", "994");
+            put("pop3", "995");
         }
+    };
+
+    /**
+     * 获取网易163邮箱协议属性
+     *
+     * @param protocol 协议
+     * @return 网易163邮箱协议属性
+     */
+    public Properties getProperties(String protocol) {
+        Properties properties = new Properties();
+        // 开启debug调试  
+        properties.setProperty("mail.debug", "true");
+        // 发送服务器需要身份验证  
+        properties.setProperty("mail." + protocol + ".auth", "true");
+        // 设置邮件服务器主机名
+        properties.setProperty("mail." + protocol + ".host", protocol + ".163.com");
+        // 设置端口
+        properties.setProperty("mail." + protocol + ".port", ports.get(protocol));
+        // 使用JSSE的SSL socketfactory 来取代默认的socketfactory
+        properties.setProperty("mail." + protocol + ".socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        // 只处理SSL的连接,对于非SSL的连接不做处理
+        properties.setProperty("mail." + protocol + ".socketFactory.fallback", "false");
+        // 设置套接字中的端口
+        properties.setProperty("mail." + protocol + ".socketFactory.port", ports.get(protocol));
+
+        // 存储协议
+        if (!protocol.equals("smtp")) {
+            properties.setProperty("mail.store.protocol", protocol);
+        }
+        return properties;
     }
 
     /**
-     * 获取网易163邮箱IMAP协议连接
+     * 获取邮箱存储
      *
      * @param session 邮件通信会话
      * @param destination 目标邮箱地址
      * @param authorizationCode 授权码
-     * @return 网易163邮箱IMAP协议连接
+     * @return 邮箱存储
      */
-    public Store getImapStore(Session session, String destination, String authorizationCode) {
+    public Store getStore(Session session, String destination, String authorizationCode) {
         try {
-            Store store = session.getStore("imap");
-            store.connect("imap.163.com", destination, authorizationCode);
+            Store store = session.getStore();
+            store.connect(destination, authorizationCode);
             return store;
         } catch (NoSuchProviderException ex) {
             logger.error("No Such Provider!", ex);
@@ -146,6 +102,6 @@ public class NetEase163Service {
 
     @Recover
     public void recover(MailConnectException mce) {
-        logger.error("Mail Connection Exception!", mce);
+        logger.error("Mail Connection Still Failing After 60 Times of Attempts.", mce);
     }
 }
