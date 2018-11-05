@@ -63,7 +63,7 @@ public class MailService {
      */
     public void send(Identity identity, Mail mail) {
         //设置邮件通信属性
-        Properties properties = netEase163Service.getSMTPProperties();
+        Properties properties = netEase163Service.getProperties("smtp");
         //获取邮件通信会话
         Session session = netEase163Service.getSession(properties);
 
@@ -88,11 +88,11 @@ public class MailService {
      */
     public void read(Identity identity) {
         //设置邮件通信属性
-        Properties properties = netEase163Service.getPOP3Properties();
+        Properties properties = netEase163Service.getProperties("pop3");
         //获取邮件通信会话
         Session session = netEase163Service.getSession(properties);
 
-        try (Store store = netEase163Service.getPOP3Store(session, identity.getFrom(), identity.getAuthorizationCode());
+        try (Store store = netEase163Service.getStore(session, identity.getFrom(), identity.getAuthorizationCode());
                 Folder folder = store.getFolder("INBOX");) {
             //设置邮件只读
             folder.open(Folder.READ_ONLY);
@@ -115,11 +115,11 @@ public class MailService {
     public void move(Identity identity, String source, String target) {
 
         //设置邮件通信属性
-        Properties properties = netEase163Service.getIMAPProperties();
+        Properties properties = netEase163Service.getProperties("imap");
         //获取邮件通信会话
         Session session = netEase163Service.getSession(properties);
 
-        try (Store store = netEase163Service.getImapStore(session, identity.getFrom(), identity.getAuthorizationCode());
+        try (Store store = netEase163Service.getStore(session, identity.getFrom(), identity.getAuthorizationCode());
                 Folder sfolder = store.getFolder(source);
                 Folder tfolder = store.getFolder(target);) {
             sfolder.open(Folder.READ_WRITE);
