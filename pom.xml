@@ -4,7 +4,7 @@
 
     <groupId>com.implementist</groupId>
     <artifactId>NISLJournalManager</artifactId>
-    <version>3.0-SNAPSHOT</version>
+    <version>3.1.0</version>
     <packaging>war</packaging>
 
     <name>NISLJournalManager</name>
@@ -12,9 +12,9 @@
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <springframework.version>4.3.9.RELEASE</springframework.version>
+        <springframework.version>4.3.20.RELEASE</springframework.version>
         <springframework.retry.version>1.2.2.RELEASE</springframework.retry.version>
-        <hibernate.version>5.3.4.Final</hibernate.version>
+        <hibernate.version>5.3.7.Final</hibernate.version>
     </properties>
 
     <dependencies>
