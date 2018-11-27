@@ -239,9 +239,15 @@ public class SummarizeFileService {
 
         //去掉带有a标签链接的广告
         sourceContent = removeAds(sourceContent);
+        
+        //去除Style标签定义的样式信息
+        sourceContent = removeStyles(sourceContent);
+        
+        //去除Script标签定义的脚本信息
+        sourceContent = removeScripts(sourceContent);
 
         //把每个p标签解析为一个换行符
-        sourceContent = sourceContent.replaceAll("<p", "\n<");
+        sourceContent = sourceContent.replaceAll("<p ", "\n<");
 
         //把每个div标签解析为一个换行符
         sourceContent = sourceContent.replaceAll("<div", "\n<");
@@ -284,9 +290,7 @@ public class SummarizeFileService {
         }
 
         //去除内容前面的换行符
-        while (content.length() > 1 && content.charAt(0) == '\n') {
-            content = content.substring(1);
-        }
+        content = content.trim();
 
         return content;
     }
@@ -298,13 +302,27 @@ public class SummarizeFileService {
      * @return 去除广告后的邮件内容
      */
     private String removeAds(String mailContent) {
-        while (mailContent.contains("</a>")) {
-            int startIndex = mailContent.indexOf("<a"),
-                    endIndex = mailContent.indexOf("</a") + 4;
-            String wholeATag = mailContent.substring(startIndex, endIndex);
-            mailContent = mailContent.replace(wholeATag, "");
-        }
-        return mailContent;
+        return mailContent.replaceAll("<a [\\s\\S]*?</a>", "");
+    }
+
+    /**
+     * 去除邮件内容中的Style标签
+     *
+     * @param mailContent 邮件内容
+     * @return 去除Style标签之后的邮件内容
+     */
+    private String removeStyles(String mailContent) {
+        return mailContent.replaceAll("<style[\\s\\S]*?</style>", "");
+    }
+
+    /**
+     * 去除邮件内容中的Script标签
+     *
+     * @param mailContent 邮件内容
+     * @return 去除Script标签之后的邮件内容
+     */
+    private String removeScripts(String mailContent) {
+        return mailContent.replaceAll("<script[\\s\\S]*?</script>", "");
     }
 
     /**
