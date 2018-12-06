@@ -21,7 +21,6 @@ import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
-import javax.mail.NoSuchProviderException;
 import javax.mail.Part;
 import javax.mail.Session;
 import javax.mail.Store;
@@ -71,11 +70,9 @@ public class MailService {
             MimeMessage mimeMessage = buildMessage(session, identity, mail);
 
             //用邮箱地址和授权码连接邮件服务器
-            transport.connect(identity.getFrom(), identity.getAuthorizationCode());
+            netEase163Service.getTransportConncted(transport, identity);
             // 发送邮件
             transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
-        } catch (NoSuchProviderException ex) {
-            logger.error("No Such Provider!", ex);
         } catch (MessagingException | UnsupportedEncodingException ex) {
             logger.error("Massaging Exception! | Unsupported Encoding!", ex);
         }
@@ -98,8 +95,6 @@ public class MailService {
             folder.open(Folder.READ_ONLY);
             //将邮件中的日报中写回到数据库中
             saveJournalContents(folder.getMessages());
-        } catch (NoSuchProviderException ex) {
-            logger.error("No Such Provider!", ex);
         } catch (MessagingException | IOException ex) {
             logger.error("Massaging Exception! | IO Exception!", ex);
         }

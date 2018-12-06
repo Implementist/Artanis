@@ -5,13 +5,16 @@
  */
 package com.implementist.nisljournalmanager.service;
 
+import com.implementist.nisljournalmanager.domain.Identity;
 import com.sun.mail.util.MailConnectException;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Properties;
 import javax.mail.MessagingException;
 import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Store;
+import javax.mail.Transport;
 import org.apache.log4j.Logger;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.EnableRetry;
@@ -68,28 +71,6 @@ public class NetEase163Service {
     }
 
     /**
-     * 获取邮箱存储
-     *
-     * @param session 邮件通信会话
-     * @param destination 目标邮箱地址
-     * @param authorizationCode 授权码
-     * @return 邮箱存储
-     */
-    public Store getStore(Session session, String destination, String authorizationCode) {
-        try {
-            Store store = session.getStore();
-            store.connect(destination, authorizationCode);
-            return store;
-        } catch (NoSuchProviderException ex) {
-            logger.error("No Such Provider!", ex);
-            return null;
-        } catch (MessagingException ex) {
-            logger.error("Massaging Exception!", ex);
-            return null;
-        }
-    }
-
-    /**
      * 获取邮件通信会话
      *
      * @param properties 通信属性
@@ -98,6 +79,53 @@ public class NetEase163Service {
     @Retryable(value = MailConnectException.class, maxAttempts = 60, backoff = @Backoff)
     public Session getSession(Properties properties) {
         return Session.getInstance(properties);
+    }
+
+    /**
+     * 获取邮箱存储
+     *
+     * @param session 邮件通信会话
+     * @param destination 目标邮箱地址
+     * @param authorizationCode 授权码
+     * @return 邮箱存储
+     * @throws MessagingException
+     */
+    @Retryable(value = {MessagingException.class, NoSuchProviderException.class,
+        UnknownHostException.class, MailConnectException.class}, maxAttempts = 60,
+            backoff = @Backoff)
+    public Store getStore(Session session, String destination, String authorizationCode) throws MessagingException {
+        Store store = session.getStore();
+        store.connect(destination, authorizationCode);
+        return store;
+    }
+
+    /**
+     * 获取邮箱传输连接
+     *
+     * @param transport 邮箱传输
+     * @param identity 邮箱身份
+     * @throws MessagingException
+     */
+    @Retryable(value = {MessagingException.class, NoSuchProviderException.class,
+        UnknownHostException.class, MailConnectException.class}, maxAttempts = 60,
+            backoff = @Backoff)
+    public void getTransportConncted(Transport transport, Identity identity) throws MessagingException {
+        transport.connect(identity.getFrom(), identity.getAuthorizationCode());
+    }
+
+    @Recover
+    public void recover(MessagingException me) {
+        logger.error("Messaging Exception Still Remaining After 60 Times of Attemts.", me);
+    }
+
+    @Recover
+    public void recover(NoSuchProviderException nspe) {
+        logger.error("No Such Provider Exception Still Remaining After 60 Times of Attemts.", nspe);
+    }
+
+    @Recover
+    public void recover(UnknownHostException uhe) {
+        logger.error("Unknown Host Exception Still Remaining After 60 Times of Attemts.", uhe);
     }
 
     @Recover
