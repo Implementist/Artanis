@@ -76,8 +76,14 @@ public class NetEase163Service {
      * @param properties 通信属性
      * @return 邮件通信会话
      */
-    @Retryable(value = MailConnectException.class, maxAttempts = 60, backoff = @Backoff)
+    @Retryable(value = MailConnectException.class, maxAttempts = 90, backoff = @Backoff)
     public Session getSession(Properties properties) {
+        return Session.getInstance(properties);
+    }
+
+    @Recover
+    public Session recover(MailConnectException mce, Properties properties) {
+        logger.error("Mail Connection Still Failing After 90 Times of Attempts.", mce);
         return Session.getInstance(properties);
     }
 
@@ -85,18 +91,41 @@ public class NetEase163Service {
      * 获取邮箱存储
      *
      * @param session 邮件通信会话
-     * @param destination 目标邮箱地址
-     * @param authorizationCode 授权码
+     * @param identity 邮箱身份
      * @return 邮箱存储
      * @throws MessagingException
      */
     @Retryable(value = {MessagingException.class, NoSuchProviderException.class,
-        UnknownHostException.class, MailConnectException.class}, maxAttempts = 60,
+        UnknownHostException.class, MailConnectException.class}, maxAttempts = 90,
             backoff = @Backoff)
-    public Store getStore(Session session, String destination, String authorizationCode) throws MessagingException {
+    public Store getStore(Session session, Identity identity) throws MessagingException {
         Store store = session.getStore();
-        store.connect(destination, authorizationCode);
+        store.connect(identity.getFrom(), identity.getAuthorizationCode());
         return store;
+    }
+
+    @Recover
+    public Store recover(MessagingException me, Session session, Identity identity) {
+        logger.error("Messaging Exception Still Remaining After 90 Times of Attemts.", me);
+        return null;
+    }
+
+    @Recover
+    public Store recover(NoSuchProviderException nspe, Session session, Identity identity) {
+        logger.error("No Such Provider Exception Still Remaining After 90 Times of Attemts.", nspe);
+        return null;
+    }
+
+    @Recover
+    public Store recover(UnknownHostException uhe, Session session, Identity identity) {
+        logger.error("Unknown Host Exception Still Remaining After 90 Times of Attemts.", uhe);
+        return null;
+    }
+
+    @Recover
+    public Store recover(MailConnectException mce, Session session, Identity identity) {
+        logger.error("Mail Connection Still Failing After 90 Times of Attempts.", mce);
+        return null;
     }
 
     /**
@@ -107,29 +136,29 @@ public class NetEase163Service {
      * @throws MessagingException
      */
     @Retryable(value = {MessagingException.class, NoSuchProviderException.class,
-        UnknownHostException.class, MailConnectException.class}, maxAttempts = 60,
+        UnknownHostException.class, MailConnectException.class}, maxAttempts = 90,
             backoff = @Backoff)
     public void getTransportConncted(Transport transport, Identity identity) throws MessagingException {
         transport.connect(identity.getFrom(), identity.getAuthorizationCode());
     }
 
     @Recover
-    public void recover(MessagingException me) {
-        logger.error("Messaging Exception Still Remaining After 60 Times of Attemts.", me);
+    public void recover(MessagingException me, Transport transport, Identity identity) {
+        logger.error("Messaging Exception Still Remaining After 90 Times of Attemts.", me);
     }
 
     @Recover
-    public void recover(NoSuchProviderException nspe) {
-        logger.error("No Such Provider Exception Still Remaining After 60 Times of Attemts.", nspe);
+    public void recover(NoSuchProviderException nspe, Transport transport, Identity identity) {
+        logger.error("No Such Provider Exception Still Remaining After 90 Times of Attemts.", nspe);
     }
 
     @Recover
-    public void recover(UnknownHostException uhe) {
-        logger.error("Unknown Host Exception Still Remaining After 60 Times of Attemts.", uhe);
+    public void recover(UnknownHostException uhe, Transport transport, Identity identity) {
+        logger.error("Unknown Host Exception Still Remaining After 90 Times of Attemts.", uhe);
     }
 
     @Recover
-    public void recover(MailConnectException mce) {
-        logger.error("Mail Connection Still Failing After 60 Times of Attempts.", mce);
+    public void recover(MailConnectException mce, Transport transport, Identity identity) {
+        logger.error("Mail Connection Still Failing After 90 Times of Attempts.", mce);
     }
 }

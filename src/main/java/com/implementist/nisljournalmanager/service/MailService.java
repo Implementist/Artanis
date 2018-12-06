@@ -89,7 +89,7 @@ public class MailService {
         //获取邮件通信会话
         Session session = netEase163Service.getSession(properties);
 
-        try (Store store = netEase163Service.getStore(session, identity.getFrom(), identity.getAuthorizationCode());
+        try (Store store = netEase163Service.getStore(session, identity);
                 Folder folder = store.getFolder("INBOX");) {
             //设置邮件只读
             folder.open(Folder.READ_ONLY);
@@ -114,7 +114,7 @@ public class MailService {
         //获取邮件通信会话
         Session session = netEase163Service.getSession(properties);
 
-        try (Store store = netEase163Service.getStore(session, identity.getFrom(), identity.getAuthorizationCode());
+        try (Store store = netEase163Service.getStore(session, identity);
                 Folder sfolder = store.getFolder(source);
                 Folder tfolder = store.getFolder(target);) {
             sfolder.open(Folder.READ_WRITE);
