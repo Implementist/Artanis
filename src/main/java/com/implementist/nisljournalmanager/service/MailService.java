@@ -73,8 +73,10 @@ public class MailService {
             netEase163Service.getTransportConncted(transport, identity);
             // 发送邮件
             transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
-        } catch (MessagingException | UnsupportedEncodingException ex) {
-            logger.error("Massaging Exception! | Unsupported Encoding!", ex);
+        } catch (MessagingException ex) {
+            logger.error("Massaging Exception!", ex);
+        } catch (Exception ex) {
+            logger.error("Exception!", ex);
         }
     }
 
@@ -85,7 +87,7 @@ public class MailService {
      */
     public void read(Identity identity) {
         //设置邮件通信属性
-        Properties properties = netEase163Service.getProperties("pop3");
+        Properties properties = netEase163Service.getProperties("imap");
         //获取邮件通信会话
         Session session = netEase163Service.getSession(properties);
 
@@ -97,6 +99,8 @@ public class MailService {
             saveJournalContents(folder.getMessages());
         } catch (MessagingException | IOException ex) {
             logger.error("Massaging Exception! | IO Exception!", ex);
+        } catch (Exception ex) {
+            logger.error("Exception!", ex);
         }
     }
 
@@ -132,6 +136,8 @@ public class MailService {
             }
         } catch (MessagingException ex) {
             logger.error("Massaging Exception!", ex);
+        } catch (Exception ex) {
+            logger.error("Exception!", ex);
         }
     }
 
