@@ -22,32 +22,32 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  * @author Implementist
  */
 public class SummaryTaskFactory extends TaskFactory {
-
+    
     @Autowired
     private MemberDAO memberDAO;
-
+    
     @Autowired
     private SummarizeFileService summarizeFileService;
-
+    
     @Autowired
     private TimeService timeService;
-
+    
     @Autowired
     private MailService mailService;
-
+    
     private SummaryTask summaryTask;
-
+    
     @SuppressWarnings("LeakingThisInConstructor")
     public SummaryTaskFactory(ServletContext context) {
         WebApplicationContext wac = WebApplicationContextUtils.getWebApplicationContext(context);
         AutowireCapableBeanFactory factory = wac.getAutowireCapableBeanFactory();
         factory.autowireBean(this);
     }
-
+    
     public void setSummaryTask(SummaryTask summaryTask) {
         this.summaryTask = summaryTask;
     }
-
+    
     @Override
     protected void buildTask() {
         runnable = () -> {
@@ -67,6 +67,7 @@ public class SummaryTaskFactory extends TaskFactory {
                         new String[]{System.getProperty("user.dir").split("\\\\")[0] + File.separator + "NISLJournal" + File.separator + "DailySummary-Group" + nameStringOfGroups + "-" + dateString + ".PDF"}
                 );
                 mailService.send(summaryTask.getMailSenderIdentity(), mail);
+                setSubmittedToTrue(summaryTask.getGroups());
             }
         };
     }
@@ -110,5 +111,16 @@ public class SummaryTaskFactory extends TaskFactory {
      */
     private String setTimeAsHtmlStyle(String time) {
         return time + "</div></div>";
+    }
+
+    /**
+     * 设置该日报汇总任务覆盖的小组成员的submitted值为true，避免过期的督促
+     *
+     * @param groupIds 小组号数组
+     */
+    private void setSubmittedToTrue(int[] groupIds) {
+        for (int groupId : groupIds) {
+            memberDAO.updateSubmittedByGroup(groupId, true);
+        }
     }
 }
