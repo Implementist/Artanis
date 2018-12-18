@@ -78,17 +78,17 @@ public class MemberDAO {
     /**
      * 根据小组号更新该小组所有成员的是否已提交值
      *
-     * @param group 小组号
+     * @param groupId 小组号
      * @param submitted 是否已提交值
      * @return 操作影响的行数
      */
-    public int updateSubmittedByGroup(int group, boolean submitted) {
+    public int updateSubmittedByGroup(int groupId, boolean submitted) {
         String sqlStatement = "UPDATE Member member SET member.submitted=:submitted"
-                + " WHERE member.group=:group";
+                + " WHERE member.groupId=:groupId";
         NativeQuery<Member> query = sessionFactory.getCurrentSession().createNativeQuery(sqlStatement);
         query.addEntity(Member.class);
         query.setParameter("submitted", submitted);
-        query.setParameter("group", group);
+        query.setParameter("groupId", groupId);
         return query.executeUpdate();
     }
 
