@@ -41,6 +41,7 @@ public class MemberDAO {
     }
 
     /**
+     * 根据姓名更新该成员的日报内容
      *
      * @param content 日报内容
      * @param name 成员名
@@ -71,6 +72,23 @@ public class MemberDAO {
         query.setParameter("content", content);
         query.setParameter("submitted", false);
         query.setParameter("identity", "Student");
+        return query.executeUpdate();
+    }
+
+    /**
+     * 根据小组号更新该小组所有成员的是否已提交值
+     *
+     * @param groupId 小组号
+     * @param submitted 是否已提交值
+     * @return 操作影响的行数
+     */
+    public int updateSubmittedByGroup(int groupId, boolean submitted) {
+        String sqlStatement = "UPDATE Member member SET member.submitted=:submitted"
+                + " WHERE member.groupId=:groupId";
+        NativeQuery<Member> query = sessionFactory.getCurrentSession().createNativeQuery(sqlStatement);
+        query.addEntity(Member.class);
+        query.setParameter("submitted", submitted);
+        query.setParameter("groupId", groupId);
         return query.executeUpdate();
     }
 
