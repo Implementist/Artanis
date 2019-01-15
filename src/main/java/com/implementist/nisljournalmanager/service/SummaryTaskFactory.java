@@ -22,32 +22,32 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  * @author Implementist
  */
 public class SummaryTaskFactory extends TaskFactory {
-    
+
     @Autowired
     private MemberDAO memberDAO;
-    
+
     @Autowired
     private SummarizeFileService summarizeFileService;
-    
+
     @Autowired
     private TimeService timeService;
-    
+
     @Autowired
     private MailService mailService;
-    
+
     private SummaryTask summaryTask;
-    
+
     @SuppressWarnings("LeakingThisInConstructor")
     public SummaryTaskFactory(ServletContext context) {
         WebApplicationContext wac = WebApplicationContextUtils.getWebApplicationContext(context);
         AutowireCapableBeanFactory factory = wac.getAutowireCapableBeanFactory();
         factory.autowireBean(this);
     }
-    
+
     public void setSummaryTask(SummaryTask summaryTask) {
         this.summaryTask = summaryTask;
     }
-    
+
     @Override
     protected void buildTask() {
         runnable = () -> {
@@ -56,8 +56,14 @@ public class SummaryTaskFactory extends TaskFactory {
                 String dateString = timeService.getDateString();  //获取当前日期时间字符串
                 mailService.read(summaryTask.getMailSenderIdentity());  //从邮箱读入日志，提交了日志的同学的Submitted位会被置位1
                 summarizeFileService.create(summaryTask.getGroups(), nameStringOfGroups);  //创建日报汇总PDF文件
-                String[] toList = getToList(summaryTask.getGroups());  //获取to的地址数组
-                String[] ccList = summaryTask.getCcAddresses();  //获取cc的地址数组
+                String[] toList, ccList;
+                if (summaryTask.isOnlyForTeachers()) {
+                    toList = summaryTask.getTeachersAddresses();  //获取to的地址数组
+                    ccList = null;  //获取cc的地址数组
+                } else {
+                    toList = getToList(summaryTask.getGroups());  //获取to的地址数组
+                    ccList = summaryTask.getTeachersAddresses();  //获取cc的地址数组
+                }
 
                 Mail mail = new Mail(
                         summaryTask.getMailSubject() + dateString,
