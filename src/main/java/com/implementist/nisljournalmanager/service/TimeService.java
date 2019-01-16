@@ -8,6 +8,7 @@ package com.implementist.nisljournalmanager.service;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import org.apache.log4j.Logger;
@@ -70,6 +71,20 @@ public class TimeService {
             }
         }
         return false;
+    }
+
+    /**
+     * 判断今天是不是节假日
+     *
+     * @param from 节假日开始日期的字符串
+     * @param to 节假日截止日期的字符串
+     * @return 判断结果
+     */
+    public boolean isHolidayToday(String from, String to) {
+        LocalDate fromLocalDate = LocalDate.parse(from);
+        LocalDate toLocalDate = LocalDate.parse(to);
+        LocalDate now = LocalDate.now();
+        return now.isAfter(fromLocalDate.minusDays(1)) && now.isBefore(toLocalDate.plusDays(1));
     }
 
     /**

@@ -34,6 +34,7 @@
     <!-- 第1,2两组的日报汇总任务 -->
     <bean id="summaryTask1" class="com.implementist.nisljournalmanager.domain.SummaryTask">
         <property name="groupOnHoliday" value="false"/>
+        <property name="onlyForTeachers" value="false"/>
         <property name="holidayers">
             <null/>
         </property>
@@ -50,7 +51,7 @@
         </property>
         <property name="startTime" value="22:30:00"/>
         <property name="mailSubject" value="NISL JS虚拟机小组&amp;Android虚拟机小组日报汇总"/>
-        <property name="ccAddresses">
+        <property name="teachersAddresses">
             <array>
                 <value>zytang@nwu.edu.cn</value>
             </array>
@@ -62,6 +63,7 @@
     <!-- 第3组的日报汇总任务 -->
     <bean id="summaryTask2" class="com.implementist.nisljournalmanager.domain.SummaryTask">
         <property name="groupOnHoliday" value="false"/>
+        <property name="onlyForTeachers" value="false"/>
         <property name="holidayers">
             <null/>
         </property>
@@ -77,7 +79,7 @@
         </property>
         <property name="startTime" value="22:32:00"/>
         <property name="mailSubject" value="NISL机器学习与系统安全小组日报汇总"/>
-        <property name="ccAddresses">
+        <property name="teachersAddresses">
             <array>
                 <value>zytang@nwu.edu.cn</value>
                 <value>z.wang@lancaster.ac.uk</value>
@@ -90,6 +92,7 @@
     <!-- 第4组的日报汇总任务 -->
     <bean id="summaryTask3" class="com.implementist.nisljournalmanager.domain.SummaryTask">
         <property name="groupOnHoliday" value="false"/>
+        <property name="onlyForTeachers" value="false"/>
         <property name="holidayers">
             <null/>
         </property>
@@ -105,7 +108,7 @@
         </property>
         <property name="startTime" value="22:34:00"/>
         <property name="mailSubject" value="移动小组日报汇总"/>
-        <property name="ccAddresses">
+        <property name="teachersAddresses">
             <array>
                 <value>hwang@nwu.edu.cn</value>
                 <value>jason.wangz@gmail.com</value>

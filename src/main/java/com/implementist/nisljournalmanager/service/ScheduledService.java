@@ -8,6 +8,7 @@ package com.implementist.nisljournalmanager.service;
 import com.implementist.nisljournalmanager.dao.MemberDAO;
 import com.implementist.nisljournalmanager.domain.InitializeTask;
 import com.implementist.nisljournalmanager.domain.SummaryTask;
+import com.implementist.nisljournalmanager.domain.SystemConfig;
 import com.implementist.nisljournalmanager.domain.UrgeTask;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,7 +53,15 @@ public class ScheduledService extends HttpServlet {
      */
     private final Runnable LOAD_TASK = () -> {
         //刷新配置文件
-        ApplicationContext ctx = new ClassPathXmlApplicationContext("file:C:/JournalManagerConfig/journalConfig.xml");
+        ApplicationContext ctx = new ClassPathXmlApplicationContext(new String[]{
+            "file:C:/JournalManagerConfig/journalConfig.xml",
+            "file:C:/JournalManagerConfig/systemConfig.xml"
+        });
+
+        SystemConfig systemConfig = getSystemConfig(ctx);
+        if (systemConfig.isHolidayModeOn() && timeService.isHolidayToday(systemConfig.getFrom(), systemConfig.getTo())) {
+            return;
+        }
 
         //获取ServletContext
         ServletContext context = getServletContext();
@@ -148,8 +157,20 @@ public class ScheduledService extends HttpServlet {
     }
 
     /**
+     * 读取配置文件，获取系统配置
+     *
+     * @param ctx 配置信息
+     * @return 系统配置
+     */
+    private SystemConfig getSystemConfig(ApplicationContext ctx) {
+        return (SystemConfig) ctx.getBean("systemConfig");
+    }
+
+    /**
      * 读取配置文件，获取所有督促任务
      *
+     * @param ctx 配置信息
+     * @param summaryTasks 日报任务列表
      * @return 督促任务列表
      */
     private List<UrgeTask> getUrgeTasks(ApplicationContext ctx, List<SummaryTask> summaryTasks) {
@@ -178,6 +199,7 @@ public class ScheduledService extends HttpServlet {
     /**
      * 读取配置文件，获取所有小组的日报任务（在休假的小组会被排除）
      *
+     * @param ctx 配置信息
      * @return 日报任务列表
      */
     private List<SummaryTask> getSummaryTasks(ApplicationContext ctx) {
@@ -195,6 +217,7 @@ public class ScheduledService extends HttpServlet {
     /**
      * 读取配置文件，获取初始化任务
      *
+     * @param ctx 配置信息
      * @return 初始化任务
      */
     private InitializeTask getInitializeTask(ApplicationContext ctx) {
