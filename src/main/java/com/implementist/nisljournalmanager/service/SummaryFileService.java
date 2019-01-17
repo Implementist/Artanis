@@ -36,9 +36,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Scope("prototype")
-public class SummarizeFileService {
+public class SummaryFileService {
 
-    private final Logger logger = Logger.getLogger(SummarizeFileService.class);
+    private final Logger logger = Logger.getLogger(SummaryFileService.class);
 
     @Autowired
     private GroupDAO groupDAO;
@@ -48,6 +48,9 @@ public class SummarizeFileService {
 
     @Autowired
     private TimeService timeService;
+
+    @Autowired
+    private JournalParsingService journalParsingService;
 
     /**
      * 创建日志汇总PDF文件
@@ -121,7 +124,7 @@ public class SummarizeFileService {
 
         for (int i = 0; i < members.size(); i++) {
             Cell memberName = fillCellWithContent(members.get(i).getName());
-            String reformatedContent = reformatContent(members.get(i).getContent());
+            String reformatedContent = journalParsingService.parse(members.get(i).getContent());
             Cell journalContent = fillCellWithContent(reformatedContent);
             journalContent.setColspan(4);
             table.addCell(memberName);
@@ -221,108 +224,6 @@ public class SummarizeFileService {
         document.addProducer();  // 设置生产者
         document.addCreationDate();  // 设置创建日期
         return document;
-    }
-
-    /**
-     * 从数据库中取得HTML形式的日报内容，解析为纯文本
-     *
-     * @param sourceContent 源内容
-     * @return 纯文本内容
-     */
-    private String reformatContent(String sourceContent) {
-        if (sourceContent.equals("")) {
-            return "该同学未按时提交日志！";
-        }
-
-        int pTraverse = 0;
-        StringBuilder reformatedContent = new StringBuilder();
-
-        //去掉带有a标签链接的广告
-        sourceContent = removeAds(sourceContent);
-        
-        //去除Style标签定义的样式信息
-        sourceContent = removeStyles(sourceContent);
-        
-        //去除Script标签定义的脚本信息
-        sourceContent = removeScripts(sourceContent);
-
-        //把每个p标签解析为一个换行符
-        sourceContent = sourceContent.replaceAll("<p ", "\n<");
-
-        //把每个div标签解析为一个换行符
-        sourceContent = sourceContent.replaceAll("<div", "\n<");
-
-        //把每个<br>标签解析为一个换行符
-        sourceContent = sourceContent.replaceAll("<br>", "\n");
-
-        //对html格式的内容进行去标签
-        for (; pTraverse < sourceContent.length(); pTraverse++) {
-            if (sourceContent.charAt(pTraverse) == '<') {
-                pTraverse++;
-                while (pTraverse < sourceContent.length()
-                        && sourceContent.charAt(pTraverse) != '>') {
-                    pTraverse++;
-                }
-            } else {
-                reformatedContent.append(sourceContent.charAt(pTraverse));
-            }
-        }
-
-        String content = reformatedContent.toString();
-
-        //将被浏览器转义过的字符转回来
-        content = content.replaceAll("&lt;", "<");
-        content = content.replaceAll("&gt;", ">");
-        content = content.replaceAll("&amp;", "&");
-        content = content.replaceAll("&nbsp;", "  ");
-
-        //去除前后多余的空格
-        content = content.trim();
-
-        //将换行符前的空格递归移到换行符后
-        while (content.contains(" \n")) {
-            content = content.replaceAll(" \n", "\n ");
-        }
-
-        //递归删除多余的换行符
-        while (content.contains("\n\n")) {
-            content = content.replaceAll("\n\n", "\n");
-        }
-
-        //去除内容前面的换行符
-        content = content.trim();
-
-        return content;
-    }
-
-    /**
-     * 去除邮件内容中的文字跳转类广告
-     *
-     * @param mailContent 邮件内容
-     * @return 去除广告后的邮件内容
-     */
-    private String removeAds(String mailContent) {
-        return mailContent.replaceAll("<a [\\s\\S]*?</a>", "");
-    }
-
-    /**
-     * 去除邮件内容中的Style标签
-     *
-     * @param mailContent 邮件内容
-     * @return 去除Style标签之后的邮件内容
-     */
-    private String removeStyles(String mailContent) {
-        return mailContent.replaceAll("<style[\\s\\S]*?</style>", "");
-    }
-
-    /**
-     * 去除邮件内容中的Script标签
-     *
-     * @param mailContent 邮件内容
-     * @return 去除Script标签之后的邮件内容
-     */
-    private String removeScripts(String mailContent) {
-        return mailContent.replaceAll("<script[\\s\\S]*?</script>", "");
     }
 
     /**
