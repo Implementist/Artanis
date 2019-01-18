@@ -27,7 +27,7 @@ public class SummaryTaskFactory extends TaskFactory {
     private MemberDAO memberDAO;
 
     @Autowired
-    private SummarizeFileService summarizeFileService;
+    private SummaryFileService summaryFileService;
 
     @Autowired
     private TimeService timeService;
@@ -55,7 +55,7 @@ public class SummaryTaskFactory extends TaskFactory {
             if (!timeService.isRestDayToday(summaryTask.getRestDays())) {
                 String dateString = timeService.getDateString();  //获取当前日期时间字符串
                 mailService.read(summaryTask.getMailSenderIdentity());  //从邮箱读入日志，提交了日志的同学的Submitted位会被置位1
-                summarizeFileService.create(summaryTask.getGroups(), nameStringOfGroups);  //创建日报汇总PDF文件
+                summaryFileService.create(summaryTask.getGroups(), nameStringOfGroups);  //创建日报汇总PDF文件
                 String[] toList, ccList;
                 if (summaryTask.isOnlyForTeachers()) {
                     toList = summaryTask.getTeachersAddresses();  //获取to的地址数组
