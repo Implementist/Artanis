@@ -13,7 +13,7 @@ public abstract class TaskFactory {
 
     protected Runnable runnable;
 
-    protected abstract void buildTask();
+    protected abstract void build(Object task);
 
     protected Runnable getRunnable() {
         return runnable;
