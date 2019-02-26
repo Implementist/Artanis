@@ -35,46 +35,48 @@ public class SummaryTaskFactory extends TaskFactory {
     @Autowired
     private MailService mailService;
 
-    private SummaryTask summaryTask;
+    private static ThreadLocal<SummaryTask> summaryTaskHolder;
 
     @SuppressWarnings("LeakingThisInConstructor")
     public SummaryTaskFactory(ServletContext context) {
         WebApplicationContext wac = WebApplicationContextUtils.getWebApplicationContext(context);
         AutowireCapableBeanFactory factory = wac.getAutowireCapableBeanFactory();
         factory.autowireBean(this);
-    }
-
-    public void setSummaryTask(SummaryTask summaryTask) {
-        this.summaryTask = summaryTask;
+        summaryTaskHolder = new ThreadLocal<>();
     }
 
     @Override
-    protected void buildTask() {
+    protected void build(Object summaryTask) {
         runnable = () -> {
-            String nameStringOfGroups = getNameStringOfGroups(summaryTask.getGroups());
-            if (!timeService.isRestDayToday(summaryTask.getRestDays())) {
-                String dateString = timeService.getDateString();  //获取当前日期时间字符串
-                mailService.read(summaryTask.getMailSenderIdentity());  //从邮箱读入日志，提交了日志的同学的Submitted位会被置位1
-                summaryFileService.create(summaryTask.getGroups(), nameStringOfGroups);  //创建日报汇总PDF文件
-                String[] toList, ccList;
-                if (summaryTask.isOnlyForTeachers()) {
-                    toList = summaryTask.getTeachersAddresses();  //获取to的地址数组
-                    ccList = null;  //获取cc的地址数组
-                } else {
-                    toList = getToList(summaryTask.getGroups());  //获取to的地址数组
-                    ccList = summaryTask.getTeachersAddresses();  //获取cc的地址数组
-                }
-
-                Mail mail = new Mail(
-                        summaryTask.getMailSubject() + dateString,
-                        summaryTask.getMailContent() + setTimeAsHtmlStyle(dateString),
-                        toList,
-                        ccList,
-                        new String[]{System.getProperty("user.dir").split("\\\\")[0] + File.separator + "NISLJournal" + File.separator + "DailySummary-Group" + nameStringOfGroups + "-" + dateString + ".PDF"}
-                );
-                mailService.send(summaryTask.getMailSenderIdentity(), mail);
-                setSubmittedToTrue(summaryTask.getGroups());
+            summaryTaskHolder.set((SummaryTask) summaryTask);
+            if (timeService.isRestDayToday(summaryTaskHolder.get().getRestDays())) {
+                return;
             }
+            
+            String nameStringOfGroups = getNameStringOfGroups(summaryTaskHolder.get().getGroups());
+            String dateString = timeService.getDateString();  //获取当前日期时间字符串
+            mailService.read(summaryTaskHolder.get().getMailSenderIdentity());  //从邮箱读入日志，提交了日志的同学的Submitted位会被置位1
+            summaryFileService.create(summaryTaskHolder.get().getGroups(), nameStringOfGroups);  //创建日报汇总PDF文件
+            
+            String[] toList, ccList;
+            if (summaryTaskHolder.get().isOnlyForTeachers()) {
+                toList = summaryTaskHolder.get().getTeachersAddresses();
+                ccList = null;
+            } else {
+                toList = getToList(summaryTaskHolder.get().getGroups());
+                ccList = summaryTaskHolder.get().getTeachersAddresses();
+            }
+
+            Mail mail = new Mail(
+                    summaryTaskHolder.get().getMailSubject() + dateString,
+                    summaryTaskHolder.get().getMailContent() + setTimeAsHtmlStyle(dateString),
+                    toList,
+                    ccList,
+                    new String[]{System.getProperty("user.dir").split("\\\\")[0] + File.separator + "NISLJournal" + File.separator + "DailySummary-Group" + nameStringOfGroups + "-" + dateString + ".PDF"}
+            );
+            mailService.send(summaryTaskHolder.get().getMailSenderIdentity(), mail);
+            setSubmittedToTrue(summaryTaskHolder.get().getGroups());
+            summaryTaskHolder.remove();
         };
     }
 

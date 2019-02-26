@@ -76,28 +76,25 @@ public class ScheduledService extends HttpServlet {
 
         //设置所有督促提交邮件
         if (urgeTasks != null) {
-            for (int i = 0; i < urgeTasks.size(); i++) {
-                UrgeTaskFactory urgeTaskFactory = new UrgeTaskFactory(context);
-                urgeTaskFactory.setUrgeTask(urgeTasks.get(i));
-                urgeTaskFactory.buildTask();
-                ExecuteOnce(urgeTasks.get(i).getStartTime(), urgeTaskFactory.getRunnable());
+            UrgeTaskFactory urgeTaskFactory = new UrgeTaskFactory(context);
+            for (UrgeTask urgeTask : urgeTasks) {
+                urgeTaskFactory.build(urgeTask);
+                ExecuteOnce(urgeTask.getStartTime(), urgeTaskFactory.getRunnable());
             }
         }
 
         //设置所有的日报汇总任务
         if (summaryTasks != null) {
-            for (int i = 0; i < summaryTasks.size(); i++) {
-                SummaryTaskFactory summaryTaskFactory = new SummaryTaskFactory(context);
-                summaryTaskFactory.setSummaryTask(summaryTasks.get(i));
-                summaryTaskFactory.buildTask();
-                ExecuteOnce(summaryTasks.get(i).getStartTime(), summaryTaskFactory.getRunnable());
+            SummaryTaskFactory summaryTaskFactory = new SummaryTaskFactory(context);
+            for (SummaryTask summaryTask : summaryTasks) {
+                summaryTaskFactory.build(summaryTask);
+                ExecuteOnce(summaryTask.getStartTime(), summaryTaskFactory.getRunnable());
             }
         }
 
         //设置初始化邮箱和数据库任务
         InitializeTaskFactory initializeTaskFactory = new InitializeTaskFactory(context);
-        initializeTaskFactory.setInitializeTask(initializeTask);
-        initializeTaskFactory.buildTask();
+        initializeTaskFactory.build(initializeTask);
         ExecuteOnce(initializeTask.getStartTime(), initializeTaskFactory.getRunnable());
 
         //设置捕获器捕获未处理的异常，输出异常信息

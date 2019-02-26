@@ -32,33 +32,32 @@ public class UrgeTaskFactory extends TaskFactory {
     @Autowired
     private MailService mailService;
 
-    private UrgeTask urgeTask;
+    private static ThreadLocal<UrgeTask> urgeTaskHolder;
 
     @SuppressWarnings("LeakingThisInConstructor")
     public UrgeTaskFactory(ServletContext context) {
         WebApplicationContext wac = WebApplicationContextUtils.getWebApplicationContext(context);
         AutowireCapableBeanFactory factory = wac.getAutowireCapableBeanFactory();
         factory.autowireBean(this);
-    }
-
-    public void setUrgeTask(UrgeTask urgeTask) {
-        this.urgeTask = urgeTask;
+        urgeTaskHolder = new ThreadLocal<>();
     }
 
     @Override
-    public void buildTask() {
+    public void build(Object urgeTask) {
         runnable = () -> {
-            mailService.read(urgeTask.getMailSenderIdentity());  //从邮箱读入日志，提交了日志的同学的Submitted位会被置位1
+            urgeTaskHolder.set((UrgeTask) urgeTask);
+            mailService.read(urgeTaskHolder.get().getMailSenderIdentity());  //从邮箱读入日志，提交了日志的同学的Submitted位会被置位1
 
-            String[] addresses = getAddressesOfUnsubmited(urgeTask.getGroups());  //获取未提交日志的学生的地址数组
+            String[] addresses = getAddressesOfUnsubmited(urgeTaskHolder.get().getGroups());  //获取未提交日志的学生的地址数组
             if (addresses.length > 0) {  //向每一位Submitted位为0的学生发送督促邮件
                 Mail mail = new Mail(
-                        urgeTask.getMailSubject(),
-                        urgeTask.getMailContent() + setTimeAsHtmlStyle(timeService.getDateTimeString()),
+                        urgeTaskHolder.get().getMailSubject(),
+                        urgeTaskHolder.get().getMailContent() + setTimeAsHtmlStyle(timeService.getDateTimeString()),
                         addresses
                 );
-                mailService.send(urgeTask.getMailSenderIdentity(), mail);
+                mailService.send(urgeTaskHolder.get().getMailSenderIdentity(), mail);
             }
+            urgeTaskHolder.remove();
         };
     }
 

@@ -28,26 +28,25 @@ public class InitializeTaskFactory extends TaskFactory {
     @Autowired
     private MailService mailService;
 
-    private InitializeTask initializeTask;
+    private static ThreadLocal<InitializeTask> initializeTaskHolder;
 
     @SuppressWarnings("LeakingThisInConstructor")
     public InitializeTaskFactory(ServletContext context) {
         WebApplicationContext wac = WebApplicationContextUtils.getWebApplicationContext(context);
         AutowireCapableBeanFactory factory = wac.getAutowireCapableBeanFactory();
         factory.autowireBean(this);
-    }
-
-    public void setInitializeTask(InitializeTask initializeTask) {
-        this.initializeTask = initializeTask;
+        initializeTaskHolder = new ThreadLocal<>();
     }
 
     @Override
-    protected void buildTask() {
+    protected void build(Object initializeTask) {
         runnable = () -> {
-            if (!timeService.isRestDayToday(initializeTask.getRestDays())) {
-                memberDAO.updateContentOfEveryStudent(initializeTask.getInitialContent());
-                mailService.move(initializeTask.getMailSenderIdentity(), initializeTask.getSourceFolder(), initializeTask.getTargetFolder());
+            initializeTaskHolder.set((InitializeTask) initializeTask);
+            if (!timeService.isRestDayToday(initializeTaskHolder.get().getRestDays())) {
+                memberDAO.updateContentOfEveryStudent(initializeTaskHolder.get().getInitialContent());
+                mailService.move(initializeTaskHolder.get().getMailSenderIdentity(), initializeTaskHolder.get().getSourceFolder(), initializeTaskHolder.get().getTargetFolder());
             }
+            initializeTaskHolder.remove();
         };
     }
 
