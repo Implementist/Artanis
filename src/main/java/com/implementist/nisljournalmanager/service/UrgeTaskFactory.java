@@ -67,19 +67,13 @@ public class UrgeTaskFactory extends TaskFactory {
      * @return 未提交日志同学的地址数组
      */
     private String[] getAddressesOfUnsubmited(List<Integer> groups) {
-        //从数据库读出学生信息
-        ArrayList<Member> students = new ArrayList<>();
-        groups.forEach((group) -> {
-            students.addAll(memberDAO.queryByGroup(group));
-        });
-
         ArrayList<String> addressOfUnsubmited = new ArrayList<>();
-
-        //获取每一位未提交日志同学的地址
-        students.stream().filter((student) -> (!student.getSubmitted())).forEachOrdered((student) -> {
-            addressOfUnsubmited.add(student.getEmailAddress());
+        groups.forEach((group) -> {
+            ArrayList<Member> unsubmittedMembers = memberDAO.queryUnsubmittedByGroup(group);
+            unsubmittedMembers.forEach((unsubmittedMember) -> {
+                addressOfUnsubmited.add(unsubmittedMember.getEmailAddress());
+            });
         });
-
         return (String[]) addressOfUnsubmited.toArray(new String[addressOfUnsubmited.size()]);
     }
 

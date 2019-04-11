@@ -30,8 +30,8 @@ public class MemberDAO {
      * @return 操作影响的行数
      */
     public int updateContentByAddress(String content, String address) {
-        String sqlStatement = "UPDATE Member member SET member.content=:content,"
-                + "member.submitted=:submitted WHERE member.emailAddress=:emailAddress";
+        String sqlStatement = "UPDATE Member m SET m.content=:content,"
+                + "m.submitted=:submitted WHERE m.emailAddress=:emailAddress";
         NativeQuery<Member> query = sessionFactory.getCurrentSession().createNativeQuery(sqlStatement);
         query.addEntity(Member.class);
         query.setParameter("content", content);
@@ -48,8 +48,8 @@ public class MemberDAO {
      * @return 操作影响的行数
      */
     public int updateContentByName(String content, String name) {
-        String sqlStatement = "UPDATE Member member SET member.content=:content,"
-                + "member.submitted=:submitted WHERE member.name=:name";
+        String sqlStatement = "UPDATE Member m SET m.content=:content,"
+                + "m.submitted=:submitted WHERE m.name=:name";
         NativeQuery<Member> query = sessionFactory.getCurrentSession().createNativeQuery(sqlStatement);
         query.addEntity(Member.class);
         query.setParameter("content", content);
@@ -65,8 +65,8 @@ public class MemberDAO {
      * @return 操作影响的行数
      */
     public int updateContentOfEveryStudent(String content) {
-        String sqlStatement = "UPDATE Member member SET member.content=:content,"
-                + "member.submitted=:submitted WHERE member.identity=:identity";
+        String sqlStatement = "UPDATE Member m SET m.content=:content,"
+                + "m.submitted=:submitted WHERE m.identity=:identity";
         NativeQuery<Member> query = sessionFactory.getCurrentSession().createNativeQuery(sqlStatement);
         query.addEntity(Member.class);
         query.setParameter("content", content);
@@ -83,8 +83,8 @@ public class MemberDAO {
      * @return 操作影响的行数
      */
     public int updateSubmittedByGroup(int groupId, boolean submitted) {
-        String sqlStatement = "UPDATE Member member SET member.submitted=:submitted"
-                + " WHERE member.groupId=:groupId";
+        String sqlStatement = "UPDATE Member m SET m.submitted=:submitted WHERE"
+                + " m.groupId=:groupId";
         NativeQuery<Member> query = sessionFactory.getCurrentSession().createNativeQuery(sqlStatement);
         query.addEntity(Member.class);
         query.setParameter("submitted", submitted);
@@ -98,7 +98,8 @@ public class MemberDAO {
      * @return 查询结果列表
      */
     public ArrayList<Member> queryAllStudents() {
-        NativeQuery<Member> query = sessionFactory.getCurrentSession().createNativeQuery("SELECT * FROM Member member WHERE member.identity=:identity");
+        String sqlStatement = "SELECT * FROM Member m WHERE m.identity=:identity";
+        NativeQuery<Member> query = sessionFactory.getCurrentSession().createNativeQuery(sqlStatement);
         query.addEntity(Member.class);
         query.setParameter("identity", "Student");
         return (ArrayList<Member>) query.list();
@@ -111,9 +112,26 @@ public class MemberDAO {
      * @return 查询结果列表
      */
     public ArrayList<Member> queryByGroup(int groupId) {
-        NativeQuery<Member> query = sessionFactory.getCurrentSession().createNativeQuery("SELECT * FROM Member member WHERE member.groupId=:groupId");
+        String sqlStatement = "SELECT * FROM Member m WHERE m.groupId=:groupId";
+        NativeQuery<Member> query = sessionFactory.getCurrentSession().createNativeQuery(sqlStatement);
         query.addEntity(Member.class);
         query.setParameter("groupId", groupId);
+        return (ArrayList<Member>) query.list();
+    }
+
+    /**
+     * 查找数据库中特定小组未提交日报的成员
+     *
+     * @param groupId 小组号
+     * @return 查询结果列表
+     */
+    public ArrayList<Member> queryUnsubmittedByGroup(int groupId) {
+        String sqlStatement = "SELECT * FROM Member m WHERE m.groupId=:groupId"
+                + " AND m.submitted=:submitted";
+        NativeQuery<Member> query = sessionFactory.getCurrentSession().createNativeQuery(sqlStatement);
+        query.addEntity(Member.class);
+        query.setParameter("groupId", groupId);
+        query.setParameter("submitted", false);
         return (ArrayList<Member>) query.list();
     }
 
