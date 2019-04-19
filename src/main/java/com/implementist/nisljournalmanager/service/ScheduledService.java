@@ -111,7 +111,7 @@ public class ScheduledService extends HttpServlet {
         WebApplicationContext wac = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
         AutowireCapableBeanFactory factory = wac.getAutowireCapableBeanFactory();
         factory.autowireBean(this);
-        periodicExecutor = Executors.newScheduledThreadPool(1);
+        periodicExecutor = Executors.newSingleThreadScheduledExecutor();
         oneTimeExecutor = Executors.newScheduledThreadPool(5);
         ExecuteByCycle("21:45:00", MILLIS_OF_ONE_DAY, LOAD_TASK);
     }

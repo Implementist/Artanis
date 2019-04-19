@@ -21,12 +21,36 @@
           p:fileEncoding="utf-8"/>
     
     <!-- 配置数据源 -->
-    <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource"
-          destroy-method="close" 
-          p:driverClassName="${driverClassName}"
-          p:url="${url}" 
-          p:username="${username}"
-          p:password="${password}" />
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" 
+          init-method="init"
+          destroy-method="close"> 
+        
+        <!-- 基本属性 -->
+        <property name="driverClassName" value="${driverClassName}"/>
+        <property name="url" value="${url}"/> 
+        <property name="username" value="${username}" />
+        <property name="password" value="${password}" /> 
+        
+        <!-- 初始化连接参数 -->
+        <property name="maxActive" value="20" />
+        <property name="initialSize" value="1" />
+        <property name="minIdle" value="1" />
+        
+        <!-- 最大连接等待时间 -->
+        <property name="maxWait" value="60000" />
+        
+        <!-- 两次运行空闲连接回收的间隔 -->
+        <property name="timeBetweenEvictionRunsMillis" value="60000" />
+        
+        <!-- 连接的空闲回收时间 -->
+        <property name="minEvictableIdleTimeMillis" value="300000" />
+        
+        <!-- 验证连接是否有效 -->
+        <property name="validationQuery" value="SELECT Id FROM member" />
+        <property name="testWhileIdle" value="true" />
+        <property name="testOnBorrow" value="false" />
+        <property name="testOnReturn" value="false" />
+    </bean>
     
     <!-- 配置HibernateSessionFactory -->
     <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"

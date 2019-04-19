@@ -4,7 +4,7 @@
 
     <groupId>com.implementist</groupId>
     <artifactId>NISLJournalManager</artifactId>
-    <version>3.2.2</version>
+    <version>3.2.4</version>
     <packaging>war</packaging>
 
     <name>NISLJournalManager</name>
@@ -138,18 +138,11 @@
             <version>3.2.7</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-dbcp2 -->
+        <!-- https://mvnrepository.com/artifact/com.alibaba/druid -->
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-dbcp2</artifactId>
-            <version>2.5.0</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-pool2 -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-pool2</artifactId>
-            <version>2.6.0</version>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.1.15</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/net.sf.json-lib/json-lib -->
