@@ -7,9 +7,7 @@ package com.implementist.nisljournalmanager.service;
 
 import com.implementist.nisljournalmanager.dao.MemberDAO;
 import com.implementist.nisljournalmanager.domain.Mail;
-import com.implementist.nisljournalmanager.domain.Member;
 import com.implementist.nisljournalmanager.domain.UrgeTask;
-import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,14 +65,8 @@ public class UrgeTaskFactory extends TaskFactory {
      * @return 未提交日志同学的地址数组
      */
     private String[] getAddressesOfUnsubmited(List<Integer> groups) {
-        ArrayList<String> addressOfUnsubmited = new ArrayList<>();
-        groups.forEach((group) -> {
-            ArrayList<Member> unsubmittedMembers = memberDAO.queryUnsubmittedByGroup(group);
-            unsubmittedMembers.forEach((unsubmittedMember) -> {
-                addressOfUnsubmited.add(unsubmittedMember.getEmailAddress());
-            });
-        });
-        return (String[]) addressOfUnsubmited.toArray(new String[addressOfUnsubmited.size()]);
+        List<String> addressOfUnsubmited = memberDAO.queryEmailAddressByGroups(groups, false);
+        return addressOfUnsubmited.toArray(new String[addressOfUnsubmited.size()]);
     }
 
     /**

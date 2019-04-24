@@ -5,6 +5,8 @@
  */
 package com.implementist.nisljournalmanager.domain;
 
+import java.util.List;
+
 /**
  *
  * @author Implementist
@@ -14,7 +16,7 @@ public class SummaryTask {
     private boolean groupOnHoliday;  //小组是否在休假
     private boolean onlyForTeachers;  //该汇总任务是否只发送给老师
     private String[] holidayers;  //休假或请假中的人（成员名）数组
-    private int[] groups;  //当前任务包含的小组
+    private List<Integer> groups;  //当前任务包含的小组
     private int[] restDays;  //每周的休息日
     private String startTime;  //任务起始时间
     private String mailSubject;  //邮件主题
@@ -46,11 +48,11 @@ public class SummaryTask {
         this.holidayers = holidayers;
     }
 
-    public int[] getGroups() {
+    public List<Integer> getGroups() {
         return groups;
     }
 
-    public void setGroups(int[] groups) {
+    public void setGroups(List<Integer> groups) {
         this.groups = groups;
     }
 

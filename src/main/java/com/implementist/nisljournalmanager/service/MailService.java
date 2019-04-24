@@ -11,7 +11,7 @@ import com.implementist.nisljournalmanager.domain.Mail;
 import com.implementist.nisljournalmanager.domain.Member;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
@@ -266,7 +266,7 @@ public class MailService {
      * @param members 成员列表
      * @return 邮箱地址数组
      */
-    public String[] getAddressArray(ArrayList<Member> members) {
+    public String[] getAddressArray(List<Member> members) {
         String[] addressArray = new String[members.size()];
         for (int i = 0; i < members.size(); i++) {
             addressArray[i] = members.get(i).getEmailAddress();
