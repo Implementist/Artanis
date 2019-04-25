@@ -48,10 +48,6 @@ public class SummaryTaskFactory extends TaskFactory {
     protected void build(Object summaryTask) {
         runnable = () -> {
             summaryTaskHolder.set((SummaryTask) summaryTask);
-            if (timeService.isRestDayToday(summaryTaskHolder.get().getRestDays())) {
-                return;
-            }
-
             String nameStringOfGroups = getNameStringOfGroups(summaryTaskHolder.get().getGroups());
             String dateString = timeService.getDateString();  //获取当前日期时间字符串
             mailService.read(summaryTaskHolder.get().getMailSenderIdentity());  //从邮箱读入日志，提交了日志的同学的Submitted位会被置位1

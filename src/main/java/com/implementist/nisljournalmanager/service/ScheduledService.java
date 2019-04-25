@@ -59,7 +59,7 @@ public class ScheduledService extends HttpServlet {
         });
 
         SystemConfig systemConfig = getSystemConfig(ctx);
-        if (systemConfig.isHolidayModeOn() && timeService.isHolidayToday(systemConfig.getFrom(), systemConfig.getTo())) {
+        if (systemConfig.isHolidayModeOn() && timeService.isHolidayToday(systemConfig.getHolidayFrom(), systemConfig.getHolidayTo())) {
             return;
         }
 
@@ -67,7 +67,7 @@ public class ScheduledService extends HttpServlet {
         ServletContext context = getServletContext();
 
         //从配置文件中读取各种任务的定义
-        summaryTasks = getSummaryTasks(ctx);
+        summaryTasks = getSummaryTasks(ctx, systemConfig);
         urgeTasks = getUrgeTasks(ctx, summaryTasks);
         initializeTask = getInitializeTask(ctx);
 
@@ -199,12 +199,15 @@ public class ScheduledService extends HttpServlet {
      * @param ctx 配置信息
      * @return 日报任务列表
      */
-    private List<SummaryTask> getSummaryTasks(ApplicationContext ctx) {
+    private List<SummaryTask> getSummaryTasks(ApplicationContext ctx, SystemConfig config) {
         List<SummaryTask> tasks = new ArrayList<>();
         String[] taskNames = ctx.getBeanNamesForType(SummaryTask.class);
+        boolean isWorkdayToday = config.isWorkdayModeOn() && 
+                timeService.isWorkdayToday(config.getWorkdayFrom(), config.getWorkdayTo());
         for (String taskName : taskNames) {
             SummaryTask task = (SummaryTask) ctx.getBean(taskName);
-            if (!task.isGroupOnHoliday() && !timeService.isRestDayToday(task.getRestDays())) {
+            boolean isRestDayToday = timeService.isRestDayToday(task.getRestDays());
+            if (!task.isGroupOnHoliday() && (!isRestDayToday || isWorkdayToday)) {
                 tasks.add(task);
             }
         }
