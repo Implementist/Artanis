@@ -8,6 +8,10 @@ package com.implementist.nisljournalmanager.service;
 import com.implementist.nisljournalmanager.domain.Identity;
 import java.util.HashMap;
 import java.util.Properties;
+import javax.mail.Address;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.Transport;
@@ -73,16 +77,40 @@ public class NetEase163Service {
      *
      * @param properties 通信属性
      * @return 邮件通信会话
+     * @throws RuntimeException
      */
-    @Retryable(value = Exception.class, maxAttempts = 60, backoff = @Backoff)
-    public Session getSession(Properties properties) {
+    @Retryable(value = RuntimeException.class, maxAttempts = 90, backoff = @Backoff)
+    public Session getSession(Properties properties) throws RuntimeException {
         return Session.getInstance(properties);
     }
 
     @Recover
     public Session recover(Exception ex, Properties properties) {
-        logger.error("Exception Still Remaining After 60 Times of Attemts.", ex);
-        return Session.getInstance(properties);
+        logger.error("Exception Still Remaining After 90 Times of Attemts.", ex);
+        return null;
+    }
+
+    /**
+     * 发送邮件
+     *
+     * @param session 邮箱通信会话
+     * @param identity 邮箱身份
+     * @param msg 邮件内容
+     * @param addresses 收件人列表
+     * @throws NoSuchProviderException
+     * @throws MessagingException
+     */
+    @Retryable(value = {NoSuchProviderException.class, MessagingException.class}, maxAttempts = 90, backoff = @Backoff)
+    public void sendMessage(Session session, Identity identity, Message msg, Address[] addresses) throws NoSuchProviderException, MessagingException {
+        try (Transport transport = session.getTransport()) {
+            transport.connect(identity.getFrom(), identity.getAuthorizationCode());
+            transport.sendMessage(msg, addresses);
+        }
+    }
+
+    @Recover
+    public void recover(Exception ex, Session session, Identity identity, Message msg, Address[] addresses) {
+        logger.error("Exception Still Remaining After 90 Times of Attemts.", ex);
     }
 
     /**
@@ -91,10 +119,11 @@ public class NetEase163Service {
      * @param session 邮件通信会话
      * @param identity 邮箱身份
      * @return 邮箱存储
-     * @throws Exception
+     * @throws NoSuchProviderException
+     * @throws MessagingException
      */
-    @Retryable(value = {Exception.class}, maxAttempts = 60, backoff = @Backoff)
-    public Store getStore(Session session, Identity identity) throws Exception {
+    @Retryable(value = {NoSuchProviderException.class, MessagingException.class}, maxAttempts = 90, backoff = @Backoff)
+    public Store getStore(Session session, Identity identity) throws NoSuchProviderException, MessagingException {
         Store store = session.getStore();
         store.connect(identity.getFrom(), identity.getAuthorizationCode());
         return store;
@@ -102,24 +131,7 @@ public class NetEase163Service {
 
     @Recover
     public Store recover(Exception ex, Session session, Identity identity) {
-        logger.error("Exception Still Remaining After 60 Times of Attemts.", ex);
+        logger.error("Exception Still Remaining After 90 Times of Attemts.", ex);
         return null;
-    }
-
-    /**
-     * 获取邮箱传输连接
-     *
-     * @param transport 邮箱传输
-     * @param identity 邮箱身份
-     * @throws Exception
-     */
-    @Retryable(value = {Exception.class}, maxAttempts = 60, backoff = @Backoff)
-    public void getTransportConncted(Transport transport, Identity identity) throws Exception {
-        transport.connect(identity.getFrom(), identity.getAuthorizationCode());
-    }
-
-    @Recover
-    public void recover(Exception ex, Transport transport, Identity identity) {
-        logger.error("Exception Still Remaining After 60 Times of Attemts.", ex);
     }
 }

@@ -24,7 +24,6 @@ import javax.mail.Multipart;
 import javax.mail.Part;
 import javax.mail.Session;
 import javax.mail.Store;
-import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -66,15 +65,14 @@ public class MailService {
         //获取邮件通信会话
         Session session = netEase163Service.getSession(properties);
 
-        try (Transport transport = session.getTransport()) {
+        try {
             MimeMessage mimeMessage = buildMessage(session, identity, mail);
-
-            //用邮箱地址和授权码连接邮件服务器
-            netEase163Service.getTransportConncted(transport, identity);
             // 发送邮件
-            transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
+            netEase163Service.sendMessage(session, identity, mimeMessage, mimeMessage.getAllRecipients());
         } catch (MessagingException ex) {
             logger.error("Massaging Exception!", ex);
+        } catch (UnsupportedEncodingException ex){
+            logger.error("Unsupported Encoding Exception!", ex);
         } catch (Exception ex) {
             logger.error("Exception!", ex);
         }
