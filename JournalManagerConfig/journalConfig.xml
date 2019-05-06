@@ -262,11 +262,6 @@
     
     <!-- 初始化邮箱和数据库任务 -->
     <bean id="initializeTask" class="com.implementist.nisljournalmanager.domain.InitializeTask">
-        <property name="restDays">
-            <array>
-                <value>7</value>
-            </array>
-        </property>
         <property name="startTime" value="23:55:00"/>
         <property name="initialContent" value=""/>
         <property name="sourceFolder" value="INBOX"/>

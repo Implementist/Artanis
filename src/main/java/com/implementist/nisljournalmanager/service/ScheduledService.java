@@ -92,10 +92,12 @@ public class ScheduledService extends HttpServlet {
             }
         }
 
-        //设置初始化邮箱和数据库任务
-        InitializeTaskFactory initializeTaskFactory = new InitializeTaskFactory(context);
-        initializeTaskFactory.build(initializeTask);
-        ExecuteOnce(initializeTask.getStartTime(), initializeTaskFactory.getRunnable());
+        if (summaryTasks != null && summaryTasks.size() > 0) {
+            //设置初始化邮箱和数据库任务
+            InitializeTaskFactory initializeTaskFactory = new InitializeTaskFactory(context);
+            initializeTaskFactory.build(initializeTask);
+            ExecuteOnce(initializeTask.getStartTime(), initializeTaskFactory.getRunnable());
+        }
 
         //设置捕获器捕获未处理的异常，输出异常信息
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
@@ -202,8 +204,8 @@ public class ScheduledService extends HttpServlet {
     private List<SummaryTask> getSummaryTasks(ApplicationContext ctx, SystemConfig config) {
         List<SummaryTask> tasks = new ArrayList<>();
         String[] taskNames = ctx.getBeanNamesForType(SummaryTask.class);
-        boolean isWorkdayToday = config.isWorkdayModeOn() && 
-                timeService.isWorkdayToday(config.getWorkdayFrom(), config.getWorkdayTo());
+        boolean isWorkdayToday = config.isWorkdayModeOn()
+                && timeService.isWorkdayToday(config.getWorkdayFrom(), config.getWorkdayTo());
         for (String taskName : taskNames) {
             SummaryTask task = (SummaryTask) ctx.getBean(taskName);
             boolean isRestDayToday = timeService.isRestDayToday(task.getRestDays());

@@ -11,20 +11,11 @@ package com.implementist.nisljournalmanager.domain;
  */
 public class InitializeTask {
 
-    private int[] restDays;  //一周中的休息日
     private String startTime;  //任务起始时间
     private String initialContent;  //初始化后的日报内容
     private String sourceFolder;  //需要被移动的邮件的源文件夹
     private String targetFolder;  //目标文件夹
     private Identity mailSenderIdentity;  //邮箱账户身份信息
-
-    public int[] getRestDays() {
-        return restDays;
-    }
-
-    public void setRestDays(int[] restDays) {
-        this.restDays = restDays;
-    }
 
     public String getStartTime() {
         return startTime;
