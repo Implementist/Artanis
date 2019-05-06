@@ -88,6 +88,20 @@ public class TimeService {
     }
 
     /**
+     * 判断今天是不是调休工作日
+     *
+     * @param from 调休工作日开始日期的字符串
+     * @param to 调休工作日结束日期的字符串
+     * @return 判断结果
+     */
+    public boolean isWorkdayToday(String from, String to) {
+        LocalDate fromLocalDate = LocalDate.parse(from);
+        LocalDate toLocalDate = LocalDate.parse(to);
+        LocalDate now = LocalDate.now();
+        return now.isAfter(fromLocalDate.minusDays(1)) && now.isBefore(toLocalDate.plusDays(1));
+    }
+
+    /**
      * 获取当前的日期字符串
      *
      * @return 当前的日期字符串

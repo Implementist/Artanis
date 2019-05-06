@@ -7,10 +7,9 @@ package com.implementist.nisljournalmanager.service;
 
 import com.implementist.nisljournalmanager.dao.MemberDAO;
 import com.implementist.nisljournalmanager.domain.Mail;
-import com.implementist.nisljournalmanager.domain.Member;
 import com.implementist.nisljournalmanager.domain.SummaryTask;
 import java.io.File;
-import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.ServletContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
@@ -49,15 +48,11 @@ public class SummaryTaskFactory extends TaskFactory {
     protected void build(Object summaryTask) {
         runnable = () -> {
             summaryTaskHolder.set((SummaryTask) summaryTask);
-            if (timeService.isRestDayToday(summaryTaskHolder.get().getRestDays())) {
-                return;
-            }
-            
             String nameStringOfGroups = getNameStringOfGroups(summaryTaskHolder.get().getGroups());
             String dateString = timeService.getDateString();  //获取当前日期时间字符串
             mailService.read(summaryTaskHolder.get().getMailSenderIdentity());  //从邮箱读入日志，提交了日志的同学的Submitted位会被置位1
             summaryFileService.create(summaryTaskHolder.get().getGroups(), nameStringOfGroups);  //创建日报汇总PDF文件
-            
+
             String[] toList, ccList;
             if (summaryTaskHolder.get().isOnlyForTeachers()) {
                 toList = summaryTaskHolder.get().getTeachersAddresses();
@@ -75,7 +70,7 @@ public class SummaryTaskFactory extends TaskFactory {
                     new String[]{System.getProperty("user.dir").split("\\\\")[0] + File.separator + "NISLJournal" + File.separator + "DailySummary-Group" + nameStringOfGroups + "-" + dateString + ".PDF"}
             );
             mailService.send(summaryTaskHolder.get().getMailSenderIdentity(), mail);
-            setSubmittedToTrue(summaryTaskHolder.get().getGroups());
+            memberDAO.updateSubmittedByGroups(summaryTaskHolder.get().getGroups(), true);
             summaryTaskHolder.remove();
         };
     }
@@ -86,27 +81,22 @@ public class SummaryTaskFactory extends TaskFactory {
      * @param groups
      * @return 目标列表
      */
-    public String[] getToList(int[] groups) {
-        //获取to的地址数组
-        ArrayList<Member> students = new ArrayList<>();
-        for (int i = 0; i < groups.length; i++) {
-            ArrayList<Member> groupMembers = memberDAO.queryByGroup(groups[i]);
-            students.addAll(groupMembers);
-        }
-        return mailService.getAddressArray(students);
+    public String[] getToList(List<Integer> groups) {
+        List<String> toList = memberDAO.queryEmailAddressByGroups(groups);
+        return toList.toArray(new String[toList.size()]);
     }
 
     /**
      * 获取组名
      *
-     * @param groupIds 组号数组
+     * @param groups 组号数组
      * @return 组名
      */
-    private String getNameStringOfGroups(int[] groupIds) {
+    private String getNameStringOfGroups(List<Integer> groups) {
         StringBuilder nameStringOfGroups = new StringBuilder();
-        nameStringOfGroups.append(groupIds[0]);
-        for (int i = 1; i < groupIds.length; i++) {
-            nameStringOfGroups.append("&").append(groupIds[i]);
+        nameStringOfGroups.append(groups.get(0));
+        for (int i = 1; i < groups.size(); i++) {
+            nameStringOfGroups.append("&").append(groups.get(i));
         }
         return nameStringOfGroups.toString();
     }
@@ -119,16 +109,5 @@ public class SummaryTaskFactory extends TaskFactory {
      */
     private String setTimeAsHtmlStyle(String time) {
         return time + "</div></div>";
-    }
-
-    /**
-     * 设置该日报汇总任务覆盖的小组成员的submitted值为true，避免过期的督促
-     *
-     * @param groupIds 小组号数组
-     */
-    private void setSubmittedToTrue(int[] groupIds) {
-        for (int groupId : groupIds) {
-            memberDAO.updateSubmittedByGroup(groupId, true);
-        }
     }
 }

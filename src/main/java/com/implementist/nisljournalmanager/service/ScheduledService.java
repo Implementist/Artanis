@@ -59,7 +59,7 @@ public class ScheduledService extends HttpServlet {
         });
 
         SystemConfig systemConfig = getSystemConfig(ctx);
-        if (systemConfig.isHolidayModeOn() && timeService.isHolidayToday(systemConfig.getFrom(), systemConfig.getTo())) {
+        if (systemConfig.isHolidayModeOn() && timeService.isHolidayToday(systemConfig.getHolidayFrom(), systemConfig.getHolidayTo())) {
             return;
         }
 
@@ -67,7 +67,7 @@ public class ScheduledService extends HttpServlet {
         ServletContext context = getServletContext();
 
         //从配置文件中读取各种任务的定义
-        summaryTasks = getSummaryTasks(ctx);
+        summaryTasks = getSummaryTasks(ctx, systemConfig);
         urgeTasks = getUrgeTasks(ctx, summaryTasks);
         initializeTask = getInitializeTask(ctx);
 
@@ -92,10 +92,12 @@ public class ScheduledService extends HttpServlet {
             }
         }
 
-        //设置初始化邮箱和数据库任务
-        InitializeTaskFactory initializeTaskFactory = new InitializeTaskFactory(context);
-        initializeTaskFactory.build(initializeTask);
-        ExecuteOnce(initializeTask.getStartTime(), initializeTaskFactory.getRunnable());
+        if (summaryTasks != null && summaryTasks.size() > 0) {
+            //设置初始化邮箱和数据库任务
+            InitializeTaskFactory initializeTaskFactory = new InitializeTaskFactory(context);
+            initializeTaskFactory.build(initializeTask);
+            ExecuteOnce(initializeTask.getStartTime(), initializeTaskFactory.getRunnable());
+        }
 
         //设置捕获器捕获未处理的异常，输出异常信息
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
@@ -111,7 +113,7 @@ public class ScheduledService extends HttpServlet {
         WebApplicationContext wac = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
         AutowireCapableBeanFactory factory = wac.getAutowireCapableBeanFactory();
         factory.autowireBean(this);
-        periodicExecutor = Executors.newScheduledThreadPool(1);
+        periodicExecutor = Executors.newSingleThreadScheduledExecutor();
         oneTimeExecutor = Executors.newScheduledThreadPool(5);
         ExecuteByCycle("21:45:00", MILLIS_OF_ONE_DAY, LOAD_TASK);
     }
@@ -199,12 +201,15 @@ public class ScheduledService extends HttpServlet {
      * @param ctx 配置信息
      * @return 日报任务列表
      */
-    private List<SummaryTask> getSummaryTasks(ApplicationContext ctx) {
+    private List<SummaryTask> getSummaryTasks(ApplicationContext ctx, SystemConfig config) {
         List<SummaryTask> tasks = new ArrayList<>();
         String[] taskNames = ctx.getBeanNamesForType(SummaryTask.class);
+        boolean isWorkdayToday = config.isWorkdayModeOn()
+                && timeService.isWorkdayToday(config.getWorkdayFrom(), config.getWorkdayTo());
         for (String taskName : taskNames) {
             SummaryTask task = (SummaryTask) ctx.getBean(taskName);
-            if (!task.isGroupOnHoliday() && !timeService.isRestDayToday(task.getRestDays())) {
+            boolean isRestDayToday = timeService.isRestDayToday(task.getRestDays());
+            if (!task.isGroupOnHoliday() && (!isRestDayToday || isWorkdayToday)) {
                 tasks.add(task);
             }
         }

@@ -12,8 +12,11 @@ package com.implementist.nisljournalmanager.domain;
 public class SystemConfig {
 
     private boolean holidayModeOn;
-    private String from;
-    private String to;
+    private String holidayFrom;
+    private String holidayTo;
+    private boolean workdayModeOn;
+    private String workdayFrom;
+    private String workdayTo;
 
     public boolean isHolidayModeOn() {
         return holidayModeOn;
@@ -23,19 +26,43 @@ public class SystemConfig {
         this.holidayModeOn = holidayModeOn;
     }
 
-    public String getFrom() {
-        return from;
+    public String getHolidayFrom() {
+        return holidayFrom;
     }
 
-    public void setFrom(String from) {
-        this.from = from;
+    public void setHolidayFrom(String holidayFrom) {
+        this.holidayFrom = holidayFrom;
     }
 
-    public String getTo() {
-        return to;
+    public String getHolidayTo() {
+        return holidayTo;
     }
 
-    public void setTo(String to) {
-        this.to = to;
+    public void setHolidayTo(String holidayTo) {
+        this.holidayTo = holidayTo;
+    }
+
+    public boolean isWorkdayModeOn() {
+        return workdayModeOn;
+    }
+
+    public void setWorkdayModeOn(boolean workdayModeOn) {
+        this.workdayModeOn = workdayModeOn;
+    }
+
+    public String getWorkdayFrom() {
+        return workdayFrom;
+    }
+
+    public void setWorkdayFrom(String workdayFrom) {
+        this.workdayFrom = workdayFrom;
+    }
+
+    public String getWorkdayTo() {
+        return workdayTo;
+    }
+
+    public void setWorkdayTo(String workdayTo) {
+        this.workdayTo = workdayTo;
     }
 }

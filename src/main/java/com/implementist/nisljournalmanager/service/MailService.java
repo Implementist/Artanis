@@ -11,7 +11,7 @@ import com.implementist.nisljournalmanager.domain.Mail;
 import com.implementist.nisljournalmanager.domain.Member;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
@@ -24,7 +24,6 @@ import javax.mail.Multipart;
 import javax.mail.Part;
 import javax.mail.Session;
 import javax.mail.Store;
-import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -66,15 +65,14 @@ public class MailService {
         //获取邮件通信会话
         Session session = netEase163Service.getSession(properties);
 
-        try (Transport transport = session.getTransport()) {
+        try {
             MimeMessage mimeMessage = buildMessage(session, identity, mail);
-
-            //用邮箱地址和授权码连接邮件服务器
-            netEase163Service.getTransportConncted(transport, identity);
             // 发送邮件
-            transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
+            netEase163Service.sendMessage(session, identity, mimeMessage, mimeMessage.getAllRecipients());
         } catch (MessagingException ex) {
             logger.error("Massaging Exception!", ex);
+        } catch (UnsupportedEncodingException ex){
+            logger.error("Unsupported Encoding Exception!", ex);
         } catch (Exception ex) {
             logger.error("Exception!", ex);
         }
@@ -266,7 +264,7 @@ public class MailService {
      * @param members 成员列表
      * @return 邮箱地址数组
      */
-    public String[] getAddressArray(ArrayList<Member> members) {
+    public String[] getAddressArray(List<Member> members) {
         String[] addressArray = new String[members.size()];
         for (int i = 0; i < members.size(); i++) {
             addressArray[i] = members.get(i).getEmailAddress();

@@ -42,10 +42,8 @@ public class InitializeTaskFactory extends TaskFactory {
     protected void build(Object initializeTask) {
         runnable = () -> {
             initializeTaskHolder.set((InitializeTask) initializeTask);
-            if (!timeService.isRestDayToday(initializeTaskHolder.get().getRestDays())) {
-                memberDAO.updateContentOfEveryStudent(initializeTaskHolder.get().getInitialContent());
-                mailService.move(initializeTaskHolder.get().getMailSenderIdentity(), initializeTaskHolder.get().getSourceFolder(), initializeTaskHolder.get().getTargetFolder());
-            }
+            memberDAO.updateContentOfEveryStudent(initializeTaskHolder.get().getInitialContent());
+            mailService.move(initializeTaskHolder.get().getMailSenderIdentity(), initializeTaskHolder.get().getSourceFolder(), initializeTaskHolder.get().getTargetFolder());
             initializeTaskHolder.remove();
         };
     }

@@ -23,7 +23,6 @@ import com.lowagie.text.pdf.PdfWriter;
 import java.awt.Color;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +57,7 @@ public class SummaryFileService {
      * @param groups 小组列表
      * @param nameStringOfGroups 小组的名字字符串
      */
-    public void create(int[] groups, String nameStringOfGroups) {
+    public void create(List<Integer> groups, String nameStringOfGroups) {
         // 创建Document对象(页面的大小为A4,左、右、上、下的页边距为10)
         Document document = new Document(PageSize.A4, 10, 10, 10, 10);
         try {
@@ -231,10 +230,10 @@ public class SummaryFileService {
      *
      * @param document 文档对象
      */
-    private void addContentsByGroup(Document document, int[] groupIds) throws BadElementException, DocumentException {
-        for (int groupId : groupIds) {
-            Group groupInfo = groupDAO.queryGroupById(groupId);
-            ArrayList<Member> groupMembers = memberDAO.queryByGroup(groupId);
+    private void addContentsByGroup(Document document, List<Integer> groups) throws BadElementException, DocumentException {
+        for (int group : groups) {
+            Group groupInfo = groupDAO.queryGroupById(group);
+            List<Member> groupMembers = memberDAO.queryByGroup(group);
             Table groupContent = getGroupContent(groupInfo.getName(), groupMembers);
             document.add(groupContent);
         }
