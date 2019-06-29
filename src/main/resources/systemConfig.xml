@@ -4,10 +4,10 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
     <bean id="systemConfig" class="com.implementist.nisljournalmanager.domain.SystemConfig">
         <property name="holidayModeOn" value="false"/>
-        <property name="holidayFrom" value="2019-05-01"/>
-        <property name="holidayTo" value="2019-05-04"/>
+        <property name="holidayFrom" value="2019-06-07"/>
+        <property name="holidayTo" value="2019-06-09"/>
         <property name="workdayModeOn" value="false"/>
-        <property name="workdayFrom" value="2019-04-28"/>
-        <property name="workdayTo" value="2019-04-28"/>
+        <property name="workdayFrom" value="2019-05-05"/>
+        <property name="workdayTo" value="2019-05-05"/>
     </bean>
 </beans>
