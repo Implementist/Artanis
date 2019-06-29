@@ -13,7 +13,7 @@ public class Identity {
 
     private String from;  //账户源地址
     private String nickName;  //昵称
-    private String authorizationCode;  //账户授权码
+    private String authCode;  //账户授权码
 
     public String getFrom() {
         return from;
@@ -31,11 +31,11 @@ public class Identity {
         this.nickName = nickName;
     }
 
-    public String getAuthorizationCode() {
-        return authorizationCode;
+    public String getAuthCode() {
+        return authCode;
     }
 
-    public void setAuthorizationCode(String authorizationCode) {
-        this.authorizationCode = authorizationCode;
+    public void setAuthCode(String authCode) {
+        this.authCode = authCode;
     }
 }

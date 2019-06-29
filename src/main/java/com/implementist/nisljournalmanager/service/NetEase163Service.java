@@ -103,7 +103,7 @@ public class NetEase163Service {
     @Retryable(value = {NoSuchProviderException.class, MessagingException.class}, maxAttempts = 90, backoff = @Backoff)
     public void sendMessage(Session session, Identity identity, Message msg, Address[] addresses) throws NoSuchProviderException, MessagingException {
         try (Transport transport = session.getTransport()) {
-            transport.connect(identity.getFrom(), identity.getAuthorizationCode());
+            transport.connect(identity.getFrom(), identity.getAuthCode());
             transport.sendMessage(msg, addresses);
         }
     }
@@ -125,7 +125,7 @@ public class NetEase163Service {
     @Retryable(value = {NoSuchProviderException.class, MessagingException.class}, maxAttempts = 90, backoff = @Backoff)
     public Store getStore(Session session, Identity identity) throws NoSuchProviderException, MessagingException {
         Store store = session.getStore();
-        store.connect(identity.getFrom(), identity.getAuthorizationCode());
+        store.connect(identity.getFrom(), identity.getAuthCode());
         return store;
     }
 

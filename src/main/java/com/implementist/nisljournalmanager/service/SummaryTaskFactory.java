@@ -54,12 +54,12 @@ public class SummaryTaskFactory extends TaskFactory {
             summaryFileService.create(summaryTaskHolder.get().getGroups(), nameStringOfGroups);  //创建日报汇总PDF文件
 
             String[] toList, ccList;
-            if (summaryTaskHolder.get().isOnlyForTeachers()) {
-                toList = summaryTaskHolder.get().getTeachersAddresses();
+            if (summaryTaskHolder.get().isForBossesOnly()) {
+                toList = summaryTaskHolder.get().getBossesAddresses();
                 ccList = null;
             } else {
                 toList = getToList(summaryTaskHolder.get().getGroups());
-                ccList = summaryTaskHolder.get().getTeachersAddresses();
+                ccList = summaryTaskHolder.get().getBossesAddresses();
             }
 
             Mail mail = new Mail(
