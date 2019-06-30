@@ -42,9 +42,9 @@ You can set your own bussiness by modify two config files: `src/main/resources/j
     </bean>
 ```
 
-Property | Type | Description | Example
-- | - | - | -
-from | String | Email address of mail sender | abc@example.com
-nickName | String | Nick name for mail sender | Imple
-authCode | String | Auth code or password of this email | PASSWORD
+| Property | Type | Description | Example |
+| - | - | - | - |
+| from | String | Email address of mail sender | abc@example.com |
+| nickName | String | Nick name for mail sender | Imple |
+| authCode | String | Auth code or password of this email | PASSWORD |
 
