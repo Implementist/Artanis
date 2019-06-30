@@ -6,6 +6,8 @@ NISLJournalManager is a spring framework based staff work journal auto-collect s
 
 Various options make it easy to use. For example, you can set which day(s) is the rest day of your group in a week. And you can also set 'holidayers' list for people who are on leave. After doing so, they do not need to submit work journals during their holiday.
 
-# Usage
+## Usage
 You can build up your work journal collecting system by just doing the following few steps.
-## Step1: Set up database
+### Step1: Set up databases
+- You need to create a database with name 'nisl_journal' and its charset should be 'utf8 -- UTF-8 Unicode'.
+- Create a table named 'group' with 
