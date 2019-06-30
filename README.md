@@ -10,4 +10,5 @@ Various options make it easy to use. For example, you can set which day(s) is th
 You can build up your work journal collecting system by just doing the following few steps.
 ### Step1: Set up databases
 - You need to create a database with name 'nisl_journal' and its charset should be 'utf8 -- UTF-8 Unicode'.
-- Create a table named 'group' with 
+- Create a table named 'group' with [DDL](https://github.com/Implementist/NISLJournalManager/blob/master/docs/ddl-group.md).
+- Create a table named 'member' with [DDL](https://github.com/Implementist/NISLJournalManager/blob/master/docs/ddl-member.md)
