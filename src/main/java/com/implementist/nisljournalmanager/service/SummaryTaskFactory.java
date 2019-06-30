@@ -64,7 +64,7 @@ public class SummaryTaskFactory extends TaskFactory {
 
             Mail mail = new Mail(
                     summaryTaskHolder.get().getMailSubject() + dateString,
-                    summaryTaskHolder.get().getMailContent() + setTimeAsHtmlStyle(dateString),
+                    summaryTaskHolder.get().getMailContent(),
                     toList,
                     ccList,
                     new String[]{System.getProperty("user.dir").split("\\\\")[0] + File.separator + "NISLJournal" + File.separator + "DailySummary-Group" + nameStringOfGroups + "-" + dateString + ".PDF"}
@@ -99,15 +99,5 @@ public class SummaryTaskFactory extends TaskFactory {
             nameStringOfGroups.append("&").append(groups.get(i));
         }
         return nameStringOfGroups.toString();
-    }
-
-    /**
-     * 设置HTML格式的时间戳
-     *
-     * @param time 时间戳
-     * @return HTML格式的时间戳
-     */
-    private String setTimeAsHtmlStyle(String time) {
-        return time + "</div></div>";
     }
 }

@@ -25,9 +25,6 @@ public class UrgeTaskFactory extends TaskFactory {
     private MemberDAO memberDAO;
 
     @Autowired
-    private TimeService timeService;
-
-    @Autowired
     private MailService mailService;
 
     private static ThreadLocal<UrgeTask> urgeTaskHolder;
@@ -50,7 +47,7 @@ public class UrgeTaskFactory extends TaskFactory {
             if (addresses.length > 0) {  //向每一位Submitted位为0的学生发送督促邮件
                 Mail mail = new Mail(
                         urgeTaskHolder.get().getMailSubject(),
-                        urgeTaskHolder.get().getMailContent() + setTimeAsHtmlStyle(timeService.getDateTimeString()),
+                        urgeTaskHolder.get().getMailContent(),
                         addresses
                 );
                 mailService.send(urgeTaskHolder.get().getMailSenderIdentity(), mail);
@@ -67,15 +64,5 @@ public class UrgeTaskFactory extends TaskFactory {
     private String[] getAddressesOfUnsubmited(List<Integer> groups) {
         List<String> addressOfUnsubmited = memberDAO.queryEmailAddressByGroups(groups, false);
         return addressOfUnsubmited.toArray(new String[addressOfUnsubmited.size()]);
-    }
-
-    /**
-     * 设置HTML格式的时间戳
-     *
-     * @param time 时间戳
-     * @return HTML格式的时间戳
-     */
-    private String setTimeAsHtmlStyle(String time) {
-        return time + "</div>";
     }
 }
