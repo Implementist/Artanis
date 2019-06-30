@@ -31,9 +31,10 @@ For program access your DB successfully, you have to replace default DB properti
 ### Journal Properties
 You can set your own bussiness by modify two config files: `src/main/resources/journalConfig.xml` and `src/main/resources/systemConfig.xml`.
 
-**Let's begin with `journalConfig.xml`; there are five types of configurable bean.**
+**Let's begin with** `journalConfig.xml`**. there are four types of configurable bean.**
 
-- Mail Sender Identity
+- **Mail Sender Identity**
+Identity info of mail sender
 ```xml
     <bean id="mailSenderIdentity" class="com.implementist.nisljournalmanager.domain.Identity">
         <property name="from" value="SENDER_ADDRESS"/>
@@ -45,6 +46,89 @@ You can set your own bussiness by modify two config files: `src/main/resources/j
 | Property | Type | Description | Example |
 | - | - | - | - |
 | from | String | Email address of mail sender | abc@example.com |
-| nickName | String | Nick name for mail sender | Imple |
-| authCode | String | Auth code or password of this email | PASSWORD |
+| nickName | String | Nick name for mail sender | Implementist |
+| authCode | String | Auth code or password of this email | Password |
 
+- **Urge Task**
+Set scheduled tasks to send mail to urge your staff to submit their work journal. **Urge mail will be sent to members of groups configured in `SummaryTask` by default. The program will perform a filtration automatically to get the correct `to` list.**
+```xml
+    <bean id="urgeTask1" class="com.implementist.nisljournalmanager.domain.UrgeTask">
+        <property name="startTime" value="START_TIME"/>
+        <property name="mailSubject" value="URGE_MAIL_SUBJECT"/>
+        <property name="mailContent" value="URGE_MAIL_CONTENT"/>
+        <property name="mailSenderIdentity" ref="mailSenderIdentity"/>
+    </bean>
+```
+
+| Property | Type | Description | Example |
+| - | - | - | - |
+| startTime | String | Time of send urge mail | 22:00:00 |
+| mailSubject | String | Subject of urge mail | Urge Mail |
+| mailContent | String | Content of urge mail | Please submit your work journal on time. |
+| mailSenderIdentity | String | Reference of id of mail sender Identity. It better not be modified. | mailSenderIdentity |
+
+- **Summary Task**
+The summary task will conclude work journals of all staff to generate a `PDF` file and make it be the attachment of the summary mail. Then send the letter to staff and bosses or just to bosses.
+```xml
+    <bean id="summaryTask1" class="com.implementist.nisljournalmanager.domain.SummaryTask">
+        <property name="groupOnHoliday" value="false"/>
+        <property name="forBossesOnly" value="true"/>
+        <property name="holidayers">
+            <null/>
+        </property>
+        <property name="groups">
+            <list>
+                <value>1</value>
+                <value>2</value>
+            </list>
+        </property>
+        <property name="restDays">
+            <array>
+                <value>7</value>
+            </array>
+        </property>
+        <property name="startTime" value="START_TIME"/>
+        <property name="mailSubject" value="SUMMARY_MAIL_SUBJECT"/>
+        <property name="bossesAddresses">
+            <array>
+                <value>boss1@address.com</value>
+                <value>boss2@address.com</value>
+            </array>
+        </property>
+        <property name="mailContent" value="SUMMARY_MAIL_CONTENT"/>
+        <property name="mailSenderIdentity" ref="mailSenderIdentity"/>
+    </bean>
+```
+
+| Property | Type | Description | Example |
+| - | - | - | - |
+| groupOnHoliday | boolean | Are members of this group on holiday? They do not need to send journals when it is `true` | false |
+| forBossesOnly | boolean | Should summary mail be sent to bosses only or every one? | true |
+| holidayers | String[] | Array of members who are on leave | `<value>Mary</value>` or `<null>` |
+| groups | List<Integer> | Group ids of members who should send work journal | <value>1</value> |
+| reastDays | int[] | Rest days during a week. `1` means Monday | <value>7</value> |
+| startTime | String | Time of send summary mail | 23:00:00 |
+| mailSubject | String | Subject of summary mail | Summary Mail |
+| bossesAddresses | String[] | Array of bosses' mail addresses | <value>boss1@address.com</value> |
+| mailContent | String | Content of summary mail | Attachment of this mail is about work journals of members of our group today. |
+| mailSenderIdentity | String | Reference of id of mail sender Identity. It better not be modified. | mailSenderIdentity |
+    
+- **Initialize Task**
+This task will periodically reset the content of DB and clear `inbox` of mail sender.
+```xml
+    <bean id="initializeTask" class="com.implementist.nisljournalmanager.domain.InitializeTask">
+        <property name="startTime" value="START_TIME"/>
+        <property name="initialContent" value=""/>
+        <property name="sourceFolder" value="INBOX"/>
+        <property name="targetFolder" value="TARGET_FOLDER"/>        
+        <property name="mailSenderIdentity" ref="mailSenderIdentity"/>
+    </bean>
+```
+
+| Property | Type | Description | Example |
+| - | - | - | - |
+| startTime | String | Time of execute initialize task | 23:59:00 |
+| initialContent | String | Init journal content of each member |  |
+| sourceFolder | String | From which folder of mail sender to read journal contents of members | INBOX |
+| targetFolder | String | Move mails of the last day to which folder | OldJournals |
+| mailSenderIdentity | String | Reference of id of mail sender Identity. It better not be modified. | mailSenderIdentity |
