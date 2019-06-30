@@ -33,7 +33,7 @@ You can set your own bussiness by modify two config files: `src/main/resources/j
 
 **Let's begin with** `journalConfig.xml`**. there are four types of configurable bean.**
 
-- **Mail Sender Identity**
+- **Mail Sender Identity**</br>
 Identity info of mail sender
 ```xml
     <bean id="mailSenderIdentity" class="com.implementist.nisljournalmanager.domain.Identity">
@@ -49,7 +49,8 @@ Identity info of mail sender
 | nickName | String | Nick name for mail sender | Implementist |
 | authCode | String | Auth code or password of this email | Password |
 
-- **Urge Task**
+</br>
+- **Urge Task**</br>
 Set scheduled tasks to send mail to urge your staff to submit their work journal. **Urge mail will be sent to members of groups configured in `SummaryTask` by default. The program will perform a filtration automatically to get the correct `to` list.**
 ```xml
     <bean id="urgeTask1" class="com.implementist.nisljournalmanager.domain.UrgeTask">
@@ -67,7 +68,8 @@ Set scheduled tasks to send mail to urge your staff to submit their work journal
 | mailContent | String | Content of urge mail | Please submit your work journal on time. |
 | mailSenderIdentity | String | Reference of id of mail sender Identity. It better not be modified. | mailSenderIdentity |
 
-- **Summary Task**
+</br>
+- **Summary Task**</br>
 The summary task will conclude work journals of all staff to generate a `PDF` file and make it be the attachment of the summary mail. Then send the letter to staff and bosses or just to bosses.
 ```xml
     <bean id="summaryTask1" class="com.implementist.nisljournalmanager.domain.SummaryTask">
@@ -112,8 +114,9 @@ The summary task will conclude work journals of all staff to generate a `PDF` fi
 | bossesAddresses | String[] | Array of bosses' mail addresses | <value>boss1@address.com</value> |
 | mailContent | String | Content of summary mail | Attachment of this mail is about work journals of members of our group today. |
 | mailSenderIdentity | String | Reference of id of mail sender Identity. It better not be modified. | mailSenderIdentity |
-    
-- **Initialize Task**
+
+</br>
+- **Initialize Task**</br>
 This task will periodically reset the content of DB and clear `inbox` of mail sender.
 ```xml
     <bean id="initializeTask" class="com.implementist.nisljournalmanager.domain.InitializeTask">
@@ -132,3 +135,28 @@ This task will periodically reset the content of DB and clear `inbox` of mail se
 | sourceFolder | String | From which folder of mail sender to read journal contents of members | INBOX |
 | targetFolder | String | Move mails of the last day to which folder | OldJournals |
 | mailSenderIdentity | String | Reference of id of mail sender Identity. It better not be modified. | mailSenderIdentity |
+
+</br>
+**Finally, there are few more lines of config remaining in `systemConfig.xml`.**
+- **System Config**</br>
+```xml
+    <bean id="systemConfig" class="com.implementist.nisljournalmanager.domain.SystemConfig">
+        <property name="holidayModeOn" value="false"/>
+        <property name="holidayFrom" value="2019-06-07"/>
+        <property name="holidayTo" value="2019-06-09"/>
+        <property name="workdayModeOn" value="false"/>
+        <property name="workdayFrom" value="2019-05-05"/>
+        <property name="workdayTo" value="2019-05-05"/>
+    </bean>
+```
+
+| Property | Type | Description | Example |
+| - | - | - | - |
+| holidayModeOn | boolean | Are the whole group of members on holiday that no one should send journal? | false |
+| holidayFrom | String | Date of the first day of holiday | 2019-10-01 |
+| holidayTo | String | Date of the last day of holiday | 2019-10-07 |
+| workDayModeOn | boolean | Should staff work even on a rest day? | false |
+| workdayFrom | String | Date of the first day of workday | 2019-09-28 |
+| workdayTo | String | Date of the last day of workday | 2019-09-29 |
+
+</br>
