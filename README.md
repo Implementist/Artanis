@@ -131,7 +131,7 @@ This task will periodically reset the content of DB and clear `inbox` of mail se
 | targetFolder | String | Move mails of the last day to which folder | OldJournals |
 | mailSenderIdentity | String | Reference of id of mail sender Identity. It better not be modified. | mailSenderIdentity |
 
--------</br></br>
+-------
 ### System Properties
 There are few more lines of config remaining in `src/main/resources/systemConfig.xml`.
 
