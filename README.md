@@ -1,29 +1,40 @@
-# NISLJournalManager: A staff work journal auto-collect system.
+# NISLJournalManager: A staff work journal auto-collect system
 [![Build Status](https://travis-ci.com/Implementist/NISLJournalManager.svg?token=tApu9wqBLRxw6iZbENoB&branch=master)](https://travis-ci.com/Implementist/NISLJournalManager)
 [![License](https://img.shields.io/badge/licence-Apache%202.0-brightgreen.svg?style=flat)](LICENSE)
+
+[中文版](https://github.com/Implementist/NISLJournalManager/blob/master/README_CN.md)
 
 NISLJournalManager is a spring framework based staff work journal auto-collect system. You can DIY your urging and summary tasks without re-compile the whole project but modify the config files only.
 
 Various options make it easy to use. For example, you can set which day(s) is the rest day of your group in a week. And you can also set `holidayers` list for people who are on leave. After doing so, they do not need to submit work journals during their holiday.
 
+**Note that this is a pure back-end system without any UI pages.**
+
 ## Usage
 You can build up your work journal collecting system by just doing the following few steps.
 
-### Step1: Set up databases
+### Step1: Apply for an Email Account
+**This email account is called `Mail Sender`.** 
+- The staff of your group should sender their work journal to this address.
+- The system sends emails(includes urge mails and summary mails) by this account.
+- The system collects work journals from the `INBOX` of this mail address.
+**You can extend configs of other mail service providers and the use their email account, or by default you should apply and use a `NetEase 163` account.**
+
+### Step2: Set up databases
 - Create a database with name `nisl_journal` and its charset should be `utf8 -- UTF-8 Unicode`.
 - Create a table named `group` with [DDL](https://github.com/Implementist/NISLJournalManager/blob/master/docs/ddl-group.md).
 - Create a table named `member` with [DDL](https://github.com/Implementist/NISLJournalManager/blob/master/docs/ddl-member.md).
 
-### Step2: Make your own config
+### Step3: Make your own config
 - There are various properties to config to run your bussiness. For details see [Configuration](https://github.com/Implementist/NISLJournalManager/tree/master#configuration)
 
-### Step3: Build & Deploy
+### Step4: Build & Deploy
 After finishing configuration, you need to:
 - Insert some groups and their members into the two tables in database `nisl_journal`. 
 - Build this project with maven and then deploy the `NISLJournalManager.war` file to the tomcat server.
 
 ## Configuration
-**The following steps of config is nessesary.**
+The following steps of config is nessesary.
 
 ### Set Property of DB
 For program access your DB successfully, you have to replace default DB properties with your own. For details see [DB config](https://github.com/Implementist/NISLJournalManager/blob/master/docs/db-config.md).
@@ -107,11 +118,11 @@ The summary task will conclude work journals of all staff to generate a `PDF` fi
 | groupOnHoliday | boolean | Are members of this group on holiday? They do not need to send journals when it is `true` | false |
 | forBossesOnly | boolean | Should summary mail be sent to bosses only or every one? | true |
 | holidayers | String[] | Array of members who are on leave | `<value>Mary</value>` or `<null>` |
-| groups | List<Integer> | Group ids of members who should send work journal | <value>1</value> |
-| reastDays | int[] | Rest days during a week. `1` means Monday | <value>7</value> |
+| groups | List&lt;Integer&gt; | Group ids of members who should send work journal | &lt;value&gt;1&lt;/value&gt; |
+| reastDays | int[] | Rest days during a week. `1` means Monday | &lt;value&gt;7&lt;/value&gt; |
 | startTime | String | Time of send summary mail | 23:00:00 |
 | mailSubject | String | Subject of summary mail | Summary Mail |
-| bossesAddresses | String[] | Array of bosses' mail addresses | <value>boss1@address.com</value> |
+| bossesAddresses | String[] | Array of bosses' mail addresses | &lt;value&gt;boss1@address.com&lt;/value&gt; |
 | mailContent | String | Content of summary mail | Attachment of this mail is about work journals of members of our group today. |
 | mailSenderIdentity | String | Reference of id of mail sender Identity. It better not be modified. | mailSenderIdentity |
 
@@ -162,5 +173,25 @@ There are few more lines of config remaining in `src/main/resources/systemConfig
 | workdayFrom | String | Date of the first day of workday | 2019-09-28 |
 | workdayTo | String | Date of the last day of workday | 2019-09-29 |
 
-</br>
+## Comunication
+- **Email:** implementist@outlook.com
+- **WeChat:** Megamind_cs
+- **CSDN:** https://blog.csdn.net/mr_megamind
+- **[GitHub Issues](https://github.com/Implementist/NISLJournalManager/issues)**
 
+## LICENSE
+```
+Copyright (c) 2017-present, NISLJournalManager Contributors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
