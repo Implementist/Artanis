@@ -23,9 +23,6 @@ public class InitializeTaskFactory extends TaskFactory {
     private MemberDAO memberDAO;
 
     @Autowired
-    private TimeService timeService;
-
-    @Autowired
     private MailService mailService;
 
     private static ThreadLocal<InitializeTask> initializeTaskHolder;

@@ -29,9 +29,7 @@ After finishing configuration, you need to:
 For program access your DB successfully, you have to replace default DB properties with your own. For details see [DB config](https://github.com/Implementist/NISLJournalManager/blob/master/docs/db-config.md).
 
 ### Journal Properties
-You can set your own bussiness by modify two config files: `src/main/resources/journalConfig.xml` and `src/main/resources/systemConfig.xml`.
-
-**Let's begin with** `journalConfig.xml`**. there are four types of configurable bean.**
+You can set your own tasks by modifying config file `src/main/resources/journalConfig.xml`.
 
 - **Mail Sender Identity**</br>
 Identity info of mail sender
@@ -49,6 +47,7 @@ Identity info of mail sender
 | nickName | String | Nick name for mail sender | Implementist |
 | authCode | String | Auth code or password of this email | Password |
 
+</br>
 
 - **Urge Task**</br>
 Set scheduled tasks to send mail to urge your staff to submit their work journal. **Urge mail will be sent to members of groups configured in `SummaryTask` by default. The program will perform a filtration automatically to get the correct `to` list.**
@@ -60,7 +59,7 @@ Set scheduled tasks to send mail to urge your staff to submit their work journal
         <property name="mailSenderIdentity" ref="mailSenderIdentity"/>
     </bean>
 ```
-
+    
 | Property | Type | Description | Example |
 | - | - | - | - |
 | startTime | String | Time of send urge mail | 22:00:00 |
@@ -68,6 +67,7 @@ Set scheduled tasks to send mail to urge your staff to submit their work journal
 | mailContent | String | Content of urge mail | Please submit your work journal on time. |
 | mailSenderIdentity | String | Reference of id of mail sender Identity. It better not be modified. | mailSenderIdentity |
 
+</br>
 
 - **Summary Task**</br>
 The summary task will conclude work journals of all staff to generate a `PDF` file and make it be the attachment of the summary mail. Then send the letter to staff and bosses or just to bosses.
@@ -115,6 +115,7 @@ The summary task will conclude work journals of all staff to generate a `PDF` fi
 | mailContent | String | Content of summary mail | Attachment of this mail is about work journals of members of our group today. |
 | mailSenderIdentity | String | Reference of id of mail sender Identity. It better not be modified. | mailSenderIdentity |
 
+</br>
 
 - **Initialize Task**</br>
 This task will periodically reset the content of DB and clear `inbox` of mail sender.
@@ -136,8 +137,10 @@ This task will periodically reset the content of DB and clear `inbox` of mail se
 | targetFolder | String | Move mails of the last day to which folder | OldJournals |
 | mailSenderIdentity | String | Reference of id of mail sender Identity. It better not be modified. | mailSenderIdentity |
 
+-------
+### System Properties
+There are few more lines of config remaining in `src/main/resources/systemConfig.xml`.
 
-**Finally, there are few more lines of config remaining in `systemConfig.xml`.**
 - **System Config**</br>
 ```xml
     <bean id="systemConfig" class="com.implementist.nisljournalmanager.domain.SystemConfig">
@@ -160,3 +163,4 @@ This task will periodically reset the content of DB and clear `inbox` of mail se
 | workdayTo | String | Date of the last day of workday | 2019-09-29 |
 
 </br>
+
