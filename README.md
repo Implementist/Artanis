@@ -9,18 +9,18 @@ Various options make it easy to use. For example, you can set which day(s) is th
 ## Usage
 You can build up your work journal collecting system by just doing the following few steps.
 
->### Step1: Set up databases
->>- Create a database with name `nisl_journal` and its charset should be `utf8 -- UTF-8 Unicode`.
->>- Create a table named `group` with [DDL](https://github.com/Implementist/NISLJournalManager/blob/master/docs/ddl-group.md).
->>- Create a table named `member` with [DDL](https://github.com/Implementist/NISLJournalManager/blob/master/docs/ddl-member.md).
+### Step1: Set up databases
+- Create a database with name `nisl_journal` and its charset should be `utf8 -- UTF-8 Unicode`.
+- Create a table named `group` with [DDL](https://github.com/Implementist/NISLJournalManager/blob/master/docs/ddl-group.md).
+- Create a table named `member` with [DDL](https://github.com/Implementist/NISLJournalManager/blob/master/docs/ddl-member.md).
 
->### Step2: Make your own config
->>- There are various properties to config to run your bussiness. For details see [Configuration](https://github.com/Implementist/NISLJournalManager/tree/master#configuration)
+### Step2: Make your own config
+- There are various properties to config to run your bussiness. For details see [Configuration](https://github.com/Implementist/NISLJournalManager/tree/master#configuration)
 
->### Step3: Build & Deploy
->After finishing configuration, you need to:
->>- Insert some groups and their members into the two tables in database `nisl_journal`. 
->>- Build this project with maven and then deploy the `NISLJournalManager.war` file to the tomcat server.
+### Step3: Build & Deploy
+After finishing configuration, you need to:
+- Insert some groups and their members into the two tables in database `nisl_journal`. 
+- Build this project with maven and then deploy the `NISLJournalManager.war` file to the tomcat server.
 
 ## Configuration
 **The following steps of config is nessesary.**
@@ -49,7 +49,7 @@ Identity info of mail sender
 | nickName | String | Nick name for mail sender | Implementist |
 | authCode | String | Auth code or password of this email | Password |
 
-
+    
 - **Urge Task**</br>
 Set scheduled tasks to send mail to urge your staff to submit their work journal. **Urge mail will be sent to members of groups configured in `SummaryTask` by default. The program will perform a filtration automatically to get the correct `to` list.**
 ```xml
@@ -60,7 +60,7 @@ Set scheduled tasks to send mail to urge your staff to submit their work journal
         <property name="mailSenderIdentity" ref="mailSenderIdentity"/>
     </bean>
 ```
-
+    
 | Property | Type | Description | Example |
 | - | - | - | - |
 | startTime | String | Time of send urge mail | 22:00:00 |
