@@ -26,7 +26,7 @@ NISLJournalManager是一款基于Spring Framework的员工工作日报自动收�
 - 通过 [DDL](https://github.com/Implementist/NISLJournalManager/blob/master/docs/ddl-member.md) 创建一个名为`member`的表。
 
 ### 步骤3: 使用自己的配置
-- 有许多属性可以配置来运行你自己的业务逻辑。详情见 [配置](https://github.com/Implementist/NISLJournalManager/tree/master#configuration)
+- 有许多属性可以配置来运行你自己的业务逻辑。详情见 [配置](https://github.com/Implementist/NISLJournalManager/blob/master/README_CN.md#%E9%85%8D%E7%BD%AE)
 
 ### 步骤4: 构建和部署
 完成了配置之后，你需要：
