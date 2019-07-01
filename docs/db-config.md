@@ -22,7 +22,7 @@ For `username` and `password` of DB is sensitive, we create the main method to c
     }
 ```
 
-**Output**
+- Output
 ```
 fmvcOKRgpm0=
 VcnJNjqg6p9SQ/XsmlEhag==
