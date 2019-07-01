@@ -174,10 +174,10 @@ Mail Sender的身份信息
 | workdayTo | String | 调休日的最后一天 | 2019-09-29 |
 
 ## 联系我
-- 邮箱: implementist@outlook.com
-- 微信: Megamind_cs
-- CSDN: https://blog.csdn.net/mr_megamind
-- [GitHub Issues](https://github.com/Implementist/NISLJournalManager/issues)
+- **邮箱:** implementist@outlook.com
+- **微信:** Megamind_cs
+- **CSDN:** https://blog.csdn.net/mr_megamind
+- **[GitHub Issues](https://github.com/Implementist/NISLJournalManager/issues)**
 
 ## 开源许可
 ```

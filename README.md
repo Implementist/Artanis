@@ -174,10 +174,10 @@ There are few more lines of config remaining in `src/main/resources/systemConfig
 | workdayTo | String | Date of the last day of workday | 2019-09-29 |
 
 ## Comunication
-- Email: implementist@outlook.com
-- WeChat: Megamind_cs
-- CSDN: https://blog.csdn.net/mr_megamind
-- [GitHub Issues](https://github.com/Implementist/NISLJournalManager/issues)
+- **Email:** implementist@outlook.com
+- **WeChat:** Megamind_cs
+- **CSDN:** https://blog.csdn.net/mr_megamind
+- **[GitHub Issues](https://github.com/Implementist/NISLJournalManager/issues)**
 
 ## LICENSE
 ```
