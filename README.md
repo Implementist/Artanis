@@ -45,7 +45,9 @@ Identity info of mail sender
 | - | - | - | - |
 | from | String | Email address of mail sender | abc@example.com |
 | nickName | String | Nick name for mail sender | Implementist |
-| authCode | String | Auth code or password of this email | Password |</br></br>
+| authCode | String | Auth code or password of this email | Password |
+
+</br></br>
 
 - **Urge Task**</br>
 Set scheduled tasks to send mail to urge your staff to submit their work journal. **Urge mail will be sent to members of groups configured in `SummaryTask` by default. The program will perform a filtration automatically to get the correct `to` list.**
