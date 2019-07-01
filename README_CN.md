@@ -1,6 +1,8 @@
-# NISLJournalManager: 员工工作日报自动收发系统 [English Version](https://github.com/Implementist/NISLJournalManager/blob/master/README.md)
+# NISLJournalManager: 员工工作日报自动收发系统
 [![Build Status](https://travis-ci.com/Implementist/NISLJournalManager.svg?token=tApu9wqBLRxw6iZbENoB&branch=master)](https://travis-ci.com/Implementist/NISLJournalManager)
 [![License](https://img.shields.io/badge/licence-Apache%202.0-brightgreen.svg?style=flat)](LICENSE)
+
+[English Version](https://github.com/Implementist/NISLJournalManager/blob/master/README.md)
 
 NISLJournalManager是一款基于Spring Framework的员工工作日报自动收发系统。你可以DIY你的催促和总结任务，在无需重新编译整个项目的前提下，只修改少数配置文件。
 
@@ -15,7 +17,7 @@ NISLJournalManager是一款基于Spring Framework的员工工作日报自动收�
 这个邮箱被称作`Mail Sender`.
 - 你的小组中的员工应该将他们的工作日志发送到这个邮箱。
 - 系统将通过这个账户发送邮件（包括催促邮件和汇总邮件）。
-- 系统会从这个邮箱的`收件箱`收取工作日志。
+- 系统会从这个邮箱的收件箱收取工作日志。
 **你可以扩展其他邮件服务提供商的配置并使用他们的电子邮箱，否则在默认情况下，你应该申请并使用网易163帐户。**
 
 ### 步骤2: 创建数据库
@@ -170,3 +172,26 @@ Mail Sender的身份信息
 | workDayModeOn | boolean | 调休模式是否开启？开启后即使在休息日也需要提交工作日志 | false |
 | workdayFrom | String | 调休日的第一天 | 2019-09-28 |
 | workdayTo | String | 调休日的最后一天 | 2019-09-29 |
+
+## 联系我
+- 邮箱: implementist@outlook.com
+- 微信: Megamind_cs
+- CSDN: https://blog.csdn.net/mr_megamind
+- [GitHub Issues](https://github.com/Implementist/NISLJournalManager/issues)
+
+## 开源许可
+```
+Copyright (c) 2017-present, NISLJournalManager Contributors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```

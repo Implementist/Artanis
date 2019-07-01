@@ -1,6 +1,8 @@
-# NISLJournalManager: A staff work journal auto-collect system [中文版](https://github.com/Implementist/NISLJournalManager/blob/master/README_CN.md)
+# NISLJournalManager: A staff work journal auto-collect system
 [![Build Status](https://travis-ci.com/Implementist/NISLJournalManager.svg?token=tApu9wqBLRxw6iZbENoB&branch=master)](https://travis-ci.com/Implementist/NISLJournalManager)
 [![License](https://img.shields.io/badge/licence-Apache%202.0-brightgreen.svg?style=flat)](LICENSE)
+
+[中文版](https://github.com/Implementist/NISLJournalManager/blob/master/README_CN.md)
 
 NISLJournalManager is a spring framework based staff work journal auto-collect system. You can DIY your urging and summary tasks without re-compile the whole project but modify the config files only.
 
@@ -170,3 +172,26 @@ There are few more lines of config remaining in `src/main/resources/systemConfig
 | workDayModeOn | boolean | Should staff work even on a rest day? | false |
 | workdayFrom | String | Date of the first day of workday | 2019-09-28 |
 | workdayTo | String | Date of the last day of workday | 2019-09-29 |
+
+## Comunication
+- Email: implementist@outlook.com
+- WeChat: Megamind_cs
+- CSDN: https://blog.csdn.net/mr_megamind
+- [GitHub Issues](https://github.com/Implementist/NISLJournalManager/issues)
+
+## LICENSE
+```
+Copyright (c) 2017-present, NISLJournalManager Contributors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
