@@ -5,5 +5,5 @@ CREATE TABLE `group` (
   `Id` int(2) unsigned NOT NULL,
   `Name` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ```

@@ -4,6 +4,8 @@
 
 [中文版](https://github.com/Implementist/NISLJournalManager/blob/master/README_CN.md)
 
+![Content of Summary PDF](https://raw.github.com/Implementist/NISLJournalManager/master/images/content_of_summary_pdf.png)
+
 NISLJournalManager is a spring framework based staff work journal auto-collect system. You can DIY your urging and summary tasks without re-compile the whole project but modify the config files only.
 
 Various options make it easy to use. For example, you can set which day(s) is the rest day of your group in a week. And you can also set `holidayers` list for people who are on leave. After doing so, they do not need to submit work journals during their holiday.
@@ -21,7 +23,7 @@ You can build up your work journal collecting system by just doing the following
 **You can extend configs of other mail service providers and the use their email account, or by default you should apply and use a `NetEase 163` account.**
 
 ### Step2: Set up databases
-- Create a database with name `nisl_journal` and its charset should be `utf8 -- UTF-8 Unicode`.
+- Create a database with name `nisl_journal` and its charset should be `utf8mb4 -- UTF-8 Unicode`.
 - Create a table named `group` with [DDL](https://github.com/Implementist/NISLJournalManager/blob/master/docs/ddl-group.md).
 - Create a table named `member` with [DDL](https://github.com/Implementist/NISLJournalManager/blob/master/docs/ddl-member.md).
 
@@ -117,7 +119,7 @@ The summary task will conclude work journals of all staff to generate a `PDF` fi
 | - | - | - | - |
 | groupOnHoliday | boolean | Are members of this group on holiday? They do not need to send journals when it is `true` | false |
 | forBossesOnly | boolean | Should summary mail be sent to bosses only or every one? | true |
-| holidayers | String[] | Array of members who are on leave | `<value>Mary</value>` or `<null>` |
+| holidayers | String[] | Array of members who are on leave | `<value>Mary</value>` or `<null/>` |
 | groups | List&lt;Integer&gt; | Group ids of members who should send work journal | &lt;value&gt;1&lt;/value&gt; |
 | reastDays | int[] | Rest days during a week. `1` means Monday | &lt;value&gt;7&lt;/value&gt; |
 | startTime | String | Time of send summary mail | 23:00:00 |

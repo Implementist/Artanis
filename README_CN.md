@@ -4,6 +4,8 @@
 
 [English Version](https://github.com/Implementist/NISLJournalManager/blob/master/README.md)
 
+![汇总PDF的内容](https://raw.github.com/Implementist/NISLJournalManager/master/images/content_of_summary_pdf_cn.png)
+
 NISLJournalManager是一款基于Spring Framework的员工工作日报自动收发系统。你可以DIY你的催促和总结任务，在无需重新编译整个项目的前提下，只修改少数配置文件。
 
 丰富的可选项使其非常得简单易用. 例如，你可以设置你的小组在一周中的哪一天休息。你还可以将正在请假或休假中的员工加入到`holidayers`列表，这样他们在假期就不会被系统催促提交工作日志了。
@@ -21,7 +23,7 @@ NISLJournalManager是一款基于Spring Framework的员工工作日报自动收�
 **你可以扩展其他邮件服务提供商的配置并使用他们的电子邮箱，否则在默认情况下，你应该申请并使用网易163帐户。**
 
 ### 步骤2: 创建数据库
-- 创建一个名叫`nisl_journal`的数据库，它的字符集应该是`utf8 -- UTF-8 Unicode`。
+- 创建一个名叫`nisl_journal`的数据库，它的字符集应该是`utf8mb4 -- UTF-8 Unicode`。
 - 通过 [DDL](https://github.com/Implementist/NISLJournalManager/blob/master/docs/ddl-group.md) 创建一个名为`group`的表。
 - 通过 [DDL](https://github.com/Implementist/NISLJournalManager/blob/master/docs/ddl-member.md) 创建一个名为`member`的表。
 
@@ -117,7 +119,7 @@ Mail Sender的身份信息
 | - | - | - | - |
 | groupOnHoliday | boolean | 是否整个小组都在放假？如果设置为`true`，所有人都不需要发送工作日志 | false |
 | forBossesOnly | boolean | 汇总邮件之发送给领导还是发送给所有人？ | true |
-| holidayers | String[] | 小组中正在请假或休假的人 | `<value>小明</value>` 或者 `<null>` |
+| holidayers | String[] | 小组中正在请假或休假的人 | `<value>小明</value>` 或者 `<null/>` |
 | groups | List&lt;Integer&gt; | 需要提交工作日志的小组的id号 | &lt;value&gt;1&lt;/value&gt; |
 | reastDays | int[] | 一周中的休息日，`1`代表星期一 | &lt;value&gt;7&lt;/value&gt; |
 | startTime | String | 发送汇总邮件的时间 | 23:00:00 |
