@@ -33,7 +33,7 @@ The config file `jdbc.properties` is under `src/main/resources/`.
 
 ```
 driverClassName=com.mysql.jdbc.Driver
-url=jdbc:mysql://localhost:3306/nisl_journal
+url=jdbc:mysql://localhost:3306/nisl_journal?useSSL=true&serverTimezone=GMT%2B8
 username=fmvcOKRgpm0=
 password=VcnJNjqg6p9SQ/XsmlEhag==
 ```
@@ -41,6 +41,6 @@ password=VcnJNjqg6p9SQ/XsmlEhag==
 | Property | Description | Example |
 | - | - | - |
 | driverClassName | Mysql Connector | com.mysql.jdbc.Driver |
-| url | URL to connect db. Your can modify port and db name by your wish | jdbc:mysql://localhost:3306/nisl_journal |
+| url | URL to connect db. Your can modify port and db name by your wish | jdbc:mysql://localhost:3306/nisl_journal?useSSL=true&serverTimezone=GMT%2B8 |
 | username | Encrypted db username | fmvcOKRgpm0= |
 | password | Encrypted db password | VcnJNjqg6p9SQ/XsmlEhag== |
