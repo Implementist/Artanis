@@ -1,6 +1,8 @@
 # NISLJournalManager: 员工工作日报自动收发系统
 [![Build Status](https://travis-ci.com/Implementist/NISLJournalManager.svg?token=tApu9wqBLRxw6iZbENoB&branch=master)](https://travis-ci.com/Implementist/NISLJournalManager)
 [![License](https://img.shields.io/badge/licence-Apache%202.0-brightgreen.svg?style=flat)](LICENSE)
+![release](https://img.shields.io/github/release/Implementist/NISLJournalManager.svg)
+![vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/Implementist/NISLJournalManager.svg)
 
 [English Version](https://github.com/Implementist/NISLJournalManager/blob/master/README.md)
 

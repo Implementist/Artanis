@@ -1,6 +1,8 @@
 # NISLJournalManager: A staff work journal auto-collect system
 [![Build Status](https://travis-ci.com/Implementist/NISLJournalManager.svg?token=tApu9wqBLRxw6iZbENoB&branch=master)](https://travis-ci.com/Implementist/NISLJournalManager)
 [![License](https://img.shields.io/badge/licence-Apache%202.0-brightgreen.svg?style=flat)](LICENSE)
+![release](https://img.shields.io/github/release/Implementist/NISLJournalManager.svg)
+![vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/Implementist/NISLJournalManager.svg)
 
 [中文版](https://github.com/Implementist/NISLJournalManager/blob/master/README_CN.md)
 
