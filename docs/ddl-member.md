@@ -10,5 +10,5 @@ CREATE TABLE `member` (
   `EmailAddress` varchar(128) NOT NULL DEFAULT '',
   `Identity` varchar(16) DEFAULT NULL,
   PRIMARY KEY (`Id`,`EmailAddress`)
-) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8mb4;
 ```
