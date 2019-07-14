@@ -7,17 +7,18 @@ package com.implementist.nisljournalmanager.service;
 
 import com.implementist.nisljournalmanager.dao.MemberDAO;
 import com.implementist.nisljournalmanager.domain.InitializeTask;
-import javax.servlet.ServletContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import javax.servlet.ServletContext;
+
 /**
  *
  * @author Implementist
  */
-public class InitializeTaskFactory extends TaskFactory {
+public class InitializeBaseTaskFactory extends BaseTaskFactory {
 
     @Autowired
     private MemberDAO memberDAO;
@@ -28,7 +29,7 @@ public class InitializeTaskFactory extends TaskFactory {
     private static ThreadLocal<InitializeTask> initializeTaskHolder;
 
     @SuppressWarnings("LeakingThisInConstructor")
-    public InitializeTaskFactory(ServletContext context) {
+    public InitializeBaseTaskFactory(ServletContext context) {
         WebApplicationContext wac = WebApplicationContextUtils.getWebApplicationContext(context);
         AutowireCapableBeanFactory factory = wac.getAutowireCapableBeanFactory();
         factory.autowireBean(this);

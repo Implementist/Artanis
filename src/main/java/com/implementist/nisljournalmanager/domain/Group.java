@@ -5,11 +5,11 @@
  */
 package com.implementist.nisljournalmanager.domain;
 
-import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 /**
  *
@@ -21,10 +21,10 @@ public class Group implements Serializable {
 
     @Id
     @Column(name = "Id")
-    private int id;  //Id
+    private int id;
 
     @Column(name = "Name")
-    private String name;  //名称
+    private String name;
 
     public int getId() {
         return id;

@@ -19,7 +19,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  *
  * @author Implementist
  */
-public class UrgeTaskFactory extends TaskFactory {
+public class UrgeBaseTaskFactory extends BaseTaskFactory {
 
     @Autowired
     private MemberDAO memberDAO;
@@ -30,7 +30,7 @@ public class UrgeTaskFactory extends TaskFactory {
     private static ThreadLocal<UrgeTask> urgeTaskHolder;
 
     @SuppressWarnings("LeakingThisInConstructor")
-    public UrgeTaskFactory(ServletContext context) {
+    public UrgeBaseTaskFactory(ServletContext context) {
         WebApplicationContext wac = WebApplicationContextUtils.getWebApplicationContext(context);
         AutowireCapableBeanFactory factory = wac.getAutowireCapableBeanFactory();
         factory.autowireBean(this);

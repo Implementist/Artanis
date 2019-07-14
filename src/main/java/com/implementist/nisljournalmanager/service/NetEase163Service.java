@@ -6,21 +6,16 @@
 package com.implementist.nisljournalmanager.service;
 
 import com.implementist.nisljournalmanager.domain.Identity;
-import java.util.HashMap;
-import java.util.Properties;
-import javax.mail.Address;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.NoSuchProviderException;
-import javax.mail.Session;
-import javax.mail.Store;
-import javax.mail.Transport;
 import org.apache.log4j.Logger;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+
+import javax.mail.*;
+import java.util.HashMap;
+import java.util.Properties;
 
 /**
  *
@@ -66,7 +61,8 @@ public class NetEase163Service {
         properties.setProperty("mail." + protocol + ".ssl.enable", "true");
 
         // 存储协议
-        if (!protocol.equals("smtp")) {
+        String smtp = "smtp";
+        if (!protocol.equals(smtp)) {
             properties.setProperty("mail.store.protocol", protocol);
         }
         return properties;
@@ -77,7 +73,7 @@ public class NetEase163Service {
      *
      * @param properties 通信属性
      * @return 邮件通信会话
-     * @throws RuntimeException
+     * @throws RuntimeException 任何运行时异常
      */
     @Retryable(value = RuntimeException.class, maxAttempts = 90, backoff = @Backoff)
     public Session getSession(Properties properties) throws RuntimeException {
@@ -97,8 +93,8 @@ public class NetEase163Service {
      * @param identity 邮箱身份
      * @param msg 邮件内容
      * @param addresses 收件人列表
-     * @throws NoSuchProviderException
-     * @throws MessagingException
+     * @throws NoSuchProviderException 没有这个服务提供商异常
+     * @throws MessagingException 信息异常
      */
     @Retryable(value = {NoSuchProviderException.class, MessagingException.class}, maxAttempts = 90, backoff = @Backoff)
     public void sendMessage(Session session, Identity identity, Message msg, Address[] addresses) throws NoSuchProviderException, MessagingException {
@@ -119,8 +115,8 @@ public class NetEase163Service {
      * @param session 邮件通信会话
      * @param identity 邮箱身份
      * @return 邮箱存储
-     * @throws NoSuchProviderException
-     * @throws MessagingException
+     * @throws NoSuchProviderException 没有这个服务提供商异常
+     * @throws MessagingException 信息异常
      */
     @Retryable(value = {NoSuchProviderException.class, MessagingException.class}, maxAttempts = 90, backoff = @Backoff)
     public Store getStore(Session session, Identity identity) throws NoSuchProviderException, MessagingException {

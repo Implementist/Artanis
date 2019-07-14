@@ -13,3 +13,7 @@ buildNumber.properties
 
 # netbeans config files
 nb-configuration.xml
+
+# Intellij IDEA
+.idea/
+*.iml

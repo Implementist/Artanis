@@ -6,14 +6,22 @@
 package com.implementist.nisljournalmanager.domain;
 
 /**
- *
  * @author Implementist
  */
 public class Identity {
 
-    private String from;  //账户源地址
-    private String nickName;  //昵称
-    private String authCode;  //账户授权码
+    /**
+     * 邮箱账户
+     */
+    private String from;
+    /**
+     * 昵称
+     */
+    private String nickName;
+    /**
+     * 账户授权码
+     */
+    private String authCode;
 
     public String getFrom() {
         return from;
