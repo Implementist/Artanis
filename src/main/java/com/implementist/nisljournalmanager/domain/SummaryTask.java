@@ -13,16 +13,46 @@ import java.util.List;
  */
 public class SummaryTask {
 
-    private boolean groupOnHoliday;  //小组是否在休假
-    private boolean forBossesOnly;  //该汇总任务是否只发送给老师
-    private String[] holidayers;  //休假或请假中的人（成员名）数组
-    private List<Integer> groups;  //当前任务包含的小组
-    private int[] restDays;  //每周的休息日
-    private String startTime;  //任务起始时间
-    private String mailSubject;  //邮件主题
-    private String[] bossesAddresses;  //抄送人邮箱数组
-    private String mailContent;  //邮件内容
-    private Identity mailSenderIdentity;  //邮件发送者身份
+    /**
+     * 小组是否在休假
+     */
+    private boolean groupOnHoliday;
+    /**
+     * 该汇总任务是否只发送给老师
+     */
+    private boolean forBossesOnly;
+    /**
+     * 休假或请假中的人（成员名）数组
+     */
+    private String[] holidayers;
+    /**
+     * 当前任务包含的小组
+     */
+    private List<Integer> groups;
+    /**
+     * 每周的休息日
+     */
+    private int[] restDays;
+    /**
+     * 任务起始时间
+     */
+    private String startTime;
+    /**
+     * 邮件主题
+     */
+    private String mailSubject;
+    /**
+     * 抄送人邮箱数组
+     */
+    private String[] bossesAddresses;
+    /**
+     * 邮件内容
+     */
+    private String mailContent;
+    /**
+     * 邮件发送者身份
+     */
+    private Identity mailSenderIdentity;
 
     public boolean isGroupOnHoliday() {
         return groupOnHoliday;

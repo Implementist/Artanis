@@ -11,11 +11,26 @@ package com.implementist.nisljournalmanager.domain;
  */
 public class InitializeTask {
 
-    private String startTime;  //任务起始时间
-    private String initialContent;  //初始化后的日报内容
-    private String sourceFolder;  //需要被移动的邮件的源文件夹
-    private String targetFolder;  //目标文件夹
-    private Identity mailSenderIdentity;  //邮箱账户身份信息
+    /**
+     * 任务起始时间
+     */
+    private String startTime;
+    /**
+     * 初始化后的日报内容
+     */
+    private String initialContent;
+    /**
+     * 需要被移动的邮件的源文件夹
+     */
+    private String sourceFolder;
+    /**
+     * 目标文件夹
+     */
+    private String targetFolder;
+    /**
+     * 邮箱账户身份信息
+     */
+    private Identity mailSenderIdentity;
 
     public String getStartTime() {
         return startTime;

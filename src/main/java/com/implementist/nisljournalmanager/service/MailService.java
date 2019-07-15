@@ -40,8 +40,14 @@ public class MailService {
     @Autowired
     private NetEase163Service netEase163Service;
 
-    private Boolean haveGotHtmlEdition;  //用于设置在一个邮件中是否已读出一份内容文本
-    private String currentContent;  //用于接收当前邮件中的内容文本
+    /**
+     * 用于设置在一个邮件中是否已读出一份内容文本
+     */
+    private Boolean haveGotHtmlEdition;
+    /**
+     * 用于接收当前邮件中的内容文本
+     */
+    private String currentContent;
 
     /**
      * 发送邮件

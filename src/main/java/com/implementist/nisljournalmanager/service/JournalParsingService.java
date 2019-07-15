@@ -45,11 +45,16 @@ public class JournalParsingService {
      * @return 清洁后的邮件内容
      */
     private String clean(String mailContent) {
-        mailContent = removeHtmlComments(mailContent);  //去掉HTML注释
-        mailContent = removeXmlTags(mailContent);  //去掉XML标签
-        mailContent = removeAds(mailContent);  //去掉带有a标签链接的广告
-        mailContent = removeStyles(mailContent);  //去除Style标签定义的样式信息
-        mailContent = removeScripts(mailContent);  //去除Script标签定义的脚本信息
+        //去掉HTML注释
+        mailContent = removeHtmlComments(mailContent);
+        //去掉XML标签
+        mailContent = removeXmlTags(mailContent);
+        //去掉带有a标签链接的广告
+        mailContent = removeAds(mailContent);
+        //去除Style标签定义的样式信息
+        mailContent = removeStyles(mailContent);
+        //去除Script标签定义的脚本信息
+        mailContent = removeScripts(mailContent);
         return mailContent;
     }
 
@@ -60,9 +65,12 @@ public class JournalParsingService {
      * @return 转以后的邮件内容
      */
     private String translate(String mailContent) {
-        mailContent = mailContent.replaceAll("<p ", "\n<");  //把每个p标签解析为一个换行符
-        mailContent = mailContent.replaceAll("<div", "\n<");  //把每个div标签解析为一个换行符
-        mailContent = mailContent.replaceAll("<br>", "\n");  //把每个<br>标签解析为一个换行符
+        //把每个p标签解析为一个换行符
+        mailContent = mailContent.replaceAll("<p ", "\n<");
+        //把每个div标签解析为一个换行符
+        mailContent = mailContent.replaceAll("<div", "\n<");
+        //把每个<br>标签解析为一个换行符
+        mailContent = mailContent.replaceAll("<br>", "\n");
         return mailContent;
     }
 

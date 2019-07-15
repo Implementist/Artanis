@@ -52,7 +52,8 @@ public class ScheduledService extends HttpServlet {
      */
     private final Runnable LOAD_TASK = () -> {
         //刷新配置文件
-        ApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:journalConfig.xml",
+        ApplicationContext ctx = new ClassPathXmlApplicationContext(
+                "classpath:journalConfig.xml",
                 "classpath:systemConfig.xml");
 
         SystemConfig systemConfig = getSystemConfig(ctx);
@@ -73,7 +74,7 @@ public class ScheduledService extends HttpServlet {
 
         //设置所有督促提交邮件
         if (urgeTasks != null) {
-            UrgeBaseTaskFactory urgeTaskFactory = new UrgeBaseTaskFactory(context);
+            UrgeTaskFactory urgeTaskFactory = new UrgeTaskFactory(context);
             for (UrgeTask urgeTask : urgeTasks) {
                 urgeTaskFactory.build(urgeTask);
                 executeOnce(urgeTask.getStartTime(), urgeTaskFactory.getRunnable());
@@ -82,7 +83,7 @@ public class ScheduledService extends HttpServlet {
 
         //设置所有的日报汇总任务
         if (summaryTasks != null) {
-            SummaryBaseTaskFactory summaryTaskFactory = new SummaryBaseTaskFactory(context);
+            SummaryTaskFactory summaryTaskFactory = new SummaryTaskFactory(context);
             for (SummaryTask summaryTask : summaryTasks) {
                 summaryTaskFactory.build(summaryTask);
                 executeOnce(summaryTask.getStartTime(), summaryTaskFactory.getRunnable());
@@ -91,7 +92,7 @@ public class ScheduledService extends HttpServlet {
 
         if (summaryTasks != null && summaryTasks.size() > 0) {
             //设置初始化邮箱和数据库任务
-            InitializeBaseTaskFactory initializeTaskFactory = new InitializeBaseTaskFactory(context);
+            InitializeTaskFactory initializeTaskFactory = new InitializeTaskFactory(context);
             initializeTaskFactory.build(initializeTask);
             executeOnce(initializeTask.getStartTime(), initializeTaskFactory.getRunnable());
         }
@@ -111,14 +112,18 @@ public class ScheduledService extends HttpServlet {
         AutowireCapableBeanFactory factory = wac.getAutowireCapableBeanFactory();
         factory.autowireBean(this);
 
-        ThreadFactory namedThreadFactory = new ThreadFactoryBuilder()
-                .setNameFormat("%s-pool-%d")
+        ThreadFactory mainThreadFactory = new ThreadFactoryBuilder()
+                .setNameFormat("pool-main-thread-%d")
+                .build();
+
+        ThreadFactory taskThreadFactory = new ThreadFactoryBuilder()
+                .setNameFormat("pool-task-thread-%d")
                 .build();
 
         periodicExecutor = new ScheduledThreadPoolExecutor(1,
-                namedThreadFactory, new ThreadPoolExecutor.DiscardOldestPolicy());
+                mainThreadFactory, new ThreadPoolExecutor.DiscardOldestPolicy());
         oneTimeExecutor = new ScheduledThreadPoolExecutor(5,
-                namedThreadFactory, new ThreadPoolExecutor.DiscardOldestPolicy());
+                taskThreadFactory, new ThreadPoolExecutor.DiscardOldestPolicy());
         executeByCycle("21:45:00", MILLIS_OF_ONE_DAY, LOAD_TASK);
     }
 

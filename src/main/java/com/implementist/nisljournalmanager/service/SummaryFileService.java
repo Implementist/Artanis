@@ -69,9 +69,12 @@ public class SummaryFileService {
             // 设置相关的参数
             setParameters(document, "DailySummary" + dateString, dateString + "日报汇总", "NISLJrounalManager", "NISLJrounalManager");
 
-            document.open();  // 打开文档
-            document.add(getHeader());  // 添加表头
-            addContentsByGroup(document, groups);  // 按小组添加日志内容
+            // 打开文档
+            document.open();
+            // 添加表头
+            document.add(getHeader());
+            // 按小组添加日志内容
+            addContentsByGroup(document, groups);
         } catch (IOException | DocumentException ex) {
             logger.error("IO Exception! | Document Exception!", ex);
         } finally {
@@ -145,8 +148,7 @@ public class SummaryFileService {
         } catch (IOException | DocumentException ex) {
             logger.error("IO Exception! | Document Exception!", ex);
         }
-        Font font = new Font(baseFont, fontSize, Font.NORMAL, Color.BLACK);
-        return font;
+        return new Font(baseFont, fontSize, Font.NORMAL, Color.BLACK);
     }
 
     /**
@@ -216,12 +218,18 @@ public class SummaryFileService {
      */
     private Document setParameters(Document document, String title, String subject, String author,
             String creator) {
-        document.addTitle(title);  // 设置标题
-        document.addSubject(subject);  // 设置主题
-        document.addAuthor(author);  // 设置作者
-        document.addCreator(creator);  // 设置创建者
-        document.addProducer();  // 设置生产者
-        document.addCreationDate();  // 设置创建日期
+        // 设置标题
+        document.addTitle(title);
+        // 设置主题
+        document.addSubject(subject);
+        // 设置作者
+        document.addAuthor(author);
+        // 设置创建者
+        document.addCreator(creator);
+        // 设置生产者
+        document.addProducer();
+        // 设置创建日期
+        document.addCreationDate();
         return document;
     }
 
@@ -230,7 +238,7 @@ public class SummaryFileService {
      *
      * @param document 文档对象
      */
-    private void addContentsByGroup(Document document, List<Integer> groups) throws BadElementException, DocumentException {
+    private void addContentsByGroup(Document document, List<Integer> groups) throws DocumentException {
         for (int group : groups) {
             Group groupInfo = groupDAO.queryGroupById(group);
             List<Member> groupMembers = memberDAO.queryByGroup(group);

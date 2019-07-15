@@ -15,7 +15,7 @@ import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
  */
 public class SensitivePropertyPlaceholderConfigurer extends PropertyPlaceholderConfigurer {
 
-    private static final DESUtil DES_UTIL = new DESUtil();
+    private static final DesUtil DES_UTIL = new DesUtil();
 
     private static final Set<String> SENSITIVE_PROPERTIES = new HashSet<String>() {
         {

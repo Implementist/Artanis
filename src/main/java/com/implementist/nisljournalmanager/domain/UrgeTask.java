@@ -13,11 +13,26 @@ import java.util.List;
  */
 public class UrgeTask {
 
-    private List<Integer> groups;  //当前任务包含的小组
-    private String startTime;  //任务起始时间
-    private String mailSubject;  //邮件主题
-    private String mailContent;  //邮件内容
-    private Identity mailSenderIdentity;  //邮件发送者身份
+    /**
+     * 当前任务包含的小组
+     */
+    private List<Integer> groups;
+    /**
+     * 任务起始时间
+     */
+    private String startTime;
+    /**
+     * 邮件主题
+     */
+    private String mailSubject;
+    /**
+     * 邮件内容
+     */
+    private String mailContent;
+    /**
+     * 邮件发送者身份
+     */
+    private Identity mailSenderIdentity;
 
     public List<Integer> getGroups() {
         return groups;

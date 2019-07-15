@@ -20,7 +20,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  *
  * @author Implementist
  */
-public class SummaryBaseTaskFactory extends BaseTaskFactory {
+public class SummaryTaskFactory extends BaseTaskFactory {
 
     @Autowired
     private MemberDAO memberDAO;
@@ -37,7 +37,7 @@ public class SummaryBaseTaskFactory extends BaseTaskFactory {
     private static ThreadLocal<SummaryTask> summaryTaskHolder;
 
     @SuppressWarnings("LeakingThisInConstructor")
-    public SummaryBaseTaskFactory(ServletContext context) {
+    public SummaryTaskFactory(ServletContext context) {
         WebApplicationContext wac = WebApplicationContextUtils.getWebApplicationContext(context);
         AutowireCapableBeanFactory factory = wac.getAutowireCapableBeanFactory();
         factory.autowireBean(this);

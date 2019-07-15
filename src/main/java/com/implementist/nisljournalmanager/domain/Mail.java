@@ -11,11 +11,26 @@ package com.implementist.nisljournalmanager.domain;
  */
 public class Mail {
 
-    private String subject;  //邮件主题
-    private String content;  //邮件内容
-    private String[] to;  //收件人数组
-    private String[] cc;  //抄送人数组
-    private String[] files;  //附件文件数组
+    /**
+     * 邮件主题
+     */
+    private String subject;
+    /**
+     * 邮件内容
+     */
+    private String content;
+    /**
+     * 收件人数组
+     */
+    private String[] to;
+    /**
+     * 抄送人数组
+     */
+    private String[] cc;
+    /**
+     * 附件文件数组
+     */
+    private String[] files;
 
     /**
      * 三参构造函数

@@ -18,7 +18,7 @@ import javax.servlet.ServletContext;
  *
  * @author Implementist
  */
-public class InitializeBaseTaskFactory extends BaseTaskFactory {
+public class InitializeTaskFactory extends BaseTaskFactory {
 
     @Autowired
     private MemberDAO memberDAO;
@@ -29,7 +29,7 @@ public class InitializeBaseTaskFactory extends BaseTaskFactory {
     private static ThreadLocal<InitializeTask> initializeTaskHolder;
 
     @SuppressWarnings("LeakingThisInConstructor")
-    public InitializeBaseTaskFactory(ServletContext context) {
+    public InitializeTaskFactory(ServletContext context) {
         WebApplicationContext wac = WebApplicationContextUtils.getWebApplicationContext(context);
         AutowireCapableBeanFactory factory = wac.getAutowireCapableBeanFactory();
         factory.autowireBean(this);
