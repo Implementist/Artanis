@@ -20,7 +20,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  *
  * @author Implementist
  */
-public class SummaryTaskFactory extends TaskFactory {
+public class SummaryTaskFactory extends BaseTaskFactory {
 
     @Autowired
     private MemberDAO memberDAO;

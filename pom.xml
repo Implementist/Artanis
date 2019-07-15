@@ -4,7 +4,7 @@
 
     <groupId>com.implementist</groupId>
     <artifactId>NISLJournalManager</artifactId>
-    <version>3.2.8</version>
+    <version>3.3.0</version>
     <packaging>war</packaging>
 
     <name>NISLJournalManager</name>
@@ -201,6 +201,13 @@
             <groupId>log4j</groupId>
             <artifactId>apache-log4j-extras</artifactId>
             <version>1.2.17</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>28.0-jre</version>
         </dependency>
     </dependencies>
 

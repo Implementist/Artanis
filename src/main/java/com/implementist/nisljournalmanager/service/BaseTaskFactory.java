@@ -6,13 +6,17 @@
 package com.implementist.nisljournalmanager.service;
 
 /**
- *
  * @author Implementist
  */
-public abstract class TaskFactory {
+public abstract class BaseTaskFactory {
 
     protected Runnable runnable;
 
+    /**
+     * 根据任务信息构建Runnable
+     *
+     * @param task 任务信息
+     */
     protected abstract void build(Object task);
 
     protected Runnable getRunnable() {

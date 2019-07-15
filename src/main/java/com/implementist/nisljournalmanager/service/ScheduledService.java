@@ -5,19 +5,12 @@
  */
 package com.implementist.nisljournalmanager.service;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.implementist.nisljournalmanager.dao.MemberDAO;
 import com.implementist.nisljournalmanager.domain.InitializeTask;
 import com.implementist.nisljournalmanager.domain.SummaryTask;
 import com.implementist.nisljournalmanager.domain.SystemConfig;
 import com.implementist.nisljournalmanager.domain.UrgeTask;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServlet;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
@@ -26,8 +19,14 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServlet;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.*;
+
 /**
- *
  * @author Implementist
  */
 public class ScheduledService extends HttpServlet {
@@ -45,18 +44,17 @@ public class ScheduledService extends HttpServlet {
     private List<UrgeTask> urgeTasks;
     private List<SummaryTask> summaryTasks;
     private InitializeTask initializeTask;
-    private ScheduledExecutorService periodicExecutor;
-    private ScheduledExecutorService oneTimeExecutor;
+    private ExecutorService periodicExecutor;
+    private ExecutorService oneTimeExecutor;
 
     /**
      * 从配置文件中加载并启动当天各项任务的任务
      */
     private final Runnable LOAD_TASK = () -> {
         //刷新配置文件
-        ApplicationContext ctx = new ClassPathXmlApplicationContext(new String[]{
-            "classpath:journalConfig.xml",
-            "classpath:systemConfig.xml"
-        });
+        ApplicationContext ctx = new ClassPathXmlApplicationContext(
+                "classpath:journalConfig.xml",
+                "classpath:systemConfig.xml");
 
         SystemConfig systemConfig = getSystemConfig(ctx);
         if (systemConfig.isHolidayModeOn() && timeService.isHolidayToday(systemConfig.getHolidayFrom(), systemConfig.getHolidayTo())) {
@@ -79,7 +77,7 @@ public class ScheduledService extends HttpServlet {
             UrgeTaskFactory urgeTaskFactory = new UrgeTaskFactory(context);
             for (UrgeTask urgeTask : urgeTasks) {
                 urgeTaskFactory.build(urgeTask);
-                ExecuteOnce(urgeTask.getStartTime(), urgeTaskFactory.getRunnable());
+                executeOnce(urgeTask.getStartTime(), urgeTaskFactory.getRunnable());
             }
         }
 
@@ -88,7 +86,7 @@ public class ScheduledService extends HttpServlet {
             SummaryTaskFactory summaryTaskFactory = new SummaryTaskFactory(context);
             for (SummaryTask summaryTask : summaryTasks) {
                 summaryTaskFactory.build(summaryTask);
-                ExecuteOnce(summaryTask.getStartTime(), summaryTaskFactory.getRunnable());
+                executeOnce(summaryTask.getStartTime(), summaryTaskFactory.getRunnable());
             }
         }
 
@@ -96,7 +94,7 @@ public class ScheduledService extends HttpServlet {
             //设置初始化邮箱和数据库任务
             InitializeTaskFactory initializeTaskFactory = new InitializeTaskFactory(context);
             initializeTaskFactory.build(initializeTask);
-            ExecuteOnce(initializeTask.getStartTime(), initializeTaskFactory.getRunnable());
+            executeOnce(initializeTask.getStartTime(), initializeTaskFactory.getRunnable());
         }
 
         //设置捕获器捕获未处理的异常，输出异常信息
@@ -113,9 +111,20 @@ public class ScheduledService extends HttpServlet {
         WebApplicationContext wac = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
         AutowireCapableBeanFactory factory = wac.getAutowireCapableBeanFactory();
         factory.autowireBean(this);
-        periodicExecutor = Executors.newSingleThreadScheduledExecutor();
-        oneTimeExecutor = Executors.newScheduledThreadPool(5);
-        ExecuteByCycle("21:45:00", MILLIS_OF_ONE_DAY, LOAD_TASK);
+
+        ThreadFactory mainThreadFactory = new ThreadFactoryBuilder()
+                .setNameFormat("pool-main-thread-%d")
+                .build();
+
+        ThreadFactory taskThreadFactory = new ThreadFactoryBuilder()
+                .setNameFormat("pool-task-thread-%d")
+                .build();
+
+        periodicExecutor = new ScheduledThreadPoolExecutor(1,
+                mainThreadFactory, new ThreadPoolExecutor.DiscardOldestPolicy());
+        oneTimeExecutor = new ScheduledThreadPoolExecutor(5,
+                taskThreadFactory, new ThreadPoolExecutor.DiscardOldestPolicy());
+        executeByCycle("21:45:00", MILLIS_OF_ONE_DAY, LOAD_TASK);
     }
 
     /**
@@ -130,16 +139,16 @@ public class ScheduledService extends HttpServlet {
     /**
      * 周期性定时执行
      *
-     * @param time 初次执行时间
+     * @param time  初次执行时间
      * @param cycle 周期
-     * @param task 任务
+     * @param task  任务
      */
-    private void ExecuteByCycle(String time, long cycle, Runnable task) {
+    private void executeByCycle(String time, long cycle, Runnable task) {
         long initDelay = timeService.getTimeMillis(time) - System.currentTimeMillis();
         initDelay = initDelay > 0 ? initDelay : cycle + initDelay;
 
         //执行器开始执行任务
-        periodicExecutor.scheduleAtFixedRate(task, initDelay, cycle, TimeUnit.MILLISECONDS);
+        ((ScheduledThreadPoolExecutor) periodicExecutor).scheduleAtFixedRate(task, initDelay, cycle, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -148,11 +157,11 @@ public class ScheduledService extends HttpServlet {
      * @param time 执行时间
      * @param task 任务
      */
-    private void ExecuteOnce(String time, Runnable task) {
+    private void executeOnce(String time, Runnable task) {
         long delay = timeService.getTimeMillis(time) - System.currentTimeMillis();
 
         //执行器开始执行任务
-        oneTimeExecutor.schedule(task, delay, TimeUnit.MILLISECONDS);
+        ((ScheduledThreadPoolExecutor) oneTimeExecutor).schedule(task, delay, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -168,7 +177,7 @@ public class ScheduledService extends HttpServlet {
     /**
      * 读取配置文件，获取所有督促任务
      *
-     * @param ctx 配置信息
+     * @param ctx          配置信息
      * @param summaryTasks 日报任务列表
      * @return 督促任务列表
      */
@@ -180,9 +189,7 @@ public class ScheduledService extends HttpServlet {
             //获取日报汇总任务中当天需要发日报的小组号
             List<Integer> groups = new ArrayList<>();
             summaryTasks.forEach((summaryTask) -> {
-                for (int group : summaryTask.getGroups()) {
-                    groups.add(group);
-                }
+                groups.addAll(summaryTask.getGroups());
             });
 
             for (String taskName : taskNames) {

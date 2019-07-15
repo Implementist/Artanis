@@ -23,7 +23,7 @@ import javax.crypto.NoSuchPaddingException;
  *
  * @author Implementist
  */
-public class DESUtil {
+public class DesUtil {
 
     private static Key key;
     private static final String SECRET_KEY = "IMplementist";

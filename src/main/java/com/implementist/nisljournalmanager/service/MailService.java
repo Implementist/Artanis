@@ -9,30 +9,20 @@ import com.implementist.nisljournalmanager.dao.MemberDAO;
 import com.implementist.nisljournalmanager.domain.Identity;
 import com.implementist.nisljournalmanager.domain.Mail;
 import com.implementist.nisljournalmanager.domain.Member;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.List;
-import java.util.Properties;
-import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
-import javax.mail.BodyPart;
-import javax.mail.Flags;
-import javax.mail.Folder;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.Part;
-import javax.mail.Session;
-import javax.mail.Store;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.mail.internet.MimeUtility;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
+import javax.mail.*;
+import javax.mail.internet.*;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Properties;
 
 /**
  *
@@ -50,8 +40,14 @@ public class MailService {
     @Autowired
     private NetEase163Service netEase163Service;
 
-    private Boolean haveGotHtmlEdition;  //用于设置在一个邮件中是否已读出一份内容文本
-    private String currentContent;  //用于接收当前邮件中的内容文本
+    /**
+     * 用于设置在一个邮件中是否已读出一份内容文本
+     */
+    private Boolean haveGotHtmlEdition;
+    /**
+     * 用于接收当前邮件中的内容文本
+     */
+    private String currentContent;
 
     /**
      * 发送邮件
@@ -151,7 +147,7 @@ public class MailService {
         setSubject(mimeMessage, mail.getSubject());
         setFrom(mimeMessage, identity);
         setTo(mimeMessage, mail);
-        setCC(mimeMessage, mail);
+        setCc(mimeMessage, mail);
         setContent(multipart, mail.getContent());
         setAttachment(multipart, mail.getFiles());
 
@@ -200,7 +196,7 @@ public class MailService {
      *
      * @throws MessagingException 信息异常
      */
-    private void setCC(MimeMessage mimeMessage, Mail mail) throws MessagingException {
+    private void setCc(MimeMessage mimeMessage, Mail mail) throws MessagingException {
         String[] cc = mail.getCc();
         if (null != cc && cc.length > 0) {
             String ccListString = getAddressString(cc);
@@ -245,12 +241,15 @@ public class MailService {
      * @throws IOException 输入输出异常
      */
     private void getTextMultipart(Part part) throws MessagingException, IOException {
-        if (part.isMimeType("text/plain") && !haveGotHtmlEdition) {
+        String textPlain = "text/plain";
+        String textHtml = "text/html";
+        String multipartAll = "multipart/*";
+        if (part.isMimeType(textPlain) && !haveGotHtmlEdition) {
             currentContent = (String) part.getContent();
-        } else if (part.isMimeType("text/html")) {
+        } else if (part.isMimeType(textHtml)) {
             currentContent = (String) part.getContent();
             haveGotHtmlEdition = true;
-        } else if (part.isMimeType("multipart/*")) {
+        } else if (part.isMimeType(multipartAll)) {
             Multipart multipart = (Multipart) part.getContent();
             for (int i = 0; i < multipart.getCount(); i++) {
                 getTextMultipart(multipart.getBodyPart(i));
@@ -305,7 +304,7 @@ public class MailService {
                 //解析内容文本的各个部分
                 getTextMultipart(message);
 
-                currentContent = new String(currentContent.getBytes("UTF-8"), "UTF-8");
+                currentContent = new String(currentContent.getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
                 memberDAO.updateContentByAddress(currentContent, address);
             }
         }

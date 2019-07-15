@@ -19,27 +19,42 @@ import javax.persistence.Table;
 @Table(name = "member")
 public class Member implements Serializable {
 
+    /**
+     * Id
+     */
     @Id
     @Column(name = "Id")
-    private int id;  //Id
-
+    private int id;
+    /**
+     * 姓名
+     */
     @Column(name = "Name")
-    private String name;  //姓名
-
+    private String name;
+    /**
+     * 所属小组Id
+     */
     @Column(name = "GroupId")
-    private int groupId;  //所属小组Id
-
+    private int groupId;
+    /**
+     * 是否已提交日报
+     */
     @Column(name = "Submitted")
-    private Boolean submitted;  //是否已提交日报
-
+    private Boolean submitted;
+    /**
+     * 日报内容
+     */
     @Column(name = "Content")
-    private String content;  //日报内容
-
+    private String content;
+    /**
+     * 邮箱地址
+     */
     @Column(name = "EmailAddress")
-    private String emailAddress;  //邮箱地址
-
+    private String emailAddress;
+    /**
+     * 身份
+     */
     @Column(name = "Identity")
-    private String identity;  //身份
+    private String identity;
 
     public int getId() {
         return id;
