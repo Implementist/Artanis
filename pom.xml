@@ -4,7 +4,7 @@
 
     <groupId>com.implementist</groupId>
     <artifactId>NISLJournalManager</artifactId>
-    <version>3.2.9</version>
+    <version>3.3.0</version>
     <packaging>war</packaging>
 
     <name>NISLJournalManager</name>
