@@ -1,16 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package com.implementist.nisljournalmanager.dao;
+package com.implementist.artanis.dao;
 
-import com.implementist.nisljournalmanager.domain.Member;
-import java.util.List;
+import com.implementist.artanis.entity.Member;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  *

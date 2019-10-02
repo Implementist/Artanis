@@ -24,28 +24,28 @@
             <version>8.0</version>
             <scope>provided</scope>
         </dependency>
-        
+
         <!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
             <version>${springframework.version}</version>
         </dependency>
-        
+
         <!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
             <version>${springframework.version}</version>
         </dependency>
-        
+
         <!-- https://mvnrepository.com/artifact/org.springframework/spring-aop -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
             <version>${springframework.version}</version>
         </dependency>
-        
+
         <!-- https://mvnrepository.com/artifact/org.springframework/spring-aspects -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -66,7 +66,7 @@
             <artifactId>spring-context</artifactId>
             <version>${springframework.version}</version>
         </dependency>
-        
+
         <!-- https://mvnrepository.com/artifact/org.springframework/spring-context-support -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -101,14 +101,14 @@
             <artifactId>spring-orm</artifactId>
             <version>${springframework.version}</version>
         </dependency>
-        
+
         <!-- https://mvnrepository.com/artifact/org.springframework/spring-tx -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
             <version>${springframework.version}</version>
         </dependency>
-        
+
         <!-- https://mvnrepository.com/artifact/org.springframework.retry/spring-retry -->
         <dependency>
             <groupId>org.springframework.retry</groupId>
@@ -116,7 +116,7 @@
             <version>${springframework.retry.version}</version>
         </dependency>
 
-        
+
         <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -174,21 +174,21 @@
             <version>4.0.1</version>
             <scope>provided</scope>
         </dependency>
-        
+
         <!-- https://mvnrepository.com/artifact/com.sun.mail/javax.mail -->
         <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>javax.mail</artifactId>
             <version>1.6.2</version>
         </dependency>
-        
+
         <!-- https://mvnrepository.com/artifact/org.eclipse.birt.runtime.3_7_1/com.lowagie.text -->
         <dependency>
             <groupId>org.eclipse.birt.runtime.3_7_1</groupId>
             <artifactId>com.lowagie.text</artifactId>
             <version>2.1.7</version>
         </dependency>
-        
+
         <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -209,12 +209,20 @@
             <artifactId>guava</artifactId>
             <version>28.0-jre</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.8</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
         <!-- Name of WAR File -->
         <finalName>NISLJournalManager</finalName>
-        
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -283,13 +291,13 @@
                         </properties>
                     </configuration>
                     <deployables>
-                        <deployable>          
-                            <groupId>${project.groupId}</groupId>  
-                            <artifactId>${project.artifactId}</artifactId>  
-                            <type>war</type>  
-                            <properties>  
+                        <deployable>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>${project.artifactId}</artifactId>
+                            <type>war</type>
+                            <properties>
                                 <context>/${project.artifactId}</context>
-                            </properties>  
+                            </properties>
                         </deployable>
                     </deployables>
                 </configuration>
@@ -301,7 +309,7 @@
                             <goal>deployer-redeploy</goal>
                         </goals>
                     </execution>
-                </executions>  
+                </executions>
             </plugin>
         </plugins>
     </build>

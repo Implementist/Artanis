@@ -1,16 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package com.implementist.nisljournalmanager.dao;
+package com.implementist.artanis.dao;
 
-import com.implementist.nisljournalmanager.domain.Group;
-import java.util.ArrayList;
+import com.implementist.artanis.entity.Group;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
 
 /**
  *
@@ -41,6 +37,6 @@ public class GroupDAO {
     public Group queryGroupById(int groupId) {
         Query<Group> query = sessionFactory.getCurrentSession().createQuery("FROM Group g WHERE g.id=:id");
         query.setParameter("id", groupId);
-        return (Group) query.uniqueResult();
+        return query.uniqueResult();
     }
 }

@@ -1,33 +1,22 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package com.implementist.nisljournalmanager.service;
+package com.implementist.artanis.service;
 
-import com.implementist.nisljournalmanager.dao.GroupDAO;
-import com.implementist.nisljournalmanager.dao.MemberDAO;
-import com.implementist.nisljournalmanager.domain.Group;
-import com.implementist.nisljournalmanager.domain.Member;
-import com.lowagie.text.BadElementException;
-import com.lowagie.text.Cell;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
+import com.implementist.artanis.dao.GroupDAO;
+import com.implementist.artanis.dao.MemberDAO;
+import com.implementist.artanis.entity.Group;
+import com.implementist.artanis.entity.Member;
 import com.lowagie.text.Font;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.Table;
+import com.lowagie.text.*;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfWriter;
-import java.awt.Color;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+
+import java.awt.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.List;
 
 /**
  *

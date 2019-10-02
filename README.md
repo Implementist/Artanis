@@ -1,4 +1,4 @@
-# NISLJournalManager: A staff work journal auto-collect system
+# Artanis: A work journal auto manage system
 [![Build Status](https://travis-ci.com/Implementist/NISLJournalManager.svg?token=tApu9wqBLRxw6iZbENoB&branch=master)](https://travis-ci.com/Implementist/NISLJournalManager)
 [![License](https://img.shields.io/badge/licence-Apache%202.0-brightgreen.svg?style=flat)](LICENSE)
 ![release](https://img.shields.io/github/release/Implementist/NISLJournalManager.svg)
@@ -8,24 +8,25 @@
 
 ![Content of Summary PDF](https://raw.github.com/Implementist/NISLJournalManager/master/images/content_of_summary_pdf.png)
 
-NISLJournalManager is a spring framework based staff work journal auto-collect system. You can DIY your urging and summary tasks without re-compile the whole project but modify the config files only.
+Artanis is a spring framework based work journal auto manage system. You can DIY your tasks without re-compiling the whole project but modify the config files only.
 
 Various options make it easy to use. For example, you can set which day(s) is the rest day of your group in a week. And you can also set `holidayers` list for people who are on leave. After doing so, they do not need to submit work journals during their holiday.
 
 **Note that this is a pure back-end system without any UI pages.**
 
 ## Usage
-You can build up your work journal collecting system by just doing the following few steps.
+You can build up your system by just following few steps.
 
 ### Step1: Apply for an Email Account
 **This email account is called `Mail Sender`.** 
-- The staff of your group should sender their work journal to this address.
-- The system sends emails(includes urge mails and summary mails) by this account.
-- The system collects work journals from the `INBOX` of this mail address.
-**You can extend configs of other mail service providers and the use their email account, or by default you should apply and use a `NetEase 163` account.**
+- The staff of your group should sender their work journal to this email address.
+- The system sends emails(such as urge mails and summary mails) from this email address.
+- The system collects work journals from the `INBOX` of this email address.
+**You can extend configs of other mail service providers and then use their email account, or by default you should apply and use a `NetEase 163` account.**
 
 ### Step2: Set up databases
-- Create a database with name `nisl_journal` and its charset should be `utf8mb4 -- UTF-8 Unicode`.
+**By default you have to choose `MySQL` as the database for this system.**
+- Create a database with name `artanis` and its charset should be `utf8mb4 -- UTF-8 Unicode`.
 - Create a table named `group` with [DDL](https://github.com/Implementist/NISLJournalManager/blob/master/docs/ddl-group.md).
 - Create a table named `member` with [DDL](https://github.com/Implementist/NISLJournalManager/blob/master/docs/ddl-member.md).
 
@@ -33,9 +34,10 @@ You can build up your work journal collecting system by just doing the following
 - There are various properties to config to run your bussiness. For details see [Configuration](https://github.com/Implementist/NISLJournalManager/tree/master#configuration)
 
 ### Step4: Build & Deploy
+**By default you have to set up 'Tomcat' in your server as the container of this system.**
 After finishing configuration, you need to:
-- Insert some groups and their members into the two tables in database `nisl_journal`. 
-- Build this project with maven and then deploy the `NISLJournalManager.war` file to the tomcat server.
+- Insert some groups and their members into the two tables in database `artanis`. 
+- Build this project with maven and then deploy the `Artanis.war` file to the tomcat server.
 
 ## Configuration
 The following steps of config is nessesary.
@@ -49,7 +51,7 @@ You can set your own tasks by modifying config file `src/main/resources/journalC
 - **Mail Sender Identity**</br>
 Identity info of mail sender
 ```xml
-    <bean id="mailSenderIdentity" class="com.implementist.nisljournalmanager.domain.Identity">
+    <bean id="mailSenderIdentity" class="com.implementist.artanis.entity.Identity">
         <property name="from" value="SENDER_ADDRESS"/>
         <property name="nickName" value="YOUR_NICK_NAME"/>
         <property name="authCode" value="AUTH_CODE_OR_PASSWORD"/>
@@ -67,7 +69,7 @@ Identity info of mail sender
 - **Urge Task**</br>
 Set scheduled tasks to send mail to urge your staff to submit their work journal. **Urge mail will be sent to members of groups configured in `SummaryTask` by default. The program will perform a filtration automatically to get the correct `to` list.**
 ```xml
-    <bean id="urgeTask1" class="com.implementist.nisljournalmanager.domain.UrgeTask">
+    <bean id="urgeTask1" class="com.implementist.artanis.entity.taskdata.UrgeTaskData">
         <property name="startTime" value="START_TIME"/>
         <property name="mailSubject" value="URGE_MAIL_SUBJECT"/>
         <property name="mailContent" value="URGE_MAIL_CONTENT"/>
@@ -87,7 +89,7 @@ Set scheduled tasks to send mail to urge your staff to submit their work journal
 - **Summary Task**</br>
 The summary task will conclude work journals of all staff to generate a `PDF` file and make it be the attachment of the summary mail. Then send the letter to staff and bosses or just to bosses.
 ```xml
-    <bean id="summaryTask1" class="com.implementist.nisljournalmanager.domain.SummaryTask">
+    <bean id="summaryTask1" class="com.implementist.artanis.entity.taskdata.SummaryTaskData">
         <property name="groupOnHoliday" value="false"/>
         <property name="forBossesOnly" value="true"/>
         <property name="holidayers">
@@ -135,7 +137,7 @@ The summary task will conclude work journals of all staff to generate a `PDF` fi
 - **Initialize Task**</br>
 This task will periodically reset the content of DB and clear `inbox` of mail sender.
 ```xml
-    <bean id="initializeTask" class="com.implementist.nisljournalmanager.domain.InitializeTask">
+    <bean id="initializeTask" class="com.implementist.artanis.entity.taskdata.InitializeTaskData">
         <property name="startTime" value="START_TIME"/>
         <property name="initialContent" value=""/>
         <property name="sourceFolder" value="INBOX"/>
@@ -158,7 +160,7 @@ There are few more lines of config remaining in `src/main/resources/systemConfig
 
 - **System Config**</br>
 ```xml
-    <bean id="systemConfig" class="com.implementist.nisljournalmanager.domain.SystemConfig">
+    <bean id="systemConfig" class="com.implementist.artanis.entity.SystemConfig">
         <property name="holidayModeOn" value="false"/>
         <property name="holidayFrom" value="2019-06-07"/>
         <property name="holidayTo" value="2019-06-09"/>
@@ -185,7 +187,7 @@ There are few more lines of config remaining in `src/main/resources/systemConfig
 
 ## LICENSE
 ```
-Copyright (c) 2017-present, NISLJournalManager Contributors.
+Copyright (c) 2017-present, Artanis Contributors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

@@ -12,11 +12,11 @@
           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
 ">
 
-    <context:component-scan base-package="com.implementist.nisljournalmanager.dao"/>
-    <context:component-scan base-package="com.implementist.nisljournalmanager.service"/>
+    <context:component-scan base-package="com.implementist.artanis.dao"/>
+    <context:component-scan base-package="com.implementist.artanis.service"/>
     
     <!-- 引入Jdbc配置文件 -->
-    <bean class="com.implementist.nisljournalmanager.SensitivePropertyPlaceholderConfigurer"
+    <bean class="com.implementist.artanis.SensitivePropertyPlaceholderConfigurer"
           p:location="classpath:jdbc.properties"
           p:fileEncoding="utf-8"/>
     
@@ -55,7 +55,7 @@
     <!-- 配置HibernateSessionFactory -->
     <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"
           p:dataSource-ref="dataSource">
-        <property name="packagesToScan" value="com.implementist.nisljournalmanager.domain"/>
+        <property name="packagesToScan" value="com.implementist.artanis.entity"/>
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</prop>
@@ -75,8 +75,8 @@
     <!-- 通过AOP配置提供事务增强，让service包下所有Bean的所有方法拥有事务 -->
     <aop:config proxy-target-class="true">
         <aop:pointcut id="serviceMethod"
-                      expression=" execution(* com.implementist.nisljournalmanager.service..*(..)) 
-or execution(* com.implementist.nisljournalmanager.dao..*(..))" />
+                      expression=" execution(* com.implementist.artanis.service..*(..))
+or execution(* com.implementist.artanis.dao..*(..))" />
         <aop:advisor pointcut-ref="serviceMethod" advice-ref="txAdvice" />
     </aop:config>
     <tx:advice id="txAdvice" transaction-manager="transactionManager">

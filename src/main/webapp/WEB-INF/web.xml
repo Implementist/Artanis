@@ -21,7 +21,7 @@
     <!-- 本工程的入口 -->
     <servlet>
         <servlet-name>ScheduledService</servlet-name>
-        <servlet-class>com.implementist.nisljournalmanager.service.ScheduledService</servlet-class>
+        <servlet-class>com.implementist.artanis.service.ScheduledService</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
 </web-app>

@@ -2,7 +2,7 @@
 **You can follow steps below to replace the default DB config by your own.**
 
 ### Encrypt sensitive properties
-There is a tool in package `com.implementist.nisljournalmanager` named as `DESUtil.java`
+There is a tool in package `com.implementist.artanis` named as `DESUtil.java`
 
 - Modify `SECRET_KEY`
 `SECRET_KEY` is used to encrypt and decrypt sensitive properties. You can modify it whatever by your wish or just keep the default value `IMplementist`.

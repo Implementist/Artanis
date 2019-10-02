@@ -1,16 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package com.implementist.nisljournalmanager.service;
+package com.implementist.artanis.service;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.implementist.nisljournalmanager.dao.MemberDAO;
-import com.implementist.nisljournalmanager.domain.InitializeTask;
-import com.implementist.nisljournalmanager.domain.SummaryTask;
-import com.implementist.nisljournalmanager.domain.SystemConfig;
-import com.implementist.nisljournalmanager.domain.UrgeTask;
+import com.implementist.artanis.dao.MemberDAO;
+import com.implementist.artanis.entity.*;
+import com.implementist.artanis.entity.task.BaseTask;
+import com.implementist.artanis.entity.task.Tasks;
+import com.implementist.artanis.entity.taskdata.InitializeTaskData;
+import com.implementist.artanis.entity.taskdata.SummaryTaskData;
+import com.implementist.artanis.entity.taskdata.UrgeTaskData;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
@@ -41,9 +38,9 @@ public class ScheduledService extends HttpServlet {
 
     private static final long MILLIS_OF_ONE_DAY = 24 * 60 * 60 * 1000;
 
-    private List<UrgeTask> urgeTasks;
-    private List<SummaryTask> summaryTasks;
-    private InitializeTask initializeTask;
+    private List<UrgeTaskData> urgeTaskDatas;
+    private List<SummaryTaskData> summaryTaskDatas;
+    private InitializeTaskData initializeTaskData;
     private ExecutorService periodicExecutor;
     private ExecutorService oneTimeExecutor;
 
@@ -65,42 +62,37 @@ public class ScheduledService extends HttpServlet {
         ServletContext context = getServletContext();
 
         //从配置文件中读取各种任务的定义
-        summaryTasks = getSummaryTasks(ctx, systemConfig);
-        urgeTasks = getUrgeTasks(ctx, summaryTasks);
-        initializeTask = getInitializeTask(ctx);
+        summaryTaskDatas = getSummaryTasks(ctx, systemConfig);
+        urgeTaskDatas = getUrgeTasks(ctx, summaryTaskDatas);
+        initializeTaskData = getInitializeTask(ctx);
 
         //为休假中的同学设置日报内容
-        setJournalContentForHolidayers(summaryTasks);
+        setJournalContentForHolidayers(summaryTaskDatas);
 
         //设置所有督促提交邮件
-        if (urgeTasks != null) {
-            UrgeTaskFactory urgeTaskFactory = new UrgeTaskFactory(context);
-            for (UrgeTask urgeTask : urgeTasks) {
-                urgeTaskFactory.build(urgeTask);
-                executeOnce(urgeTask.getStartTime(), urgeTaskFactory.getRunnable());
+        if (urgeTaskDatas != null) {
+            for (UrgeTaskData taskData : urgeTaskDatas) {
+                BaseTask task = Tasks.newUrgeTask(context, taskData);
+                executeOnce(taskData.getStartTime(), task);
             }
         }
 
         //设置所有的日报汇总任务
-        if (summaryTasks != null) {
-            SummaryTaskFactory summaryTaskFactory = new SummaryTaskFactory(context);
-            for (SummaryTask summaryTask : summaryTasks) {
-                summaryTaskFactory.build(summaryTask);
-                executeOnce(summaryTask.getStartTime(), summaryTaskFactory.getRunnable());
+        if (summaryTaskDatas != null) {
+            for (SummaryTaskData taskData : summaryTaskDatas) {
+                BaseTask task = Tasks.newSummaryTask(context, taskData);
+                executeOnce(taskData.getStartTime(), task);
             }
         }
 
-        if (summaryTasks != null && summaryTasks.size() > 0) {
+        if (summaryTaskDatas != null && summaryTaskDatas.size() > 0) {
             //设置初始化邮箱和数据库任务
-            InitializeTaskFactory initializeTaskFactory = new InitializeTaskFactory(context);
-            initializeTaskFactory.build(initializeTask);
-            executeOnce(initializeTask.getStartTime(), initializeTaskFactory.getRunnable());
+            BaseTask task = Tasks.newInitializeTask(context, initializeTaskData);
+            executeOnce(initializeTaskData.getStartTime(), task);
         }
 
         //设置捕获器捕获未处理的异常，输出异常信息
-        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
-            logger.error("Internal Error Occured!", e);
-        });
+        Thread.setDefaultUncaughtExceptionHandler((t, e) -> logger.error("Internal Error Occured!", e));
     };
 
     /**
@@ -178,24 +170,22 @@ public class ScheduledService extends HttpServlet {
      * 读取配置文件，获取所有督促任务
      *
      * @param ctx          配置信息
-     * @param summaryTasks 日报任务列表
+     * @param summaryTaskDatas 日报任务列表
      * @return 督促任务列表
      */
-    private List<UrgeTask> getUrgeTasks(ApplicationContext ctx, List<SummaryTask> summaryTasks) {
-        if (summaryTasks != null && summaryTasks.size() > 0) {
-            List<UrgeTask> tasks = new ArrayList<>();
-            String[] taskNames = ctx.getBeanNamesForType(UrgeTask.class);
+    private List<UrgeTaskData> getUrgeTasks(ApplicationContext ctx, List<SummaryTaskData> summaryTaskDatas) {
+        if (summaryTaskDatas != null && summaryTaskDatas.size() > 0) {
+            List<UrgeTaskData> tasks = new ArrayList<>();
+            String[] taskNames = ctx.getBeanNamesForType(UrgeTaskData.class);
 
             //获取日报汇总任务中当天需要发日报的小组号
             List<Integer> groups = new ArrayList<>();
-            summaryTasks.forEach((summaryTask) -> {
-                groups.addAll(summaryTask.getGroups());
-            });
+            summaryTaskDatas.forEach((summaryTaskData) -> groups.addAll(summaryTaskData.getGroups()));
 
             for (String taskName : taskNames) {
-                UrgeTask urgeTask = (UrgeTask) ctx.getBean(taskName);
-                urgeTask.setGroups(groups);
-                tasks.add(urgeTask);
+                UrgeTaskData urgeTaskData = (UrgeTaskData) ctx.getBean(taskName);
+                urgeTaskData.setGroups(groups);
+                tasks.add(urgeTaskData);
             }
             return tasks;
         }
@@ -208,13 +198,13 @@ public class ScheduledService extends HttpServlet {
      * @param ctx 配置信息
      * @return 日报任务列表
      */
-    private List<SummaryTask> getSummaryTasks(ApplicationContext ctx, SystemConfig config) {
-        List<SummaryTask> tasks = new ArrayList<>();
-        String[] taskNames = ctx.getBeanNamesForType(SummaryTask.class);
+    private List<SummaryTaskData> getSummaryTasks(ApplicationContext ctx, SystemConfig config) {
+        List<SummaryTaskData> tasks = new ArrayList<>();
+        String[] taskNames = ctx.getBeanNamesForType(SummaryTaskData.class);
         boolean isWorkdayToday = config.isWorkdayModeOn()
                 && timeService.isWorkdayToday(config.getWorkdayFrom(), config.getWorkdayTo());
         for (String taskName : taskNames) {
-            SummaryTask task = (SummaryTask) ctx.getBean(taskName);
+            SummaryTaskData task = (SummaryTaskData) ctx.getBean(taskName);
             boolean isRestDayToday = timeService.isRestDayToday(task.getRestDays());
             if (!task.isGroupOnHoliday() && (!isRestDayToday || isWorkdayToday)) {
                 tasks.add(task);
@@ -229,28 +219,26 @@ public class ScheduledService extends HttpServlet {
      * @param ctx 配置信息
      * @return 初始化任务
      */
-    private InitializeTask getInitializeTask(ApplicationContext ctx) {
-        return (InitializeTask) ctx.getBean("initializeTask");
+    private InitializeTaskData getInitializeTask(ApplicationContext ctx) {
+        return (InitializeTaskData) ctx.getBean("initializeTask");
     }
 
     /**
      * 为正在请假或休假中的同学设置日报内容
      *
-     * @param summaryTasks 日报任务列表
+     * @param summaryTaskDatas 日报任务列表
      */
-    private void setJournalContentForHolidayers(List<SummaryTask> summaryTasks) {
-        if (summaryTasks != null) {
+    private void setJournalContentForHolidayers(List<SummaryTaskData> summaryTaskDatas) {
+        if (summaryTaskDatas != null) {
             List<String> namesOfHolidayers = new ArrayList<>();
-            summaryTasks.forEach((task) -> {
+            summaryTaskDatas.forEach((task) -> {
                 if (task.getHolidayers() != null) {
                     namesOfHolidayers.addAll(Arrays.asList(task.getHolidayers()));
                 }
             });
 
             String journalContent = "该同学正在请假或休假中。";
-            namesOfHolidayers.forEach((holidayer) -> {
-                memberDAO.updateContentByName(journalContent, holidayer);
-            });
+            namesOfHolidayers.forEach((holidayer) -> memberDAO.updateContentByName(journalContent, holidayer));
         }
     }
 }

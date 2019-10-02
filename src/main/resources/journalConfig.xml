@@ -3,14 +3,14 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
     <!-- 发件账户身份信息 -->
-    <bean id="mailSenderIdentity" class="com.implementist.nisljournalmanager.domain.Identity">
+    <bean id="mailSenderIdentity" class="com.implementist.artanis.entity.Identity">
         <property name="from" value="sender@address.com"/>
         <property name="nickName" value="YOUR_NICK_NAME_FOR_SEND_EMAIL"/>
         <property name="authCode" value="AUTH_CODE_OR_PASSWORD"/>
     </bean>
     
     <!-- 第1封催促提交任务 -->
-    <bean id="urgeTask1" class="com.implementist.nisljournalmanager.domain.UrgeTask">
+    <bean id="urgeTask1" class="com.implementist.artanis.entity.taskdata.UrgeTaskData">
         <property name="startTime" value="22:00:00"/>
         <property name="mailSubject" value="日志提交督促邮件"/>
         <property name="mailContent" value="&lt;div&gt;这是一封日志提交督促邮件，请尽快提交你的日志。&lt;br&gt;汇总邮件将于22:30:00发出。届时，未提交日志的同学将会被系统在汇总邮件对应的表格中填入：“该同学未按时提交日志！”的字样。&lt;br&gt;这是第一封督促邮件。&lt;br&gt;&lt;br&gt;此邮件由系统自动发出，请勿直接回复。&lt;/div&gt;&lt;div align=&quot;right&quot;&gt;NISL Journal Manager&lt;/div&gt;"/>
@@ -18,7 +18,7 @@
     </bean>
     
     <!-- 第1,2,两组的日报汇总任务 -->
-    <bean id="summaryTask1" class="com.implementist.nisljournalmanager.domain.SummaryTask">
+    <bean id="summaryTask1" class="com.implementist.artanis.entity.taskdata.SummaryTaskData">
         <property name="groupOnHoliday" value="false"/>
         <property name="forBossesOnly" value="true"/>
         <property name="holidayers">
@@ -48,7 +48,7 @@
     </bean>
     
     <!-- 初始化邮箱和数据库任务 -->
-    <bean id="initializeTask" class="com.implementist.nisljournalmanager.domain.InitializeTask">
+    <bean id="initializeTask" class="com.implementist.artanis.entity.taskdata.InitializeTaskData">
         <property name="startTime" value="23:59:00"/>
         <property name="initialContent" value=""/>
         <property name="sourceFolder" value="INBOX"/>

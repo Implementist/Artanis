@@ -1,11 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package com.implementist.nisljournalmanager.service;
+package com.implementist.artanis.service;
 
-import com.implementist.nisljournalmanager.domain.Identity;
+import com.implementist.artanis.entity.Identity;
 import org.apache.log4j.Logger;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.EnableRetry;

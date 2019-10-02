@@ -1,14 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package com.implementist.nisljournalmanager.service;
+package com.implementist.artanis.service;
 
-import com.implementist.nisljournalmanager.dao.MemberDAO;
-import com.implementist.nisljournalmanager.domain.Identity;
-import com.implementist.nisljournalmanager.domain.Mail;
-import com.implementist.nisljournalmanager.domain.Member;
+import com.implementist.artanis.dao.MemberDAO;
+import com.implementist.artanis.entity.Identity;
+import com.implementist.artanis.entity.Mail;
+import com.implementist.artanis.entity.Member;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
