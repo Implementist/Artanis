@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+    <bean id="systemConfig" class="com.implementist.artanis.entity.SystemConfig">
+        <property name="holidayModeOn" value="false"/>
+        <property name="holidayFrom" value="2019-06-07"/>
+        <property name="holidayTo" value="2019-06-09"/>
+        <property name="workdayModeOn" value="false"/>
+        <property name="workdayFrom" value="2019-05-05"/>
+        <property name="workdayTo" value="2019-05-05"/>
+    </bean>
+</beans>

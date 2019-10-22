@@ -49,7 +49,7 @@ NISLJournalManager是一款基于Spring Framework的员工工作日报自动收�
 - **Mail Sender Identity**</br>
 Mail Sender的身份信息
 ```xml
-    <bean id="mailSenderIdentity" class="com.implementist.nisljournalmanager.domain.Identity">
+    <bean id="mailSenderIdentity" class="com.implementist.artanis.entity.Identity">
         <property name="from" value="SENDER_ADDRESS"/>
         <property name="nickName" value="YOUR_NICK_NAME"/>
         <property name="authCode" value="AUTH_CODE_OR_PASSWORD"/>
@@ -67,7 +67,7 @@ Mail Sender的身份信息
 - **Urge Task**</br>
 设置发送督促邮件的任务，督促员工提交工作日志。**在默认情况下，督促邮件将发送给`SummaryTask`中配置的组的成员。程序将自动执行过滤，以获得正确的`to`列表。**
 ```xml
-    <bean id="urgeTask1" class="com.implementist.nisljournalmanager.domain.UrgeTask">
+    <bean id="urgeTask1" class="com.implementist.artanis.entity.taskdata.UrgeTaskData">
         <property name="startTime" value="START_TIME"/>
         <property name="mailSubject" value="URGE_MAIL_SUBJECT"/>
         <property name="mailContent" value="URGE_MAIL_CONTENT"/>
@@ -87,7 +87,7 @@ Mail Sender的身份信息
 - **Summary Task**</br>
 总结任务将总结所有员工的工作日志，生成一个PDF文件，作为总结邮件的附件。然后把这封邮件发送给员工和老板，或者只发送给领导。
 ```xml
-    <bean id="summaryTask1" class="com.implementist.nisljournalmanager.domain.SummaryTask">
+    <bean id="summaryTask1" class="com.implementist.artanis.entity.taskdata.SummaryTaskData">
         <property name="groupOnHoliday" value="false"/>
         <property name="forBossesOnly" value="true"/>
         <property name="holidayers">
@@ -135,7 +135,7 @@ Mail Sender的身份信息
 - **Initialize Task**</br>
 这个任务会重置数据库中的日志内容并清空Mail Sender的收件箱.
 ```xml
-    <bean id="initializeTask" class="com.implementist.nisljournalmanager.domain.InitializeTask">
+    <bean id="initializeTask" class="com.implementist.artanis.entity.taskdata.InitializeTaskData">
         <property name="startTime" value="START_TIME"/>
         <property name="initialContent" value=""/>
         <property name="sourceFolder" value="INBOX"/>
@@ -158,7 +158,7 @@ Mail Sender的身份信息
 
 - **System Config**</br>
 ```xml
-    <bean id="systemConfig" class="com.implementist.nisljournalmanager.domain.SystemConfig">
+    <bean id="systemConfig" class="com.implementist.artanis.entity.SystemConfig">
         <property name="holidayModeOn" value="false"/>
         <property name="holidayFrom" value="2019-06-07"/>
         <property name="holidayTo" value="2019-06-09"/>
