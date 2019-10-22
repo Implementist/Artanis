@@ -1,6 +1,6 @@
-## Set your DB config
-**You can follow steps below to replace the default DB config by your own.**
-All you need to focus on are the following few lines in `/src/main/resources/application.yml`:
+## 设置你的数据库配置
+**你可以通过以下的步骤用自己的配置替换默认的数据库配置**
+你只需要关心`/src/main/resources/application.yml`文件中的几行:
 
 ```yaml
 spring:
@@ -11,37 +11,37 @@ spring:
     password: ENC(/qne/C3XsOIv//Ig2NmIFg==)
 ```
 
-### Advantages of using cipher text
-As you know, sensitive properties like `URL`, `username` and `password` of `database` should be encrypted to prevent to be known for ones who have nothing to do with this.
+### 使用密文的好处
+如你所知，`数据库`的`URL`、`用户名`和`密码`这类敏感信息应该被加密起来，以防不相干的人知道它们。
 
-## Still use plain text
-**If you decide to use palin text modify the config to:**
+## 仍然使用明文
+**如果你决定使用明文，将上述信息修改为:**
 
 ```yaml
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/artanis?useSSL=true&serverTimezone=GMT%2B8
-    username: YOUR USERNAME OF DB (default is "root")
-    password: YOUR PASSWORD OF DB (default is ""(empty string))
+    username: 你的数据库用户名（默认是"root"）
+    password: 你的数据库密码（默认是 ""（空字符串））
 ```
 
 
-## Encrypt sensitive properties
-**If you decide to use cipher text:**
+## 加密敏感属性
+**如果你决定使用密文:**
 
-### Choose a `SECRET_KEY`
-`SECRET_KEY` is used to encrypt and decrypt sensitive properties. The default value is `Artanis@Imple`.
+### 选择一个 `秘钥`
+`秘钥` 被用来加密和解密敏感属性。默认值为 `Artanis@Imple`。
 
-### Get cipher text
-Create a main method to call `encrypt` to encode the above-mentioned sensitive properties.
+### 获取密文
+创建一个main方法，调用 `encrypt` 来加密上述的敏感属性。
 
 ```java
     public static void main(String[] args) {
         BasicTextEncryptor textEncryptor = new BasicTextEncryptor();
-        //The `SECRET_KEY` you've chosen.
+        //你所选择的 `秘钥`.
         textEncryptor.setPassword("Artanis@Imple");
-        //Above-mentioned sensitive properties
+        //上述敏感属性
         String url = textEncryptor.encrypt("jdbc:mysql://localhost:3306/artanis?useSSL=true&serverTimezone=GMT%2B8");
         String username = textEncryptor.encrypt("root")
         String password = textEncryptor.encrypt("");
@@ -52,15 +52,15 @@ Create a main method to call `encrypt` to encode the above-mentioned sensitive p
     }
 ```
 
-### Output
+### 输出
 ```
 H+m49N8OZKsO/vsOQv9WfHHXSablzAnsOFyiayEEVTACy6MMoKJnWpvOYn6RzAH3tkulkpboGUZ/G8Zmw/j6mbuxi6DXO1quimwHkcMbUj1cArc/AlWY+5R/3KZIP3CJkT7SKH03nfg=
 lMDBcJMMAqRDsT68H20IRQ==
 /qne/C3XsOIv//Ig2NmIFg==
 ```
 
-### Modify config file
-Use the above output to update config. You need to add `ENC(` and `)` around each line of the above cipher text:
+### 修改配置文件
+使用上述的输出来更新配置，你需要给上述输出的每行左右加上 `ENC(` 和 `)`：
 
 ```yaml
 spring:

@@ -1,14 +1,14 @@
-# Artanis: A work journal auto manage system
-[![Build Status](https://travis-ci.com/Implementist/NISLJournalManager.svg?token=tApu9wqBLRxw6iZbENoB&branch=master)](https://travis-ci.com/Implementist/NISLJournalManager)
+# Artanis: A Work Journal Auto Manage System - En Taro Artanis!
+[![Build Status](https://travis-ci.com/Implementist/Artanis.svg?branch=master)](https://travis-ci.com/Implementist/Artanis)
 [![License](https://img.shields.io/badge/licence-Apache%202.0-brightgreen.svg?style=flat)](LICENSE)
-![release](https://img.shields.io/github/release/Implementist/NISLJournalManager.svg)
-![vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/Implementist/NISLJournalManager.svg)
+![release](https://img.shields.io/github/release/Implementist/Artanis.svg)
+![vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/Implementist/Artanis.svg)
 
-[中文版](https://github.com/Implementist/NISLJournalManager/blob/master/README_CN.md)
+[中文版](https://github.com/Implementist/Artanis/blob/master/README_CN.md)
 
-![Content of Summary PDF](https://raw.github.com/Implementist/NISLJournalManager/master/images/content_of_summary_pdf.png)
+![Content of Summary PDF](https://raw.github.com/Implementist/Artanis/master/images/content_of_summary_pdf.png)
 
-Artanis is a spring framework based work journal auto manage system. You can DIY your tasks without re-compiling the whole project but modify the config files only.
+Artanis is a spring-boot based work journal auto manage system. You can DIY your tasks without re-compiling the whole project but modify the config files only.
 
 Various options make it easy to use. For example, you can set which day(s) is the rest day of your group in a week. And you can also set `holidayers` list for people who are on leave. After doing so, they do not need to submit work journals during their holiday.
 
@@ -26,24 +26,26 @@ You can build up your system by just following few steps.
 
 ### Step2: Set up databases
 **By default you have to choose `MySQL` as the database for this system.**
+- Please make sure you have installed `MySQL` to your server properly.
 - Create a database with name `artanis` and its charset should be `utf8mb4 -- UTF-8 Unicode`.
-- Create a table named `group` with [DDL](https://github.com/Implementist/NISLJournalManager/blob/master/docs/ddl-group.md).
-- Create a table named `member` with [DDL](https://github.com/Implementist/NISLJournalManager/blob/master/docs/ddl-member.md).
 
 ### Step3: Make your own config
-- There are various properties to config to run your bussiness. For details see [Configuration](https://github.com/Implementist/NISLJournalManager/tree/master#configuration)
+- There are various properties to config to run your bussiness. For details see [Configuration](https://github.com/Implementist/Artanis/tree/master#configuration)
 
-### Step4: Build & Deploy
-**By default you have to set up 'Tomcat' in your server as the container of this system.**
+### Step4: Build & Run
 After finishing configuration, you need to:
 - Insert some groups and their members into the two tables in database `artanis`. 
-- Build this project with maven and then deploy the `Artanis.war` file to the tomcat server.
+- Build this project with maven to generate file `artanis.jar`.
+- Copy `artanis.jar` to a directory of your server.
+- Copy `/configs/journalConfig.xml` and `/configs/systemConfig.xml` to the same directory of `artanis.jar`.
+- Run the follwing command in above-mentioned directory: `java -jar -Djasypt.encryptor.password=Artanis@Imple artanis.jar**`.
+- Or use `java -jar artanis.jar` if you makes **DB Config** with plain text only.
 
 ## Configuration
 The following steps of config is nessesary.
 
 ### Set Property of DB
-For program access your DB successfully, you have to replace default DB properties with your own. For details see [DB config](https://github.com/Implementist/NISLJournalManager/blob/master/docs/db-config.md).
+For program access your DB successfully, you have to replace default DB properties with your own. For details see [DB Config](https://github.com/Implementist/Artanis/blob/master/docs/db-config.md).
 
 ### Journal Properties
 You can set your own tasks by modifying config file `src/main/resources/journalConfig.xml`.
@@ -183,7 +185,7 @@ There are few more lines of config remaining in `src/main/resources/systemConfig
 - **Email:** implementist@outlook.com
 - **WeChat:** Megamind_cs
 - **CSDN:** https://blog.csdn.net/mr_megamind
-- **[GitHub Issues](https://github.com/Implementist/NISLJournalManager/issues)**
+- **[GitHub Issues](https://github.com/Implementist/Artanis/issues)**
 
 ## LICENSE
 ```

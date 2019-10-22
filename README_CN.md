@@ -1,14 +1,14 @@
-# NISLJournalManager: 员工工作日报自动收发系统
-[![Build Status](https://travis-ci.com/Implementist/NISLJournalManager.svg?token=tApu9wqBLRxw6iZbENoB&branch=master)](https://travis-ci.com/Implementist/NISLJournalManager)
+# Artanis: 一款工作日志自动管理系统 - 向Artanis致敬！
+[![Build Status](https://travis-ci.com/Implementist/Artanis.svg?branch=master)](https://travis-ci.com/Implementist/Artanis)
 [![License](https://img.shields.io/badge/licence-Apache%202.0-brightgreen.svg?style=flat)](LICENSE)
-![release](https://img.shields.io/github/release/Implementist/NISLJournalManager.svg)
-![vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/Implementist/NISLJournalManager.svg)
+![release](https://img.shields.io/github/release/Implementist/Artanis.svg)
+![vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/Implementist/Artanis.svg)
 
-[English Version](https://github.com/Implementist/NISLJournalManager/blob/master/README.md)
+[English Version](https://github.com/Implementist/Artanis/blob/master/README.md)
 
-![汇总PDF的内容](https://raw.github.com/Implementist/NISLJournalManager/master/images/content_of_summary_pdf_cn.png)
+![汇总PDF的内容](https://raw.github.com/Implementist/Artanis/master/images/content_of_summary_pdf_CN.png)
 
-NISLJournalManager是一款基于Spring Framework的员工工作日报自动收发系统。你可以DIY你的催促和总结任务，在无需重新编译整个项目的前提下，只修改少数配置文件。
+Artanis是一款基于Spring Boot的工作日志自动管理系统。你可以DIY你的催促和总结任务，在无需重新编译整个项目的前提下，只修改少数配置文件。
 
 丰富的可选项使其非常得简单易用. 例如，你可以设置你的小组在一周中的哪一天休息。你还可以将正在请假或休假中的员工加入到`holidayers`列表，这样他们在假期就不会被系统催促提交工作日志了。
 
@@ -25,23 +25,27 @@ NISLJournalManager是一款基于Spring Framework的员工工作日报自动收�
 **你可以扩展其他邮件服务提供商的配置并使用他们的电子邮箱，否则在默认情况下，你应该申请并使用网易163帐户。**
 
 ### 步骤2: 创建数据库
-- 创建一个名叫`nisl_journal`的数据库，它的字符集应该是`utf8mb4 -- UTF-8 Unicode`。
-- 通过 [DDL](https://github.com/Implementist/NISLJournalManager/blob/master/docs/ddl-group.md) 创建一个名为`group`的表。
-- 通过 [DDL](https://github.com/Implementist/NISLJournalManager/blob/master/docs/ddl-member.md) 创建一个名为`member`的表。
+**默认情况下，你需要选择`MySQL`作为本系统的数据库。**
+- 请确保你的服务器上正确安装了`MySQL`。
+- 创建一个名叫`artanis`的数据库，它的字符集应该是`utf8mb4 -- UTF-8 Unicode`。
 
 ### 步骤3: 使用自己的配置
-- 有许多属性可以配置来运行你自己的业务逻辑。详情见 [配置](https://github.com/Implementist/NISLJournalManager/blob/master/README_CN.md#%E9%85%8D%E7%BD%AE)
+- 有许多属性可以配置来运行你自己的业务逻辑。详情见 [配置](https://github.com/Implementist/Artanis/blob/master/README_CN.md#%E9%85%8D%E7%BD%AE)
 
 ### 步骤4: 构建和部署
 完成了配置之后，你需要：
-- 向数据库`nisl_journal`中插入一些组和他们的成员信息。
-- 通过maven构建这个工程然后将`NISLJournalManager.war`文件部署到tomcat服务器下。
+- 向数据库`artanis`中插入一些组和他们的成员信息。
+- 通过Maven构建该工程以获得`artanis.jar`文件。
+- 将`artanis.jar`复制到你的服务器上的某个目录下.
+- 将`/configs/journalConfig.xml`和`/configs/systemConfig.xml`复制到和`artanis.jar`相同的目录下。
+- 在上述目录下运行以下指令： `java -jar -Djasypt.encryptor.password=Artanis@Imple artanis.jar**`。
+- 如果在**数据库配置**中仅使用明文，则仅需使用以下命令：`java -jar artanis.jar`。
 
 ## 配置
 下面的配置步骤是必需的
 
 ### 设置数据库属性
-为了使程序可以成功的访问你的数据库，你需要将默认的数据库配置换成你自己的。详情见 [数据库配置](https://github.com/Implementist/NISLJournalManager/blob/master/docs/db-config.md).
+为了使程序可以成功的访问你的数据库，你需要将默认的数据库配置换成你自己的。详情见 [数据库配置](https://github.com/Implementist/Artanis/blob/master/docs/db-config_CN.md).
 
 ### 日志属性
 你可以通过修改配置文件`src/main/resources/journalConfig.xml`来设置自己的任务
@@ -181,11 +185,11 @@ Mail Sender的身份信息
 - **邮箱:** implementist@outlook.com
 - **微信:** Megamind_cs
 - **CSDN:** https://blog.csdn.net/mr_megamind
-- **[GitHub Issues](https://github.com/Implementist/NISLJournalManager/issues)**
+- **[GitHub Issues](https://github.com/Implementist/Artanis/issues)**
 
 ## 开源许可
 ```
-Copyright (c) 2017-present, NISLJournalManager Contributors.
+Copyright (c) 2017-present, Artanis Contributors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
