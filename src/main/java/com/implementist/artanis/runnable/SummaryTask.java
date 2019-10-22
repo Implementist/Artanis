@@ -1,17 +1,16 @@
-package com.implementist.artanis.entity.task;
+package com.implementist.artanis.runnable;
 
-import com.implementist.artanis.dao.MemberDAO;
 import com.implementist.artanis.entity.Mail;
 import com.implementist.artanis.entity.taskdata.SummaryTaskData;
+import com.implementist.artanis.repository.MemberRepository;
 import com.implementist.artanis.service.MailService;
 import com.implementist.artanis.service.SummaryFileService;
 import com.implementist.artanis.service.TimeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.context.ApplicationContext;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.ServletContext;
 import java.io.File;
 import java.util.List;
 
@@ -22,7 +21,7 @@ import java.util.List;
 public class SummaryTask extends BaseTask {
 
     @Autowired
-    private MemberDAO memberDAO;
+    private MemberRepository memberRepository;
 
     @Autowired
     private SummaryFileService summaryFileService;
@@ -33,20 +32,19 @@ public class SummaryTask extends BaseTask {
     @Autowired
     private MailService mailService;
 
-    private static ThreadLocal<SummaryTaskData> summaryTaskDataHolder;
+    private static ThreadLocal<SummaryTaskData> summaryTaskDataUnitHolder;
 
-    @SuppressWarnings("LeakingThisInConstructor")
-    public SummaryTask(ServletContext context, SummaryTaskData taskData) {
-        WebApplicationContext wac = WebApplicationContextUtils.getWebApplicationContext(context);
-        AutowireCapableBeanFactory factory = wac.getAutowireCapableBeanFactory();
+    SummaryTask(ApplicationContext context, SummaryTaskData taskDataUnit) {
+        AutowireCapableBeanFactory factory = context.getAutowireCapableBeanFactory();
         factory.autowireBean(this);
-        summaryTaskDataHolder = new ThreadLocal<>();
-        summaryTaskDataHolder.set(taskData);
+        summaryTaskDataUnitHolder = new ThreadLocal<>();
+        summaryTaskDataUnitHolder.set(taskDataUnit);
     }
 
+    @Transactional(rollbackFor = {Exception.class})
     @Override
     public void run() {
-        SummaryTaskData taskData = summaryTaskDataHolder.get();
+        SummaryTaskData taskData = summaryTaskDataUnitHolder.get();
         String nameStringOfGroups = getNameStringOfGroups(taskData.getGroups());
         //获取当前日期时间字符串
         String dateString = timeService.getDateString();
@@ -72,8 +70,8 @@ public class SummaryTask extends BaseTask {
                 new String[]{System.getProperty("user.dir").split("\\\\")[0] + File.separator + "NISLJournal" + File.separator + "DailySummary-Group" + nameStringOfGroups + "-" + dateString + ".PDF"}
         );
         mailService.send(taskData.getMailSenderIdentity(), mail);
-        memberDAO.updateSubmittedByGroups(taskData.getGroups(), true);
-        summaryTaskDataHolder.remove();
+        memberRepository.updateSubmittedByGroups(taskData.getGroups(), true);
+        summaryTaskDataUnitHolder.remove();
     }
 
     /**
@@ -83,8 +81,8 @@ public class SummaryTask extends BaseTask {
      * @return 目标列表
      */
     private String[] getToList(List<Integer> groups) {
-        List<String> toList = memberDAO.queryEmailAddressByGroups(groups);
-        return toList.toArray(new String[toList.size()]);
+        List<String> toList = memberRepository.queryEmailAddressByGroups(groups);
+        return toList.toArray(new String[0]);
     }
 
     /**

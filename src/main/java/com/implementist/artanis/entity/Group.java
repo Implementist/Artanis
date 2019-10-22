@@ -20,11 +20,11 @@ public class Group implements Serializable {
      * Id
      */
     @Id
-    @Column(name = "Id")
+    @Column(name = "id", columnDefinition = "int(1) unsigned DEFAULT '0'")
     private int id;
     /**
      * 名称
      */
-    @Column(name = "Name")
+    @Column(name = "name", columnDefinition = "varchar(128) NOT NULL DEFAULT ''")
     private String name;
 }

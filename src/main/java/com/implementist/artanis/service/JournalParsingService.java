@@ -94,7 +94,6 @@ public class JournalParsingService {
                 content.append(mailContent.charAt(pTraverse));
             }
         }
-
         return content.toString();
     }
 

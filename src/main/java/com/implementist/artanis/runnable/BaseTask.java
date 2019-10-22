@@ -1,4 +1,4 @@
-package com.implementist.artanis.entity.task;
+package com.implementist.artanis.runnable;
 
 /**
  * @author Implementist

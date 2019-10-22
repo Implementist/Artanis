@@ -11,7 +11,7 @@ import java.util.List;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class UrgeTaskData extends BaskTaskData{
+public class UrgeTaskData extends BaskTaskData {
 
     /**
      * 当前任务包含的小组

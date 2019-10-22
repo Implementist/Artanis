@@ -1,15 +1,13 @@
-package com.implementist.artanis.entity.task;
+package com.implementist.artanis.runnable;
 
-import com.implementist.artanis.dao.MemberDAO;
 import com.implementist.artanis.entity.Mail;
 import com.implementist.artanis.entity.taskdata.UrgeTaskData;
+import com.implementist.artanis.repository.MemberRepository;
 import com.implementist.artanis.service.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.context.ApplicationContext;
 
-import javax.servlet.ServletContext;
 import java.util.List;
 
 /**
@@ -19,25 +17,23 @@ import java.util.List;
 public class UrgeTask extends BaseTask {
 
     @Autowired
-    private MemberDAO memberDAO;
+    private MemberRepository memberRepository;
 
     @Autowired
     private MailService mailService;
 
-    private static ThreadLocal<UrgeTaskData> urgeTaskDataHolder;
+    private static ThreadLocal<UrgeTaskData> UrgeTaskDataUnitHolder;
 
-    @SuppressWarnings("LeakingThisInConstructor")
-    public UrgeTask(ServletContext context, UrgeTaskData taskData) {
-        WebApplicationContext wac = WebApplicationContextUtils.getWebApplicationContext(context);
-        AutowireCapableBeanFactory factory = wac.getAutowireCapableBeanFactory();
+    UrgeTask(ApplicationContext context, UrgeTaskData taskDataUnit) {
+        AutowireCapableBeanFactory factory = context.getAutowireCapableBeanFactory();
         factory.autowireBean(this);
-        urgeTaskDataHolder = new ThreadLocal<>();
-        urgeTaskDataHolder.set(taskData);
+        UrgeTaskDataUnitHolder = new ThreadLocal<>();
+        UrgeTaskDataUnitHolder.set(taskDataUnit);
     }
 
     @Override
     public void run() {
-        UrgeTaskData taskData = urgeTaskDataHolder.get();
+        UrgeTaskData taskData = UrgeTaskDataUnitHolder.get();
         //从邮箱读入日志，提交了日志的同学的Submitted位会被置位1
         mailService.read(taskData.getMailSenderIdentity());
 
@@ -52,7 +48,7 @@ public class UrgeTask extends BaseTask {
             );
             mailService.send(taskData.getMailSenderIdentity(), mail);
         }
-        urgeTaskDataHolder.remove();
+        UrgeTaskDataUnitHolder.remove();
     }
 
     /**
@@ -61,7 +57,7 @@ public class UrgeTask extends BaseTask {
      * @return 未提交日志同学的地址数组
      */
     private String[] getAddressesOfUnsubmited(List<Integer> groups) {
-        List<String> addressOfUnsubmited = memberDAO.queryEmailAddressByGroups(groups, false);
-        return addressOfUnsubmited.toArray(new String[addressOfUnsubmited.size()]);
+        List<String> addressOfUnsubmited = memberRepository.queryEmailAddressByGroups(groups, false);
+        return addressOfUnsubmited.toArray(new String[0]);
     }
 }

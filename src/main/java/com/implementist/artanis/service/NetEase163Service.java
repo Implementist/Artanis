@@ -1,7 +1,8 @@
 package com.implementist.artanis.service;
 
 import com.implementist.artanis.entity.Identity;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.retry.annotation.Recover;
@@ -13,14 +14,13 @@ import java.util.HashMap;
 import java.util.Properties;
 
 /**
- *
  * @author Implementist
  */
 @Service
 @EnableRetry(proxyTargetClass = true)
 public class NetEase163Service {
 
-    private final Logger logger = Logger.getLogger(NetEase163Service.class);
+    private final Logger logger = LoggerFactory.getLogger(NetEase163Service.class);
 
     private final HashMap<String, String> ports = new HashMap<String, String>() {
         {
@@ -84,12 +84,12 @@ public class NetEase163Service {
     /**
      * 发送邮件
      *
-     * @param session 邮箱通信会话
-     * @param identity 邮箱身份
-     * @param msg 邮件内容
+     * @param session   邮箱通信会话
+     * @param identity  邮箱身份
+     * @param msg       邮件内容
      * @param addresses 收件人列表
      * @throws NoSuchProviderException 没有这个服务提供商异常
-     * @throws MessagingException 信息异常
+     * @throws MessagingException      信息异常
      */
     @Retryable(value = {NoSuchProviderException.class, MessagingException.class}, maxAttempts = 90, backoff = @Backoff)
     public void sendMessage(Session session, Identity identity, Message msg, Address[] addresses) throws NoSuchProviderException, MessagingException {
@@ -107,11 +107,11 @@ public class NetEase163Service {
     /**
      * 获取邮箱存储
      *
-     * @param session 邮件通信会话
+     * @param session  邮件通信会话
      * @param identity 邮箱身份
      * @return 邮箱存储
      * @throws NoSuchProviderException 没有这个服务提供商异常
-     * @throws MessagingException 信息异常
+     * @throws MessagingException      信息异常
      */
     @Retryable(value = {NoSuchProviderException.class, MessagingException.class}, maxAttempts = 90, backoff = @Backoff)
     public Store getStore(Session session, Identity identity) throws NoSuchProviderException, MessagingException {

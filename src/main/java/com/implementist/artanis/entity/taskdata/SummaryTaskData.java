@@ -11,7 +11,7 @@ import java.util.List;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SummaryTaskData extends BaskTaskData{
+public class SummaryTaskData extends BaskTaskData {
 
     /**
      * 小组是否在休假

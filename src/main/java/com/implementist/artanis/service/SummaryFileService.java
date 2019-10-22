@@ -1,14 +1,15 @@
 package com.implementist.artanis.service;
 
-import com.implementist.artanis.dao.GroupDAO;
-import com.implementist.artanis.dao.MemberDAO;
 import com.implementist.artanis.entity.Group;
 import com.implementist.artanis.entity.Member;
+import com.implementist.artanis.repository.GroupRepository;
+import com.implementist.artanis.repository.MemberRepository;
 import com.lowagie.text.Font;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfWriter;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -19,31 +20,35 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- *
  * @author Administrator
  */
 @Service
 @Scope("prototype")
 public class SummaryFileService {
 
-    private final Logger logger = Logger.getLogger(SummaryFileService.class);
+    private final Logger logger = LoggerFactory.getLogger(SummaryFileService.class);
+
+    private final GroupRepository groupRepository;
+
+    private final MemberRepository memberRepository;
+
+    private final TimeService timeService;
+
+    private final JournalParsingService journalParsingService;
 
     @Autowired
-    private GroupDAO groupDAO;
-
-    @Autowired
-    private MemberDAO memberDAO;
-
-    @Autowired
-    private TimeService timeService;
-
-    @Autowired
-    private JournalParsingService journalParsingService;
+    public SummaryFileService(GroupRepository groupRepository, MemberRepository memberRepository,
+                              TimeService timeService, JournalParsingService journalParsingService) {
+        this.groupRepository = groupRepository;
+        this.memberRepository = memberRepository;
+        this.timeService = timeService;
+        this.journalParsingService = journalParsingService;
+    }
 
     /**
      * 创建日志汇总PDF文件
      *
-     * @param groups 小组列表
+     * @param groups             小组列表
      * @param nameStringOfGroups 小组的名字字符串
      */
     public void create(List<Integer> groups, String nameStringOfGroups) {
@@ -98,7 +103,7 @@ public class SummaryFileService {
     /**
      * 添加内容
      *
-     * @param group 组名
+     * @param group   组名
      * @param members 该组成员列表
      * @return 只包含该组成员日报内容的表
      * @throws BadElementException 坏成员异常
@@ -113,9 +118,9 @@ public class SummaryFileService {
         Cell groupHeader = getGroupHeaderCell(group);
         table.addCell(groupHeader);
 
-        for (int i = 0; i < members.size(); i++) {
-            Cell memberName = fillCellWithContent(members.get(i).getName());
-            String reformatedContent = journalParsingService.parse(members.get(i).getContent());
+        for (Member member : members) {
+            Cell memberName = fillCellWithContent(member.getName());
+            String reformatedContent = journalParsingService.parse(member.getContent());
             Cell journalContent = fillCellWithContent(reformatedContent);
             journalContent.setColspan(4);
             table.addCell(memberName);
@@ -199,14 +204,13 @@ public class SummaryFileService {
      * 设置相关参数
      *
      * @param document 文档
-     * @param title 标题
-     * @param subject 主题
-     * @param author 作者
-     * @param creator 制作人
-     * @return 设置过相关参数的文档
+     * @param title    标题
+     * @param subject  主题
+     * @param author   作者
+     * @param creator  制作人
      */
-    private Document setParameters(Document document, String title, String subject, String author,
-            String creator) {
+    private void setParameters(Document document, String title, String subject, String author,
+                               String creator) {
         // 设置标题
         document.addTitle(title);
         // 设置主题
@@ -219,7 +223,6 @@ public class SummaryFileService {
         document.addProducer();
         // 设置创建日期
         document.addCreationDate();
-        return document;
     }
 
     /**
@@ -229,8 +232,8 @@ public class SummaryFileService {
      */
     private void addContentsByGroup(Document document, List<Integer> groups) throws DocumentException {
         for (int group : groups) {
-            Group groupInfo = groupDAO.queryGroupById(group);
-            List<Member> groupMembers = memberDAO.queryByGroup(group);
+            Group groupInfo = groupRepository.queryById(group);
+            List<Member> groupMembers = memberRepository.queryByGroupId(group);
             Table groupContent = getGroupContent(groupInfo.getName(), groupMembers);
             document.add(groupContent);
         }

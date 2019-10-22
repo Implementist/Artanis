@@ -1,6 +1,5 @@
 package com.implementist.artanis.service;
 
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
@@ -16,8 +15,7 @@ import java.util.Date;
  */
 @Service
 public class TimeService {
-
-    private final Logger logger = Logger.getLogger(TimeService.class);
+    public static final long MILLIS_OF_ONE_DAY = 24 * 60 * 60 * 1000;
 
     /**
      * 获取指定时间对应的毫秒数
@@ -32,7 +30,6 @@ public class TimeService {
             Date curDate = dateFormat.parse(dayFormat.format(new Date()) + " " + time);
             return curDate.getTime();
         } catch (ParseException e) {
-            logger.error("Parse Exception!", e);
             return 0;
         }
     }

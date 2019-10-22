@@ -1,10 +1,10 @@
 package com.implementist.artanis.service;
 
-import com.implementist.artanis.dao.MemberDAO;
 import com.implementist.artanis.entity.Identity;
 import com.implementist.artanis.entity.Mail;
-import com.implementist.artanis.entity.Member;
-import org.apache.log4j.Logger;
+import com.implementist.artanis.repository.MemberRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -16,24 +16,20 @@ import javax.mail.internet.*;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Properties;
 
 /**
- *
  * @author Implementist
  */
 @Service
 @Scope("prototype")
 public class MailService {
 
-    private final Logger logger = Logger.getLogger(MailService.class);
+    private final MemberRepository memberRepository;
 
-    @Autowired
-    private MemberDAO memberDAO;
+    private final NetEase163Service netEase163Service;
 
-    @Autowired
-    private NetEase163Service netEase163Service;
+    private final Logger logger = LoggerFactory.getLogger(MailService.class);
 
     /**
      * 用于设置在一个邮件中是否已读出一份内容文本
@@ -44,11 +40,17 @@ public class MailService {
      */
     private String currentContent;
 
+    @Autowired
+    public MailService(MemberRepository memberRepository, NetEase163Service netEase163Service) {
+        this.memberRepository = memberRepository;
+        this.netEase163Service = netEase163Service;
+    }
+
     /**
      * 发送邮件
      *
      * @param identity 邮件发送者身份
-     * @param mail 邮件
+     * @param mail     邮件
      */
     public void send(Identity identity, Mail mail) {
         //设置邮件通信属性
@@ -62,7 +64,7 @@ public class MailService {
             netEase163Service.sendMessage(session, identity, mimeMessage, mimeMessage.getAllRecipients());
         } catch (MessagingException ex) {
             logger.error("Massaging Exception!", ex);
-        } catch (UnsupportedEncodingException ex){
+        } catch (UnsupportedEncodingException ex) {
             logger.error("Unsupported Encoding Exception!", ex);
         } catch (Exception ex) {
             logger.error("Exception!", ex);
@@ -81,7 +83,7 @@ public class MailService {
         Session session = netEase163Service.getSession(properties);
 
         try (Store store = netEase163Service.getStore(session, identity);
-                Folder folder = store.getFolder("INBOX");) {
+             Folder folder = store.getFolder("INBOX")) {
             //设置邮件只读
             folder.open(Folder.READ_ONLY);
             //将邮件中的日报中写回到数据库中
@@ -97,8 +99,8 @@ public class MailService {
      * 移动邮件
      *
      * @param identity 邮箱账户身份
-     * @param source 源文件夹
-     * @param target 目标文件夹
+     * @param source   源文件夹
+     * @param target   目标文件夹
      */
     public void move(Identity identity, String source, String target) {
 
@@ -108,8 +110,8 @@ public class MailService {
         Session session = netEase163Service.getSession(properties);
 
         try (Store store = netEase163Service.getStore(session, identity);
-                Folder sfolder = store.getFolder(source);
-                Folder tfolder = store.getFolder(target);) {
+             Folder sfolder = store.getFolder(source);
+             Folder tfolder = store.getFolder(target)) {
             sfolder.open(Folder.READ_WRITE);
             tfolder.open(Folder.READ_WRITE);
 
@@ -164,7 +166,7 @@ public class MailService {
      * 设置发件人
      *
      * @throws UnsupportedEncodingException 不支持的编码异常
-     * @throws MessagingException 信息异常
+     * @throws MessagingException           信息异常
      */
     private void setFrom(MimeMessage mimeMessage, Identity identity) throws UnsupportedEncodingException, MessagingException {
         //自定义发件人昵称
@@ -213,7 +215,7 @@ public class MailService {
     /**
      * 设置附件
      *
-     * @throws MessagingException 信息异常
+     * @throws MessagingException           信息异常
      * @throws UnsupportedEncodingException 不支持的编码异常
      */
     private void setAttachment(MimeMultipart multipart, String[] files) throws MessagingException, UnsupportedEncodingException {
@@ -233,7 +235,7 @@ public class MailService {
      *
      * @param part 内容分段
      * @throws MessagingException 通信异常
-     * @throws IOException 输入输出异常
+     * @throws IOException        输入输出异常
      */
     private void getTextMultipart(Part part) throws MessagingException, IOException {
         String textPlain = "text/plain";
@@ -253,26 +255,12 @@ public class MailService {
     }
 
     /**
-     * 从成员列表中提取出邮箱地址数组
-     *
-     * @param members 成员列表
-     * @return 邮箱地址数组
-     */
-    public String[] getAddressArray(List<Member> members) {
-        String[] addressArray = new String[members.size()];
-        for (int i = 0; i < members.size(); i++) {
-            addressArray[i] = members.get(i).getEmailAddress();
-        }
-        return addressArray;
-    }
-
-    /**
      * 将各邮箱地址连接在一个字符串中
      *
      * @param addressArray 地址数组
      * @return 地址字符串
      */
-    public String getAddressString(String[] addressArray) {
+    private String getAddressString(String[] addressArray) {
         StringBuilder toList = new StringBuilder();
         if (null != addressArray && addressArray.length > 0) {
             toList.append(addressArray[0]);
@@ -300,7 +288,7 @@ public class MailService {
                 getTextMultipart(message);
 
                 currentContent = new String(currentContent.getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
-                memberDAO.updateContentByAddress(currentContent, address);
+                memberRepository.updateContentByEmailAddress(currentContent, address);
             }
         }
     }
