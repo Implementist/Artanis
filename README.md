@@ -6,13 +6,25 @@
 
 [中文版](https://github.com/Implementist/Artanis/blob/master/README_CN.md)
 
-![Content of Summary PDF](https://raw.github.com/Implementist/Artanis/master/images/content_of_summary_pdf.png)
-
 Artanis is a spring-boot based work journal auto manage system. You can DIY your tasks without re-compiling the whole project but modify the config files only.
 
 Various options make it easy to use. For example, you can set which day(s) is the rest day of your group in a week. And you can also set `holidayers` list for people who are on leave. After doing so, they do not need to submit work journals during their holiday.
 
 **Note that this is a pure back-end system without any UI pages.**
+
+## Workflow
+- The system executes **Urge Task** on schedule to remind people who have not submitted their work journal to do so.
+- Members of group submit their work journal by sending an email to `MailSender` before the deadline.
+- The system executes **Summary Task** at a fixed time which includes the following steps:
+  - Collect work journal contents from `INBOX` of `MailSender`.
+  - Generate a pdf file by using the above-mentioned contents.
+  - Create a new email and set the pdf file which the last step generated as an attachment.
+  - Send the email to boss or everyone.
+- The system executes **Initialize Task** at a fixed time which includes the following steps:
+  - Move all emails in `INBOX` to other folders (like 'past_journals').
+  - Clear up file `submitted` and `journal_content` of database.
+
+![Content of Summary PDF](https://raw.github.com/Implementist/Artanis/master/images/content_of_summary_pdf.png)
 
 ## Usage
 You can build up your system by just following few steps.
@@ -34,12 +46,12 @@ You can build up your system by just following few steps.
 
 ### Step4: Build & Run
 After finishing configuration, you need to:
-- Insert some groups and their members into the two tables in database `artanis`. 
 - Build this project with maven to generate file `artanis.jar`.
 - Copy `artanis.jar` to a directory of your server.
 - Copy `/configs/journalConfig.xml` and `/configs/systemConfig.xml` to the same directory of `artanis.jar`.
 - Run the follwing command in above-mentioned directory: `java -jar -Djasypt.encryptor.password=Artanis@Imple artanis.jar**`.
 - Or use `java -jar artanis.jar` if you makes **DB Config** with plain text only.
+- Insert some groups and their members into the two tables in database `artanis`. Then system starts to run.
 
 ## Configuration
 The following steps of config is nessesary.

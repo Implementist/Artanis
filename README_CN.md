@@ -6,13 +6,19 @@
 
 [English Version](https://github.com/Implementist/Artanis/blob/master/README.md)
 
-![汇总PDF的内容](https://raw.github.com/Implementist/Artanis/master/images/content_of_summary_pdf_CN.png)
-
 Artanis是一款基于Spring Boot的工作日志自动管理系统。你可以DIY你的催促和总结任务，在无需重新编译整个项目的前提下，只修改少数配置文件。
 
 丰富的可选项使其非常得简单易用. 例如，你可以设置你的小组在一周中的哪一天休息。你还可以将正在请假或休假中的员工加入到`holidayers`列表，这样他们在假期就不会被系统催促提交工作日志了。
 
 **注意：本系统是一个不包含任何UI界面的纯后端系统。**
+
+## 工作流程
+- 系统定时向（未提交工作日志的）小组成员发送邮件，催促他们提交（**下称UrgeTask，催促任务**）。
+- 小组成员在截止时间之前向指定邮箱发送邮件（**下称MailSender，邮件发送者**），内容即为当天的工作日志。
+- 系统在设定的截止时间从邮箱的收件箱收取工作日志，汇总为PDF文件（**如下图**），以该PDF文件为附件，向小组Boss或全体成员发送汇总邮件（**下称SummaryTask，汇总任务**）。
+- 系统在所有任务执行完毕后（目前需要手动设置时间）将邮箱收件箱的所有邮件转移到另一个文件夹（如“以往日报”），清空数据库中的`submitted`和`content`字段（**下称InitializeTask，初始化任务**）
+
+![汇总PDF的内容](https://raw.github.com/Implementist/Artanis/master/images/content_of_summary_pdf_CN.png)
 
 ## 使用说明
 你可以通过以下很少的步骤来构建自己的工作日志收发系统。
@@ -34,12 +40,12 @@ Artanis是一款基于Spring Boot的工作日志自动管理系统。你可以DI
 
 ### 步骤4: 构建和部署
 完成了配置之后，你需要：
-- 向数据库`artanis`中插入一些组和他们的成员信息。
 - 通过Maven构建该工程以获得`artanis.jar`文件。
 - 将`artanis.jar`复制到你的服务器上的某个目录下.
 - 将`/configs/journalConfig.xml`和`/configs/systemConfig.xml`复制到和`artanis.jar`相同的目录下。
 - 在上述目录下运行以下指令： `java -jar -Djasypt.encryptor.password=Artanis@Imple artanis.jar**`。
 - 如果在**数据库配置**中仅使用明文，则仅需使用以下命令：`java -jar artanis.jar`。
+- 向数据库`artanis`中插入一些组和他们的成员信息，然后系统开始工作。
 
 ## 配置
 下面的配置步骤是必需的
