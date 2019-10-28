@@ -15,7 +15,6 @@ import java.util.Date;
  */
 @Service
 public class TimeService {
-    public static final long MILLIS_OF_ONE_DAY = 24 * 60 * 60 * 1000;
 
     /**
      * 获取指定时间对应的毫秒数

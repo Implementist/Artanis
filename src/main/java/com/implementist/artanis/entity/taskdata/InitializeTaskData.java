@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class InitializeTaskData extends BaskTaskData {
+public class InitializeTaskData extends BaseTaskData {
 
     /**
      * 任务起始时间

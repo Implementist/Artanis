@@ -10,10 +10,10 @@
     </parent>
     <groupId>com.implementist</groupId>
     <artifactId>artanis</artifactId>
-    <version>3.4.0</version>
+    <version>3.4.1</version>
     <packaging>jar</packaging>
     <name>artanis</name>
-    <description>Artanis: a work journal auto manage system</description>
+    <description>Artanis: a work journal auto manage system - En Taro Artanis!</description>
 
     <properties>
         <java.version>1.8</java.version>
