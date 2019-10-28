@@ -147,7 +147,9 @@ public class MainTask implements Runnable {
         for (String taskName : taskNames) {
             SummaryTaskData task = (SummaryTaskData) ctx.getBean(taskName);
             boolean isRestDayToday = timeService.isRestDayToday(task.getRestDays());
-            if (!task.isGroupOnHoliday() && (!isRestDayToday || isWorkdayToday)) {
+            //判断这个小组今天是否工作，逻辑是：今天小组没有在休假 && (今天不是休息日 || 今天是调休工作日）
+            boolean isThisGroupWorkToday = !task.isGroupOnHoliday() && (!isRestDayToday || isWorkdayToday);
+            if (isThisGroupWorkToday) {
                 tasks.add(task);
             }
         }
