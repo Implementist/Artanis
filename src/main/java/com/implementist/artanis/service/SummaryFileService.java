@@ -8,8 +8,7 @@ import com.lowagie.text.Font;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfWriter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -22,11 +21,10 @@ import java.util.List;
 /**
  * @author Administrator
  */
+@Slf4j
 @Service
 @Scope("prototype")
 public class SummaryFileService {
-
-    private final Logger logger = LoggerFactory.getLogger(SummaryFileService.class);
 
     private final GroupRepository groupRepository;
 
@@ -70,7 +68,7 @@ public class SummaryFileService {
             // 按小组添加日志内容
             addContentsByGroup(document, groups);
         } catch (IOException | DocumentException ex) {
-            logger.error("IO Exception! | Document Exception!", ex);
+            log.error("IO Exception! | Document Exception!", ex);
         } finally {
             document.close();  // 关闭文档
         }
@@ -140,7 +138,7 @@ public class SummaryFileService {
         try {
             baseFont = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED);
         } catch (IOException | DocumentException ex) {
-            logger.error("IO Exception! | Document Exception!", ex);
+            log.error("IO Exception! | Document Exception!", ex);
         }
         return new Font(baseFont, fontSize, Font.NORMAL, Color.BLACK);
     }
