@@ -3,8 +3,7 @@ package com.implementist.artanis.service;
 import com.implementist.artanis.entity.Identity;
 import com.implementist.artanis.entity.Mail;
 import com.implementist.artanis.repository.MemberRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -21,6 +20,7 @@ import java.util.Properties;
 /**
  * @author Implementist
  */
+@Slf4j
 @Service
 @Scope("prototype")
 public class MailService {
@@ -28,8 +28,6 @@ public class MailService {
     private final MemberRepository memberRepository;
 
     private final NetEase163Service netEase163Service;
-
-    private final Logger logger = LoggerFactory.getLogger(MailService.class);
 
     /**
      * 用于设置在一个邮件中是否已读出一份内容文本
@@ -63,11 +61,11 @@ public class MailService {
             // 发送邮件
             netEase163Service.sendMessage(session, identity, mimeMessage, mimeMessage.getAllRecipients());
         } catch (MessagingException ex) {
-            logger.error("Massaging Exception!", ex);
+            log.error("Massaging Exception!", ex);
         } catch (UnsupportedEncodingException ex) {
-            logger.error("Unsupported Encoding Exception!", ex);
+            log.error("Unsupported Encoding Exception!", ex);
         } catch (Exception ex) {
-            logger.error("Exception!", ex);
+            log.error("Exception!", ex);
         }
     }
 
@@ -89,9 +87,9 @@ public class MailService {
             //将邮件中的日报中写回到数据库中
             saveJournalContents(folder.getMessages());
         } catch (MessagingException | IOException ex) {
-            logger.error("Massaging Exception! | IO Exception!", ex);
+            log.error("Massaging Exception! | IO Exception!", ex);
         } catch (Exception ex) {
-            logger.error("Exception!", ex);
+            log.error("Exception!", ex);
         }
     }
 
@@ -126,9 +124,9 @@ public class MailService {
                 sfolder.setFlags(msgs, new Flags(Flags.Flag.DELETED), true);
             }
         } catch (MessagingException ex) {
-            logger.error("Massaging Exception!", ex);
+            log.error("Massaging Exception!", ex);
         } catch (Exception ex) {
-            logger.error("Exception!", ex);
+            log.error("Exception!", ex);
         }
     }
 

@@ -1,8 +1,7 @@
 package com.implementist.artanis.service;
 
 import com.implementist.artanis.entity.Identity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.retry.annotation.Recover;
@@ -16,11 +15,10 @@ import java.util.Properties;
 /**
  * @author Implementist
  */
+@Slf4j
 @Service
 @EnableRetry(proxyTargetClass = true)
 public class NetEase163Service {
-
-    private final Logger logger = LoggerFactory.getLogger(NetEase163Service.class);
 
     private final HashMap<String, String> ports = new HashMap<String, String>() {
         {
@@ -77,7 +75,7 @@ public class NetEase163Service {
 
     @Recover
     public Session recover(Exception ex, Properties properties) {
-        logger.error("Exception Still Remaining After 90 Times of Attemts.", ex);
+        log.error("Exception Still Remaining After 90 Times of Attemts.", ex);
         return null;
     }
 
@@ -101,7 +99,7 @@ public class NetEase163Service {
 
     @Recover
     public void recover(Exception ex, Session session, Identity identity, Message msg, Address[] addresses) {
-        logger.error("Exception Still Remaining After 90 Times of Attemts.", ex);
+        log.error("Exception Still Remaining After 90 Times of Attemts.", ex);
     }
 
     /**
@@ -122,7 +120,7 @@ public class NetEase163Service {
 
     @Recover
     public Store recover(Exception ex, Session session, Identity identity) {
-        logger.error("Exception Still Remaining After 90 Times of Attemts.", ex);
+        log.error("Exception Still Remaining After 90 Times of Attemts.", ex);
         return null;
     }
 }
